@@ -6,6 +6,7 @@ categories:
   - blog
 subtitle: ""
 tags: []
+share_img:
 ---
 
 <!-- content  -->
