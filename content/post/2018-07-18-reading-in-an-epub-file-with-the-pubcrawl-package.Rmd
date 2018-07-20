@@ -341,7 +341,7 @@ go to github.com/hrbrmstr/pubcrawl and see instructions there, which will say so
 - Bob Rudis' pubcrawl package <https://github.com/hrbrmstr/pubcrawl>
 - tidy textmining book <https://www.tidytextmining.com/>
 
-##### State of the machine
+### State of the machine
 <details>
 <summary> At the moment of creation (when I knitted this document ) this was the state of my machine:click  **here (it will fold out)** </summary>
 

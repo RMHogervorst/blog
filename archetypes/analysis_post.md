@@ -6,7 +6,6 @@ categories:
   - blog
 subtitle: ""
 tags: []
-bibliography: [packages.bib, /post/blog.bib]
 ---
 
 <!-- 
@@ -34,13 +33,12 @@ Title: contains the main answer or question: Do things get darker in later episo
 
 <!-- references -->
 
-##### State of the machine
+### State of the machine
 <details>
-<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <click> </summary>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
 
 ```{r}
 sessioninfo::session_info()
-knitr::write_bib(.packages(), "packages.bib") 
 ```
 
 </details>
