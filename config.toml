@@ -1,7 +1,7 @@
 theme = "beautifulhugo"
 baseURL = "https://blog.rmhogervorst.nl/"
 languageCode = "en-us"
-title = "a blog about R"
+title = "Roel's R-tefacts"
 pygmentsCodeFences = true
 pygmentsUseClasses = true
 enableEmoji = true
@@ -35,3 +35,17 @@ publishDir = "public"
   linkedin = "rmhogervorst"
   stackoverflow = "users/5573955/roel-hogervorst"
  
+[[menu.main]]
+    name = "Blog"
+    url = ""
+    weight = 1
+
+[[menu.main]]
+    name = "About"
+    url = "about/"
+    weight = 3
+    
+[[menu.main]]
+    name = "Getting updates"
+    url = "subscribing"
+    weight = 3

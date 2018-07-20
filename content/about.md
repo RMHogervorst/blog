@@ -11,14 +11,14 @@ I'd like to thank the community here too: I love the #rstats twitter, rweekly an
 
 > you must be really smart! 
 
-*No I'm not, I am very very good at googling and knowing what an answer should look like though*
+*No I'm not, I am very very good at googling and over time I learned what an answer should look like*
 
 I first taught myself some R while starting my PhD program at Leiden University.
 And when I say I taught myself, I really mean I took the [Coursera Course: R programming](https://www.coursera.org/learn/r-programming) (thank you Jeff Leek, Roger Peng and Brian Caffo, and all the people in the forums!). After a year I dropped out of the PhD program and worked for the [Methodology and Statistics group](https://www.universiteitleiden.nl/en/social-behavioural-sciences/psychology/methodology-and-statistics) within the department of Psychology of Leiden University. I worked on a prediction project and had many many inspiring people around me. Many of them have the R-bug and love of geekery. A very nurtering environment. I developed a much broader understanding of statistics there. 
 After about a year I wanted to learn more techniques and joined a commercial traineeship program at [Xomnia](https://xomnia.com/services/traineeships/). I came into contact with all the other trainees from differnet backgrounds and took weekly classes. 
 
 
-## Correct
-Did I make a mistake? Are you excited about learning? Is there something I should really blog about? Did you find spelling mistakes (very probable, I make them alll the time)? I have an abundance of social links at the bottom of the page to reach me. Some of you even found my academic email account, now that is dedication (also don't do that anymore, because I no longer work in academia) !
+## Correcting me
+Did I make a mistake? Are you excited about learning? Is there something I should really blog about? Did you find spelling mistakes (very probable, I make them alll the time)? I have an abundance of social links at the bottom of the page to reach me. Some of you even found my academic email account, now that is dedication (also don't do that anymore, because I no longer work in academia) ! There is also a edit this page at the bottom of every webpage where you can make an edit on github. 
 
 If you found [security issues.  See this link to contact me securely](/well-known/security.txt)  if you so desire.  

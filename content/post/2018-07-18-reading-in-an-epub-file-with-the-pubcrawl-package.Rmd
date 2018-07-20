@@ -4,6 +4,7 @@ author: Roel M. Hogervorst
 date: '2018-07-19'
 categories:
   - blog
+  - R
 tags:
   - beginner
   - ebooks
