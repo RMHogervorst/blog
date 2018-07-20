@@ -51,7 +51,7 @@
         <p class="credits theme-by text-muted">
           {{ i18n "poweredBy" . | safeHTML }}
           {{ with .Site.Params.commit }}&nbsp;&bull;&nbsp;[<a href="{{.}}{{ getenv "GIT_COMMIT_SHA" }}">{{ getenv "GIT_COMMIT_SHA_SHORT" }}</a>]{{ end }}
-<br> See anything wrong? Click to add them to <a href="https://github.com/RMHogervorst/cleancode/issues" >the issue tracker</a> <br>
+<br> See anything wrong? Click to add them to <a href="https://github.com/RMHogervorst/blog/issues" >the issue tracker</a> <br>
             {{ if .File.Path }}
 
 {{ $Rmd := (print .File.BaseFileName ".Rmd") }}

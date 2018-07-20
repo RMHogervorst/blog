@@ -17,12 +17,14 @@ slug: reading-in-an-epub-file-with-the-pubcrawl-package
 In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: `r paste0(emo::ji("beer"),emo::ji("book"),emo::ji("package")) ` .
 I will show the reading in part, (one line of code) and some other actions you might want to perform on textfiles before they are ready for text analysis.
 
+
+
 After you read in your epub file you can do some cool analyses on it, but that is part of the next blogpost. See how cool this is?
 
 ![A look at the top 2 words (tf-idf) in every chapter of Hitchhikers guide to the Galaxy](/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/endresult.png)
 
 
-## a short diversion into how the package came to be (not required)
+### a short diversion into how the package came to be (not required)
 Recently I wanted to read in an epub book format with R. There was no such package!
 
 Twitter #rstats hyve-mind to the rescue:
