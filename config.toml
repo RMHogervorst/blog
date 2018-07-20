@@ -1,0 +1,37 @@
+theme = "beautifulhugo"
+baseURL = "http://blog.rmhogervorst.nl/"
+languageCode = "en-us"
+title = "a blog about R"
+pygmentsCodeFences = true
+pygmentsUseClasses = true
+enableEmoji = true
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+publishDir = "docs"
+
+[permalinks]
+    post = "/blog/:year/:month/:day/:slug/"
+    
+[Params]
+  subtitle = "Tips about clean R-code and reproducible work, but also fun!"
+  logo = "img/avatar-icon.png"
+  favicon = "img/favicon.ico"
+  dateFormat = "January 2, 2006"
+  rss = true
+  comments = true
+  readingTime = true
+  modifyLink = true
+  GithubEdit = "https://github.com/RMHogervorst/blog/tree/master/content/"
+
+
+[Author]
+  name = "Roel M. Hogervorst"
+  website = "rmhogervorst.nl"
+  email = "hogervorst.rm@gmail.com"
+  keybase = "rmhogervorst"
+  github = "RMHogervorst"
+  gitlab = "rmhogervorst"
+  bitbucket = "RMHogervorst"
+  twitter = "RMHoge"
+  linkedin = "rmhogervorst"
+  stackoverflow = "users/5573955/roel-hogervorst"
+ 

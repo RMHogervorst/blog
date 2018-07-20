@@ -1,0 +1,25 @@
+THIS IS A TEMPLATE, IF YOU DON'T HAVE AN ISSUE WITH THE WEBSITE
+OR SOMETHING ELSE YOU CAN DELETE EVERYTHING AND TYPE WHAT YOU WANT. 
+I MEAN, YOU CAN ALWAYS DO WHAT YOU WANT, I'M A TEMPLATE, NOT A POLICEMAN.
+Hi Roel,
+
+I saw your post on rmhogervorst.nl/cleancode / r-bloggers, 
+
+THIS IS WHERE YOU WRITE DOWN WHERE I SCREWED UP, MADE A TYPO OR WHAT EVER. 
+
+IF YOU HAD AN ERROR FOLLOWING A TUTORIAL 
+
+I tried to [what you wanted to do] 
+by doing the followings steps
+[steps]
+
+But it didn't work/ it failed miserably/ It broke my computer and my life's work/ etc
+This happened:
+
+[error messages, results etc]
+
+I have used version 
+[in rstudio you can find the version of the package in the packages pane/ or use sessionInfo() for all active packages
+or you can use packageVersion("packagename") for the specific version of the package]
+with R version [ version]
+on a windows / mac / linux / freebsd / solaris, etc computer.
