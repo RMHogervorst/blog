@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Beginner on a blog about R</title>
+    <link>http://blog.rmhogervorst.nl/tags/beginner/</link>
+    <description>Recent content in Beginner on a blog about R</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>hogervorst.rm@gmail.com (Roel M. Hogervorst)</managingEditor>
+    <webMaster>hogervorst.rm@gmail.com (Roel M. Hogervorst)</webMaster>
+    <lastBuildDate>Thu, 19 Jul 2018 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="http://blog.rmhogervorst.nl/tags/beginner/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Reading in an epub (ebook) file with the pubcrawl package</title>
+      <link>http://blog.rmhogervorst.nl/blog/2018/07/19/reading-in-an-epub-file-with-the-pubcrawl-package/</link>
+      <pubDate>Thu, 19 Jul 2018 00:00:00 +0000</pubDate>
+      <author>hogervorst.rm@gmail.com (Roel M. Hogervorst)</author>
+      <guid>http://blog.rmhogervorst.nl/blog/2018/07/19/reading-in-an-epub-file-with-the-pubcrawl-package/</guid>
+      <description>&lt;p&gt;In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: 🍺📖📦 . I will show the reading in part, (one line of code) and some other actions you might want to perform on textfiles before they are ready for text analysis.&lt;/p&gt;
+&lt;p&gt;After you read in your epub file you can do some cool analyses on it, but that is part of the next blogpost. See how cool this is?&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;http://blog.rmhogervorst.nl/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/endresult.png&#34; alt=&#34;A look at the top 2 words (tf-idf) in every chapter of Hitchhikers guide to the Galaxy&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;A look at the top 2 words (tf-idf) in every chapter of Hitchhikers guide to the Galaxy&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;a-short-diversion-into-how-the-package-came-to-be-not-required&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;a short diversion into how the package came to be (not required)&lt;/h2&gt;
+&lt;p&gt;Recently I wanted to read in an epub book format with R. There was no such package!&lt;/p&gt;
+&lt;p&gt;Twitter #rstats hyve-mind to the rescue:&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Hello &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; hyve mind! Is there a package that reads epub into R? I can not find any, I now convert to text and parse the text but you sort of lose the structure of the text. Pinging  &lt;a href=&#34;https://twitter.com/dataandme?ref_src=twsrc%5Etfw&#34;&gt;@dataandme&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hrbrmstr?ref_src=twsrc%5Etfw&#34;&gt;@hrbrmstr&lt;/a&gt;&lt;/p&gt;&amp;mdash; Roel (@RMHoge) &lt;a href=&#34;https://twitter.com/RMHoge/status/984345828671344640?ref_src=twsrc%5Etfw&#34;&gt;April 12, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;I did some digging and found out that epub is a relatively easy format, it is a zip file (compressed file) with xml files in it (incidently that looks like words docx file format). I went to work and before my day was over Bob Rudis had already created a package to read in epub format files!&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Apparently it is a zipped xml, so it might be possible to parse it directly. A future project perhaps.&lt;/p&gt;&amp;mdash; Roel (@RMHoge) &lt;a href=&#34;https://twitter.com/RMHoge/status/984372777623879680?ref_src=twsrc%5Etfw&#34;&gt;April 12, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;So here is the link: &lt;a href=&#34;https://github.com/hrbrmstr/pubcrawl&#34; class=&#34;uri&#34;&gt;https://github.com/hrbrmstr/pubcrawl&lt;/a&gt; where you can download the package. It returns the files in a nice tidy format.&lt;/p&gt;
+&lt;p&gt;Any epub contains in the zip (a compressed folder) several xml documents(a sort of website like formatted documents), the pubcrawl package unpackes the archive and places these files into a row per document.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preperation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preperation&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Install the pubcrawl package (see below)&lt;/li&gt;
+&lt;li&gt;load the pubcrawl package&lt;/li&gt;
+&lt;li&gt;load the tidyverse package&lt;/li&gt;
+&lt;li&gt;locate the epub file you want to read in and point to it&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(pubcrawl)
+suppressPackageStartupMessages(library(tidyverse))  &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In my case I cannot share the real file with you, because it is copyrighted, but it is the Hitchhikers guide to the galaxy, the first of the series and a lovely book.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exploration&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Exploration&lt;/h1&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HH1 &amp;lt;- epub_to_text(epublocation)
+HH1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 73 x 4
+##    path            size date                content                       
+##    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt; &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                         
+##  1 OEBPS/part1.x…  4826 2010-06-03 17:20:56 &amp;quot;HH1 - Hitchhiker&amp;#39;s Guide to …
+##  2 OEBPS/part10_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&amp;#39;s Guide to t…
+##  3 OEBPS/part10_… 11867 2010-06-03 17:20:56 &amp;quot;CHAPTER 9\n      A computer …
+##  4 OEBPS/part11_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&amp;#39;s Guide to t…
+##  5 OEBPS/part11_…  3281 2010-06-03 17:20:56 &amp;quot;CHAPTER 10\n      The Infini…
+##  6 OEBPS/part12_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&amp;#39;s Guide to t…
+##  7 OEBPS/part12_… 16537 2010-06-03 17:20:56 &amp;quot;CHAPTER 11\n      The Improb…
+##  8 OEBPS/part13_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&amp;#39;s Guide to t…
+##  9 OEBPS/part13_… 11399 2010-06-03 17:20:56 &amp;quot;CHAPTER 12\n      A loud cla…
+## 10 OEBPS/part14_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&amp;#39;s Guide to t…
+## # ... with 63 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As you can see there is a path, size, date and content column. The files are not the same size, so after loading the epub you are most likely not done. You need to work a bit to get it in a nice format for text analyses, such is life.&lt;/p&gt;
+&lt;p&gt;Lets explore one of the files: file number 2: ‘part10_…’&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;If you have only worked with tidyverse verbs this can be a bit difficult to understand: I asked the second row and first till second column. it would be equivalent to HH1 %&amp;gt;% filter(path == “OEBPS/part1.xhtml”) %&amp;gt;% select(path,size)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HH1[2,1:2] # base R to the rescue!&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 2
+##   path                          size
+##   &amp;lt;chr&amp;gt;                        &amp;lt;dbl&amp;gt;
+## 1 OEBPS/part10_split_000.xhtml   678&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HH1[2,4]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 1
+##   content                               
+##   &amp;lt;chr&amp;gt;                                 
+## 1 HH1 - Hitchhiker&amp;#39;s Guide to the Galaxy&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;hmm, There is an almost empty page before every chapter it seems. It just says the booktitle.&lt;/p&gt;
+&lt;p&gt;Let’s check another page:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HH1[3,4]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 1
+##   content                                                                  
+##   &amp;lt;chr&amp;gt;                                                                    
+## 1 &amp;quot;CHAPTER 9\n      A computer chatted to itself in alarm as it noticed an…&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;how many characters are there in this thingy?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#HH1[3,4] %&amp;gt;% nchar()  # old way
+HH1[3,4] %&amp;gt;% str_length()  # stringr way&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8867&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HH1[2,4] %&amp;gt;% str_length()  # stringr way&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 38&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Right in the second row there are 38 characters, and in the third row 8867.&lt;/p&gt;
+&lt;div id=&#34;filtering-on-filename&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Filtering on filename&lt;/h2&gt;
+&lt;p&gt;We could select the rows with more than a certain amount of characters, but there is also another way. I noticed that the filenames in path are structered in a certain way.&lt;/p&gt;
+&lt;p&gt;There are files like this: “OEBPS/part10_split_000.xhtml” and like this OEBPS/part20_split_001.xhtml. only the files with split_001.. in it contain the text.&lt;/p&gt;
+&lt;p&gt;so we can filter on name in ‘path’&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HH1 %&amp;gt;% filter(str_detect(path, &amp;quot;split_001.xhtml&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This will only return rows where somewhere in the path column the string ‘split_001.xhtml’ is found. That leaves us with less rows and another peculiarity&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;extracting-the-chapter-numbers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;extracting the chapter numbers&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HH1 %&amp;gt;% 
+    filter(str_detect(path, &amp;quot;split_001.xhtml&amp;quot;)) %&amp;gt;% 
+    select(content) %&amp;gt;% head(3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 1
+##   content                                                                  
+##   &amp;lt;chr&amp;gt;                                                                    
+## 1 &amp;quot;CHAPTER 9\n      A computer chatted to itself in alarm as it noticed an…
+## 2 &amp;quot;CHAPTER 10\n      The Infinite Improbability Drive is a wonderful new m…
+## 3 &amp;quot;CHAPTER 11\n      The Improbability-proof control cabin of the Heart of…&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Every chapter starts with CHAPTER followed by a number.&lt;/p&gt;
+&lt;p&gt;We can use regular expressions for that!&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Some people, when confronted with a problem, think “I know, I’ll use regular expressions.” Now they have two problems. – Jamie Zawinski (1997)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Don’t be afraid, it is not the use of regex&lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; that is a problem, but the overuse of it. Let’s see if we can extract the chapter, put it in a different column and remove that part from the main text. A regular expression tells the computer what to search for, in fact I already used one before: the ‘split_001’ part. But in our case such a precise match is not what we need. We need something to match “CHAPTER” followed by ANY number. The regex code for numbers is like this “[0-9]{1,3}”, which means: any number between 0 and 9, one up to and including three times so it matches 9 but also 10 or 100 (there are not hundred chapters but I was a bit cautious)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HH1 %&amp;gt;% 
+    filter(str_detect(path, &amp;quot;split_001.xhtml&amp;quot;)) %&amp;gt;% 
+    mutate(chapter = str_extract(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But we are not yet there, I actually only want the number, but I don’t want to match any number in the text, only numbers from the phrase CHAPTER [0-9]. So let’s cut the number from there, I now use a pipe IN a mutate, it might be confusing but I think it still is very useful.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HH1 %&amp;gt;% 
+    filter(str_detect(path, &amp;quot;split_001.xhtml&amp;quot;)) %&amp;gt;% 
+mutate(chapter = str_extract(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               str_extract(&amp;quot;[0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               as.integer())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first str_extract pulls the “CHAPTER 3”-like text parts out. From that, I pull out the number alone, and finally I convert that to an integer (because chapters are never negative and usually in steps of 1).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;taking-out-the-rebundant-information&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;taking out the rebundant information&lt;/h2&gt;
+&lt;p&gt;The chapter number is now in a seperate column, but it’s also in the text. That will not do.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HH1 %&amp;gt;% 
+    filter(str_detect(path, &amp;quot;split_001.xhtml&amp;quot;)) %&amp;gt;% 
+mutate(chapter = str_extract(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               str_extract(&amp;quot;[0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               as.integer(),
+           content = str_remove(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now the chapters work out nicely. However, while checking the results I found that there is stil a piece of annoying markup in the texts:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# A tibble: 35 x 5
+   path             size date                content                                  chapter
+   &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt; &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                                      &amp;lt;int&amp;gt;
+ 1 OEBPS/part10_s… 11867 2010-06-03 17:20:56 &amp;quot;\n      A computer chatted to itself i…       9
+ 2 OEBPS/part11_s…  3281 2010-06-03 17:20:56 &amp;quot;\n      The Infinite Improbability Dri…      10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;\n&lt;/code&gt; translates to newline. But when we read in the file with tidytext newlines are automatically removed. Every chapter ends though, with this markup: “UnknownUnknown”&lt;/p&gt;
+&lt;p&gt;If we do a text analysis than Unknown will be frequently found word while it is actually an artefact. Let’s remove that:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HH1 %&amp;gt;% 
+    filter(str_detect(path, &amp;quot;split_001.xhtml&amp;quot;)) %&amp;gt;% 
+mutate(chapter = str_extract(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               str_extract(&amp;quot;[0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               as.integer(),
+           content = str_remove(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;),
+           content = str_remove(content, &amp;quot;Unknown\n      Unknown&amp;quot;)) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rearanging-and-keeping-only-relevant-information&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Rearanging and keeping only relevant information&lt;/h2&gt;
+&lt;p&gt;I want the chapternumber first, the tibble ordered by it, and only chapternumber and content. so the final steps are:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;prevous stuff %&amp;gt;% 
+    arrange(chapter) %&amp;gt;% 
+    select(chapter, content)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lets-take-a-step-back-creating-a-function-out-of-the-pipeline&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Let’s take a step back, creating a function out of the pipeline&lt;/h2&gt;
+&lt;p&gt;We have whole set of instructions. What if I want to do this on multible books? I can copy the entire set of instructions 5 times and replace the source, but we can also create a function.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cleaning-up-the-file&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Cleaning up the file&lt;/h1&gt;
+&lt;p&gt;We can copy the entire pipeline and make it function.&lt;/p&gt;
+&lt;p&gt;Normally when we make a function it goes something like this&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nameoffunctoin &amp;lt;- function(argument){
+    do  something with the argument
+    return something
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But in this case we can also create a function when we don’t start with a dataframe, but with a dot (= . ) and assign the entire chain to a name.&lt;/p&gt;
+&lt;p&gt;This creates a functional sequence (fseq for short), but you only have to remember that this is incredibly useful and saves you time in the future.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;extract_TEXT &amp;lt;-  . %&amp;gt;% 
+    filter(str_detect(path, &amp;quot;split_001.xhtml&amp;quot;)) %&amp;gt;% 
+    mutate(chapter = str_extract(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               str_extract(&amp;quot;[0-9]{1,3}&amp;quot;) %&amp;gt;% 
+               as.integer(),
+           content = str_remove(content, &amp;quot;CHAPTER [0-9]{1,3}&amp;quot;),
+           content = str_remove(content, &amp;quot;Unknown\n      Unknown&amp;quot;)) %&amp;gt;% 
+    arrange(chapter) %&amp;gt;% 
+    select(chapter, content)
+class(extract_TEXT)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;fseq&amp;quot;     &amp;quot;function&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I now have a function that cleans up the entire datafile. If this was a larger project I would place functions like this in a seperate utilities.R file and load it at the top of this document.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HH1_cleaned &amp;lt;- 
+    HH1 %&amp;gt;% 
+    extract_TEXT()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;a-small-tidytext-exploration&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;A small tidytext exploration&lt;/h1&gt;
+&lt;p&gt;This is a bit fast for beginners, but I will pay more attention to this process in a follow up blog post so bear with me.&lt;/p&gt;
+&lt;p&gt;What are the most typical words for every chapter (as in, more typical for that chapter compared to the the entire book, known as tf-idf)?&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;I have split the file into pieces of chapter &lt;/em&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidytext)
+dataset &amp;lt;- HH1_cleaned %&amp;gt;% 
+    unnest_tokens(output = word, input = content, token = &amp;quot;words&amp;quot;) %&amp;gt;% 
+    group_by(chapter) %&amp;gt;% 
+    count(word) %&amp;gt;% 
+    bind_tf_idf(term = word, document = chapter, n = n) %&amp;gt;% 
+    top_n(5, wt = tf_idf) %&amp;gt;% 
+    ungroup() %&amp;gt;% 
+    mutate(word = reorder(word, tf_idf), Chapter = as.factor(chapter)) 
+
+dataset %&amp;gt;% 
+  filter(chapter &amp;lt; 8)  %&amp;gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &amp;quot;free&amp;quot;)+
+    coord_flip()+
+    labs(
+        title = &amp;quot;Hitchhiker&amp;#39;s Guide to the Galaxy&amp;quot;,
+        subtitle = &amp;quot;Top 5 most typical words per chapter (first 7)&amp;quot;,
+        x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, caption = &amp;quot;Roel M. Hogervorst 2018 - clean code blog&amp;quot;
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;http://blog.rmhogervorst.nl/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataset %&amp;gt;% 
+  filter(chapter &amp;gt; 7, chapter &amp;lt;15)  %&amp;gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &amp;quot;free&amp;quot;)+
+    coord_flip()+
+    labs(
+        title = &amp;quot;Hitchhiker&amp;#39;s Guide to the Galaxy&amp;quot;,
+        subtitle = &amp;quot;Top 5 most typical words per chapter (second 7 chapters)&amp;quot;,
+        x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, caption = &amp;quot;Roel M. Hogervorst 2018 - clean code blog&amp;quot;
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;http://blog.rmhogervorst.nl/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataset %&amp;gt;% 
+  filter(chapter &amp;gt;=15 , chapter &amp;lt; 22)  %&amp;gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &amp;quot;free&amp;quot;)+
+    coord_flip()+
+    labs(
+        title = &amp;quot;Hitchhiker&amp;#39;s Guide to the Galaxy&amp;quot;,
+        subtitle = &amp;quot;Top 5 most typical words per chapter (third 7 chapters)&amp;quot;,
+        x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, caption = &amp;quot;Roel M. Hogervorst 2018 - clean code blog&amp;quot;
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;http://blog.rmhogervorst.nl/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataset %&amp;gt;% 
+  filter(chapter &amp;gt;=22 , chapter &amp;lt; 29)  %&amp;gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &amp;quot;free&amp;quot;)+
+    coord_flip()+
+    labs(
+        title = &amp;quot;Hitchhiker&amp;#39;s Guide to the Galaxy&amp;quot;,
+        subtitle = &amp;quot;Top 5 most typical words per chapter (fourth 7 chapters)&amp;quot;,
+        x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, caption = &amp;quot;Roel M. Hogervorst 2018 - clean code blog&amp;quot;
+    )    &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;http://blog.rmhogervorst.nl/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-4.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataset %&amp;gt;% 
+  filter(chapter &amp;gt;=29 , chapter &amp;lt; 36)  %&amp;gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &amp;quot;free&amp;quot;)+
+    coord_flip()+
+    labs(
+        title = &amp;quot;Hitchhiker&amp;#39;s Guide to the Galaxy&amp;quot;,
+        subtitle = &amp;quot;Top 5 most typical words per chapter (fifth 7 chapters)&amp;quot;,
+        x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, caption = &amp;quot;Roel M. Hogervorst 2018 - clean code blog&amp;quot;
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;http://blog.rmhogervorst.nl/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-5.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;how-do-i-install-it&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;How do I install it?&lt;/h1&gt;
+&lt;p&gt;go to github.com/hrbrmstr/pubcrawl and see instructions there, which will say something like: &lt;code&gt;devtools::install_github(&amp;quot;hrbrmstr/pubcrawl&amp;quot;)&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;resources-references-and-more&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Resources, references and more&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;There is an website dedicated to research on the quote about regular expressions &lt;a href=&#34;http://regex.info/blog/2006-09-15/247&#34; class=&#34;uri&#34;&gt;http://regex.info/blog/2006-09-15/247&lt;/a&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;Bob Rudis’ pubcrawl package &lt;a href=&#34;https://github.com/hrbrmstr/pubcrawl&#34; class=&#34;uri&#34;&gt;https://github.com/hrbrmstr/pubcrawl&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;tidy textmining book &lt;a href=&#34;https://www.tidytextmining.com/&#34; class=&#34;uri&#34;&gt;https://www.tidytextmining.com/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;state-of-the-machine&#34; class=&#34;section level5&#34;&gt;
+&lt;h5&gt;State of the machine&lt;/h5&gt;
+&lt;p&gt;&lt;details&gt; &lt;summary&gt; At the moment of creation (when I knitted this document ) this was the state of my machine:click &lt;strong&gt;here (it will fold out)&lt;/strong&gt; &lt;/summary&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sessioninfo::session_info()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ─ Session info ──────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  os       Ubuntu 16.04.4 LTS          
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
+##  language en_US                       
+##  collate  en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2018-07-20                  
+## 
+## ─ Packages ──────────────────────────────────────────────────────────────
+##  package     * version    date       source                            
+##  archive       1.0.0      2018-07-03 Github (jimhester/archive@11e65d7)
+##  assertthat    0.2.0      2017-04-11 CRAN (R 3.5.0)                    
+##  backports     1.1.2      2017-12-13 CRAN (R 3.5.0)                    
+##  bindr         0.1.1      2018-03-13 CRAN (R 3.5.0)                    
+##  bindrcpp    * 0.2.2      2018-03-29 CRAN (R 3.5.0)                    
+##  blogdown      0.8        2018-07-15 CRAN (R 3.5.1)                    
+##  bookdown      0.7        2018-02-18 CRAN (R 3.5.0)                    
+##  broom         0.4.5      2018-07-03 CRAN (R 3.5.1)                    
+##  cellranger    1.1.0      2016-07-27 CRAN (R 3.5.0)                    
+##  cli           1.0.0      2017-11-05 CRAN (R 3.5.0)                    
+##  clisymbols    1.2.0      2017-05-21 CRAN (R 3.5.0)                    
+##  colorspace    1.3-2      2016-12-14 CRAN (R 3.5.0)                    
+##  crayon        1.3.4      2017-09-16 CRAN (R 3.5.0)                    
+##  digest        0.6.15     2018-01-28 CRAN (R 3.5.0)                    
+##  dplyr       * 0.7.6      2018-06-29 CRAN (R 3.5.1)                    
+##  emo           0.0.0.9000 2018-07-18 Github (hadley/emo@02a5206)       
+##  evaluate      0.10.1     2017-06-24 CRAN (R 3.5.0)                    
+##  fansi         0.2.3      2018-05-06 CRAN (R 3.5.1)                    
+##  forcats     * 0.3.0      2018-02-19 CRAN (R 3.5.0)                    
+##  foreign       0.8-70     2018-04-23 CRAN (R 3.5.0)                    
+##  ggplot2     * 3.0.0      2018-07-03 cran (@3.0.0)                     
+##  glue          1.3.0      2018-07-18 Github (tidyverse/glue@66de125)   
+##  gtable        0.2.0      2016-02-26 CRAN (R 3.5.0)                    
+##  haven         1.1.2      2018-06-27 CRAN (R 3.5.1)                    
+##  hms           0.4.2      2018-03-10 CRAN (R 3.5.0)                    
+##  htmltools     0.3.6      2017-04-28 CRAN (R 3.5.0)                    
+##  httr          1.3.1      2017-08-20 CRAN (R 3.5.0)                    
+##  janeaustenr   0.1.5      2017-06-10 CRAN (R 3.5.0)                    
+##  jsonlite      1.5        2017-06-01 CRAN (R 3.5.0)                    
+##  knitr         1.20       2018-02-20 CRAN (R 3.5.0)                    
+##  labeling      0.3        2014-08-23 CRAN (R 3.5.0)                    
+##  lattice       0.20-35    2017-03-25 CRAN (R 3.5.0)                    
+##  lazyeval      0.2.1      2017-10-29 CRAN (R 3.5.0)                    
+##  lubridate     1.7.4      2018-04-11 CRAN (R 3.5.0)                    
+##  magrittr      1.5        2014-11-22 CRAN (R 3.5.0)                    
+##  Matrix        1.2-14     2018-04-09 CRAN (R 3.5.0)                    
+##  mnormt        1.5-5      2016-10-15 CRAN (R 3.5.0)                    
+##  modelr        0.1.2      2018-05-11 CRAN (R 3.5.0)                    
+##  munsell       0.5.0      2018-06-12 CRAN (R 3.5.0)                    
+##  nlme          3.1-137    2018-04-07 CRAN (R 3.5.0)                    
+##  pillar        1.3.0      2018-07-14 CRAN (R 3.5.1)                    
+##  pkgconfig     2.0.1      2017-03-21 CRAN (R 3.5.0)                    
+##  plyr          1.8.4      2016-06-08 CRAN (R 3.5.0)                    
+##  psych         1.8.4      2018-05-06 CRAN (R 3.5.0)                    
+##  pubcrawl    * 0.1.0      2018-07-03 Github (hrbrmstr/pubcrawl@a977f3b)
+##  purrr       * 0.2.5      2018-05-29 CRAN (R 3.5.0)                    
+##  R6            2.2.2      2017-06-17 CRAN (R 3.5.0)                    
+##  Rcpp          0.12.17    2018-05-18 CRAN (R 3.5.0)                    
+##  readr       * 1.1.1      2017-05-16 CRAN (R 3.5.0)                    
+##  readxl        1.1.0      2018-04-20 CRAN (R 3.5.0)                    
+##  reshape2      1.4.3      2017-12-11 CRAN (R 3.5.0)                    
+##  rlang         0.2.1      2018-05-30 CRAN (R 3.5.0)                    
+##  rmarkdown     1.10       2018-06-11 CRAN (R 3.5.0)                    
+##  rprojroot     1.3-2      2018-01-03 CRAN (R 3.5.0)                    
+##  rstudioapi    0.7        2017-09-07 CRAN (R 3.5.0)                    
+##  rvest         0.3.2      2016-06-17 CRAN (R 3.5.0)                    
+##  scales        0.5.0      2017-08-24 CRAN (R 3.5.0)                    
+##  sessioninfo   1.0.0      2017-06-21 CRAN (R 3.5.1)                    
+##  SnowballC     0.5.1      2014-08-09 CRAN (R 3.5.0)                    
+##  stringi       1.2.3      2018-06-12 CRAN (R 3.5.0)                    
+##  stringr     * 1.3.1      2018-05-10 CRAN (R 3.5.0)                    
+##  tibble      * 1.4.2      2018-01-22 CRAN (R 3.5.0)                    
+##  tidyr       * 0.8.1      2018-05-18 CRAN (R 3.5.0)                    
+##  tidyselect    0.2.4      2018-02-26 CRAN (R 3.5.0)                    
+##  tidytext    * 0.1.9      2018-05-29 CRAN (R 3.5.0)                    
+##  tidyverse   * 1.2.1      2017-11-14 CRAN (R 3.5.0)                    
+##  tokenizers    0.2.1      2018-03-29 CRAN (R 3.5.0)                    
+##  utf8          1.1.4      2018-05-24 CRAN (R 3.5.0)                    
+##  withr         2.1.2      2018-03-15 CRAN (R 3.5.0)                    
+##  xfun          0.3        2018-07-06 CRAN (R 3.5.1)                    
+##  xml2          1.2.0      2018-01-24 CRAN (R 3.5.0)                    
+##  xslt          1.3        2017-11-18 CRAN (R 3.5.0)                    
+##  yaml          2.1.19     2018-05-01 CRAN (R 3.5.0)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;How did I make the plot at the top? I created it seperately and added the image later on top.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{HH1_cleaned %&amp;gt;% 
+  unnest_tokens(output = word, input = content, token = &amp;quot;words&amp;quot;) %&amp;gt;% 
+  group_by(chapter) %&amp;gt;% 
+  count(word) %&amp;gt;% 
+  bind_tf_idf(term = word, document = chapter, n = n) %&amp;gt;% 
+  top_n(2, wt = tf_idf) %&amp;gt;% 
+  ungroup() %&amp;gt;%  
+  mutate(word = reorder(word, tf_idf), Chapter = as.factor(chapter)) %&amp;gt;% 
+  ggplot(aes(word, tf_idf, fill = chapter))+
+  geom_col(show.legend = FALSE)+
+  facet_wrap(~Chapter,scales = &amp;quot;free&amp;quot;)+
+  coord_flip()+
+  labs(
+    title = &amp;quot;Hitchhiker&amp;#39;s Guide to the Galaxy - Douglas Adams: what is each chapter about?&amp;quot;,
+    subtitle = &amp;quot;Top 2 most typical words per chapter (TF-IDF scores)&amp;quot;,
+    x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, caption = &amp;quot;Roel M. Hogervorst 2018 - clean code blog&amp;quot;
+  ) } %&amp;gt;% ggsave(filename = &amp;quot;trie2.png&amp;quot;,plot = ., width = 9, height = 6, dpi = &amp;quot;screen&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;/details&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;as we call it in the biz&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

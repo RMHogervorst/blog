@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" > 
+
+  <title>Reading in an epub (ebook) file with the pubcrawl package</title>
+  <meta property="og:title" content="Reading in an epub (ebook) file with the pubcrawl package" />
+  <meta name="twitter:title" content="Reading in an epub (ebook) file with the pubcrawl package" />
+  <meta name="description" content="In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: 🍺📖📦 . I will show the reading in part, (one line of code) and some other actions you might want to perform on textfiles before they are ready for text analysis.
+After you read in your epub file you can do some cool analyses on it, but that is part of the next blogpost.">
+  <meta property="og:description" content="In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: 🍺📖📦 . I will show the reading in part, (one line of code) and some other actions you might want to perform on textfiles before they are ready for text analysis.
+After you read in your epub file you can do some cool analyses on it, but that is part of the next blogpost.">
+  <meta name="twitter:description" content="In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: 🍺📖📦 . I will show the reading in part, (one line …">
+  <meta name="author" content="Roel M. Hogervorst"/>
+  <link href='http://blog.rmhogervorst.nl/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="http://blog.rmhogervorst.nl/img/avatar-icon.png" />
+  <meta name="twitter:image" content="http://blog.rmhogervorst.nl/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@RMHoge" />
+  <meta name="twitter:creator" content="@RMHoge" />
+  <meta property="og:url" content="http://blog.rmhogervorst.nl/blog/2018/07/19/reading-in-an-epub-file-with-the-pubcrawl-package/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="a blog about R" />
+
+  <meta name="generator" content="Hugo 0.44" />
+  <link rel="canonical" href="http://blog.rmhogervorst.nl/blog/2018/07/19/reading-in-an-epub-file-with-the-pubcrawl-package/" />
+  <link rel="alternate" href="http://blog.rmhogervorst.nl/index.xml" type="application/rss+xml" title="a blog about R">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://blog.rmhogervorst.nl/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="http://blog.rmhogervorst.nl/css/syntax.css" /><link rel="stylesheet" href="http://blog.rmhogervorst.nl/css/codeblock.css" />
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://blog.rmhogervorst.nl/">a blog about R</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="a blog about R" href="http://blog.rmhogervorst.nl/">
+            <img class="avatar-img" src="http://blog.rmhogervorst.nl/img/avatar-icon.png" alt="a blog about R" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Reading in an epub (ebook) file with the pubcrawl package</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 19, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 14 minutes (2811 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: 🍺📖📦 . I will show the reading in part, (one line of code) and some other actions you might want to perform on textfiles before they are ready for text analysis.</p>
+<p>After you read in your epub file you can do some cool analyses on it, but that is part of the next blogpost. See how cool this is?</p>
+<div class="figure">
+<img src="/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/endresult.png" alt="A look at the top 2 words (tf-idf) in every chapter of Hitchhikers guide to the Galaxy" />
+<p class="caption">A look at the top 2 words (tf-idf) in every chapter of Hitchhikers guide to the Galaxy</p>
+</div>
+<div id="a-short-diversion-into-how-the-package-came-to-be-not-required" class="section level2">
+<h2>a short diversion into how the package came to be (not required)</h2>
+<p>Recently I wanted to read in an epub book format with R. There was no such package!</p>
+<p>Twitter #rstats hyve-mind to the rescue:</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Hello <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> hyve mind! Is there a package that reads epub into R? I can not find any, I now convert to text and parse the text but you sort of lose the structure of the text. Pinging  <a href="https://twitter.com/dataandme?ref_src=twsrc%5Etfw">@dataandme</a> <a href="https://twitter.com/hrbrmstr?ref_src=twsrc%5Etfw">@hrbrmstr</a></p>&mdash; Roel (@RMHoge) <a href="https://twitter.com/RMHoge/status/984345828671344640?ref_src=twsrc%5Etfw">April 12, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>I did some digging and found out that epub is a relatively easy format, it is a zip file (compressed file) with xml files in it (incidently that looks like words docx file format). I went to work and before my day was over Bob Rudis had already created a package to read in epub format files!</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Apparently it is a zipped xml, so it might be possible to parse it directly. A future project perhaps.</p>&mdash; Roel (@RMHoge) <a href="https://twitter.com/RMHoge/status/984372777623879680?ref_src=twsrc%5Etfw">April 12, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>So here is the link: <a href="https://github.com/hrbrmstr/pubcrawl" class="uri">https://github.com/hrbrmstr/pubcrawl</a> where you can download the package. It returns the files in a nice tidy format.</p>
+<p>Any epub contains in the zip (a compressed folder) several xml documents(a sort of website like formatted documents), the pubcrawl package unpackes the archive and places these files into a row per document.</p>
+</div>
+<div id="preperation" class="section level1">
+<h1>Preperation</h1>
+<ul>
+<li>Install the pubcrawl package (see below)</li>
+<li>load the pubcrawl package</li>
+<li>load the tidyverse package</li>
+<li>locate the epub file you want to read in and point to it</li>
+</ul>
+<pre class="r"><code>library(pubcrawl)
+suppressPackageStartupMessages(library(tidyverse))  </code></pre>
+<p>In my case I cannot share the real file with you, because it is copyrighted, but it is the Hitchhikers guide to the galaxy, the first of the series and a lovely book.</p>
+</div>
+<div id="exploration" class="section level1">
+<h1>Exploration</h1>
+<pre class="r"><code>HH1 &lt;- epub_to_text(epublocation)
+HH1</code></pre>
+<pre><code>## # A tibble: 73 x 4
+##    path            size date                content                       
+##    &lt;chr&gt;          &lt;dbl&gt; &lt;dttm&gt;              &lt;chr&gt;                         
+##  1 OEBPS/part1.x…  4826 2010-06-03 17:20:56 &quot;HH1 - Hitchhiker&#39;s Guide to …
+##  2 OEBPS/part10_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&#39;s Guide to t…
+##  3 OEBPS/part10_… 11867 2010-06-03 17:20:56 &quot;CHAPTER 9\n      A computer …
+##  4 OEBPS/part11_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&#39;s Guide to t…
+##  5 OEBPS/part11_…  3281 2010-06-03 17:20:56 &quot;CHAPTER 10\n      The Infini…
+##  6 OEBPS/part12_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&#39;s Guide to t…
+##  7 OEBPS/part12_… 16537 2010-06-03 17:20:56 &quot;CHAPTER 11\n      The Improb…
+##  8 OEBPS/part13_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&#39;s Guide to t…
+##  9 OEBPS/part13_… 11399 2010-06-03 17:20:56 &quot;CHAPTER 12\n      A loud cla…
+## 10 OEBPS/part14_…   678 2010-06-03 17:20:56 HH1 - Hitchhiker&#39;s Guide to t…
+## # ... with 63 more rows</code></pre>
+<p>As you can see there is a path, size, date and content column. The files are not the same size, so after loading the epub you are most likely not done. You need to work a bit to get it in a nice format for text analyses, such is life.</p>
+<p>Lets explore one of the files: file number 2: ‘part10_…’</p>
+<p><em>If you have only worked with tidyverse verbs this can be a bit difficult to understand: I asked the second row and first till second column. it would be equivalent to HH1 %&gt;% filter(path == “OEBPS/part1.xhtml”) %&gt;% select(path,size)</em></p>
+<pre class="r"><code>HH1[2,1:2] # base R to the rescue!</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   path                          size
+##   &lt;chr&gt;                        &lt;dbl&gt;
+## 1 OEBPS/part10_split_000.xhtml   678</code></pre>
+<pre class="r"><code>HH1[2,4]</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   content                               
+##   &lt;chr&gt;                                 
+## 1 HH1 - Hitchhiker&#39;s Guide to the Galaxy</code></pre>
+<p>hmm, There is an almost empty page before every chapter it seems. It just says the booktitle.</p>
+<p>Let’s check another page:</p>
+<pre class="r"><code>HH1[3,4]</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   content                                                                  
+##   &lt;chr&gt;                                                                    
+## 1 &quot;CHAPTER 9\n      A computer chatted to itself in alarm as it noticed an…</code></pre>
+<p>how many characters are there in this thingy?</p>
+<pre class="r"><code>#HH1[3,4] %&gt;% nchar()  # old way
+HH1[3,4] %&gt;% str_length()  # stringr way</code></pre>
+<pre><code>## [1] 8867</code></pre>
+<pre class="r"><code>HH1[2,4] %&gt;% str_length()  # stringr way</code></pre>
+<pre><code>## [1] 38</code></pre>
+<p>Right in the second row there are 38 characters, and in the third row 8867.</p>
+<div id="filtering-on-filename" class="section level2">
+<h2>Filtering on filename</h2>
+<p>We could select the rows with more than a certain amount of characters, but there is also another way. I noticed that the filenames in path are structered in a certain way.</p>
+<p>There are files like this: “OEBPS/part10_split_000.xhtml” and like this OEBPS/part20_split_001.xhtml. only the files with split_001.. in it contain the text.</p>
+<p>so we can filter on name in ‘path’</p>
+<pre><code>HH1 %&gt;% filter(str_detect(path, &quot;split_001.xhtml&quot;))</code></pre>
+<p>This will only return rows where somewhere in the path column the string ‘split_001.xhtml’ is found. That leaves us with less rows and another peculiarity</p>
+</div>
+<div id="extracting-the-chapter-numbers" class="section level2">
+<h2>extracting the chapter numbers</h2>
+<pre class="r"><code>HH1 %&gt;% 
+    filter(str_detect(path, &quot;split_001.xhtml&quot;)) %&gt;% 
+    select(content) %&gt;% head(3)</code></pre>
+<pre><code>## # A tibble: 3 x 1
+##   content                                                                  
+##   &lt;chr&gt;                                                                    
+## 1 &quot;CHAPTER 9\n      A computer chatted to itself in alarm as it noticed an…
+## 2 &quot;CHAPTER 10\n      The Infinite Improbability Drive is a wonderful new m…
+## 3 &quot;CHAPTER 11\n      The Improbability-proof control cabin of the Heart of…</code></pre>
+<p>Every chapter starts with CHAPTER followed by a number.</p>
+<p>We can use regular expressions for that!</p>
+<blockquote>
+<p>Some people, when confronted with a problem, think “I know, I’ll use regular expressions.” Now they have two problems. – Jamie Zawinski (1997)</p>
+</blockquote>
+<p>Don’t be afraid, it is not the use of regex<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> that is a problem, but the overuse of it. Let’s see if we can extract the chapter, put it in a different column and remove that part from the main text. A regular expression tells the computer what to search for, in fact I already used one before: the ‘split_001’ part. But in our case such a precise match is not what we need. We need something to match “CHAPTER” followed by ANY number. The regex code for numbers is like this “[0-9]{1,3}”, which means: any number between 0 and 9, one up to and including three times so it matches 9 but also 10 or 100 (there are not hundred chapters but I was a bit cautious)</p>
+<pre><code>HH1 %&gt;% 
+    filter(str_detect(path, &quot;split_001.xhtml&quot;)) %&gt;% 
+    mutate(chapter = str_extract(content, &quot;CHAPTER [0-9]{1,3}&quot;))</code></pre>
+<p>But we are not yet there, I actually only want the number, but I don’t want to match any number in the text, only numbers from the phrase CHAPTER [0-9]. So let’s cut the number from there, I now use a pipe IN a mutate, it might be confusing but I think it still is very useful.</p>
+<pre><code>HH1 %&gt;% 
+    filter(str_detect(path, &quot;split_001.xhtml&quot;)) %&gt;% 
+mutate(chapter = str_extract(content, &quot;CHAPTER [0-9]{1,3}&quot;) %&gt;% 
+               str_extract(&quot;[0-9]{1,3}&quot;) %&gt;% 
+               as.integer())</code></pre>
+<p>The first str_extract pulls the “CHAPTER 3”-like text parts out. From that, I pull out the number alone, and finally I convert that to an integer (because chapters are never negative and usually in steps of 1).</p>
+</div>
+<div id="taking-out-the-rebundant-information" class="section level2">
+<h2>taking out the rebundant information</h2>
+<p>The chapter number is now in a seperate column, but it’s also in the text. That will not do.</p>
+<pre><code>HH1 %&gt;% 
+    filter(str_detect(path, &quot;split_001.xhtml&quot;)) %&gt;% 
+mutate(chapter = str_extract(content, &quot;CHAPTER [0-9]{1,3}&quot;) %&gt;% 
+               str_extract(&quot;[0-9]{1,3}&quot;) %&gt;% 
+               as.integer(),
+           content = str_remove(content, &quot;CHAPTER [0-9]{1,3}&quot;))</code></pre>
+<p>Now the chapters work out nicely. However, while checking the results I found that there is stil a piece of annoying markup in the texts:</p>
+<pre><code># A tibble: 35 x 5
+   path             size date                content                                  chapter
+   &lt;chr&gt;           &lt;dbl&gt; &lt;dttm&gt;              &lt;chr&gt;                                      &lt;int&gt;
+ 1 OEBPS/part10_s… 11867 2010-06-03 17:20:56 &quot;\n      A computer chatted to itself i…       9
+ 2 OEBPS/part11_s…  3281 2010-06-03 17:20:56 &quot;\n      The Infinite Improbability Dri…      10
+</code></pre>
+<p><code>\n</code> translates to newline. But when we read in the file with tidytext newlines are automatically removed. Every chapter ends though, with this markup: “UnknownUnknown”</p>
+<p>If we do a text analysis than Unknown will be frequently found word while it is actually an artefact. Let’s remove that:</p>
+<pre><code>HH1 %&gt;% 
+    filter(str_detect(path, &quot;split_001.xhtml&quot;)) %&gt;% 
+mutate(chapter = str_extract(content, &quot;CHAPTER [0-9]{1,3}&quot;) %&gt;% 
+               str_extract(&quot;[0-9]{1,3}&quot;) %&gt;% 
+               as.integer(),
+           content = str_remove(content, &quot;CHAPTER [0-9]{1,3}&quot;),
+           content = str_remove(content, &quot;Unknown\n      Unknown&quot;)) </code></pre>
+</div>
+<div id="rearanging-and-keeping-only-relevant-information" class="section level2">
+<h2>Rearanging and keeping only relevant information</h2>
+<p>I want the chapternumber first, the tibble ordered by it, and only chapternumber and content. so the final steps are:</p>
+<pre><code>prevous stuff %&gt;% 
+    arrange(chapter) %&gt;% 
+    select(chapter, content)</code></pre>
+</div>
+<div id="lets-take-a-step-back-creating-a-function-out-of-the-pipeline" class="section level2">
+<h2>Let’s take a step back, creating a function out of the pipeline</h2>
+<p>We have whole set of instructions. What if I want to do this on multible books? I can copy the entire set of instructions 5 times and replace the source, but we can also create a function.</p>
+</div>
+</div>
+<div id="cleaning-up-the-file" class="section level1">
+<h1>Cleaning up the file</h1>
+<p>We can copy the entire pipeline and make it function.</p>
+<p>Normally when we make a function it goes something like this</p>
+<pre><code>nameoffunctoin &lt;- function(argument){
+    do  something with the argument
+    return something
+}</code></pre>
+<p>But in this case we can also create a function when we don’t start with a dataframe, but with a dot (= . ) and assign the entire chain to a name.</p>
+<p>This creates a functional sequence (fseq for short), but you only have to remember that this is incredibly useful and saves you time in the future.</p>
+<pre class="r"><code>extract_TEXT &lt;-  . %&gt;% 
+    filter(str_detect(path, &quot;split_001.xhtml&quot;)) %&gt;% 
+    mutate(chapter = str_extract(content, &quot;CHAPTER [0-9]{1,3}&quot;) %&gt;% 
+               str_extract(&quot;[0-9]{1,3}&quot;) %&gt;% 
+               as.integer(),
+           content = str_remove(content, &quot;CHAPTER [0-9]{1,3}&quot;),
+           content = str_remove(content, &quot;Unknown\n      Unknown&quot;)) %&gt;% 
+    arrange(chapter) %&gt;% 
+    select(chapter, content)
+class(extract_TEXT)</code></pre>
+<pre><code>## [1] &quot;fseq&quot;     &quot;function&quot;</code></pre>
+<p>I now have a function that cleans up the entire datafile. If this was a larger project I would place functions like this in a seperate utilities.R file and load it at the top of this document.</p>
+<pre class="r"><code>HH1_cleaned &lt;- 
+    HH1 %&gt;% 
+    extract_TEXT()</code></pre>
+</div>
+<div id="a-small-tidytext-exploration" class="section level1">
+<h1>A small tidytext exploration</h1>
+<p>This is a bit fast for beginners, but I will pay more attention to this process in a follow up blog post so bear with me.</p>
+<p>What are the most typical words for every chapter (as in, more typical for that chapter compared to the the entire book, known as tf-idf)?</p>
+<p><em>I have split the file into pieces of chapter </em></p>
+<pre class="r"><code>library(tidytext)
+dataset &lt;- HH1_cleaned %&gt;% 
+    unnest_tokens(output = word, input = content, token = &quot;words&quot;) %&gt;% 
+    group_by(chapter) %&gt;% 
+    count(word) %&gt;% 
+    bind_tf_idf(term = word, document = chapter, n = n) %&gt;% 
+    top_n(5, wt = tf_idf) %&gt;% 
+    ungroup() %&gt;% 
+    mutate(word = reorder(word, tf_idf), Chapter = as.factor(chapter)) 
+
+dataset %&gt;% 
+  filter(chapter &lt; 8)  %&gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &quot;free&quot;)+
+    coord_flip()+
+    labs(
+        title = &quot;Hitchhiker&#39;s Guide to the Galaxy&quot;,
+        subtitle = &quot;Top 5 most typical words per chapter (first 7)&quot;,
+        x = &quot;&quot;, y = &quot;&quot;, caption = &quot;Roel M. Hogervorst 2018 - clean code blog&quot;
+    )</code></pre>
+<p><img src="/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>dataset %&gt;% 
+  filter(chapter &gt; 7, chapter &lt;15)  %&gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &quot;free&quot;)+
+    coord_flip()+
+    labs(
+        title = &quot;Hitchhiker&#39;s Guide to the Galaxy&quot;,
+        subtitle = &quot;Top 5 most typical words per chapter (second 7 chapters)&quot;,
+        x = &quot;&quot;, y = &quot;&quot;, caption = &quot;Roel M. Hogervorst 2018 - clean code blog&quot;
+    )</code></pre>
+<p><img src="/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<pre class="r"><code>dataset %&gt;% 
+  filter(chapter &gt;=15 , chapter &lt; 22)  %&gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &quot;free&quot;)+
+    coord_flip()+
+    labs(
+        title = &quot;Hitchhiker&#39;s Guide to the Galaxy&quot;,
+        subtitle = &quot;Top 5 most typical words per chapter (third 7 chapters)&quot;,
+        x = &quot;&quot;, y = &quot;&quot;, caption = &quot;Roel M. Hogervorst 2018 - clean code blog&quot;
+    )</code></pre>
+<p><img src="/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
+<pre class="r"><code>dataset %&gt;% 
+  filter(chapter &gt;=22 , chapter &lt; 29)  %&gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &quot;free&quot;)+
+    coord_flip()+
+    labs(
+        title = &quot;Hitchhiker&#39;s Guide to the Galaxy&quot;,
+        subtitle = &quot;Top 5 most typical words per chapter (fourth 7 chapters)&quot;,
+        x = &quot;&quot;, y = &quot;&quot;, caption = &quot;Roel M. Hogervorst 2018 - clean code blog&quot;
+    )    </code></pre>
+<p><img src="/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-4.png" width="672" /></p>
+<pre class="r"><code>dataset %&gt;% 
+  filter(chapter &gt;=29 , chapter &lt; 36)  %&gt;%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = &quot;free&quot;)+
+    coord_flip()+
+    labs(
+        title = &quot;Hitchhiker&#39;s Guide to the Galaxy&quot;,
+        subtitle = &quot;Top 5 most typical words per chapter (fifth 7 chapters)&quot;,
+        x = &quot;&quot;, y = &quot;&quot;, caption = &quot;Roel M. Hogervorst 2018 - clean code blog&quot;
+    )</code></pre>
+<p><img src="/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/figure-html/unnamed-chunk-11-5.png" width="672" /></p>
+</div>
+<div id="how-do-i-install-it" class="section level1">
+<h1>How do I install it?</h1>
+<p>go to github.com/hrbrmstr/pubcrawl and see instructions there, which will say something like: <code>devtools::install_github(&quot;hrbrmstr/pubcrawl&quot;)</code></p>
+</div>
+<div id="resources-references-and-more" class="section level1">
+<h1>Resources, references and more</h1>
+<ul>
+<li>There is an website dedicated to research on the quote about regular expressions <a href="http://regex.info/blog/2006-09-15/247" class="uri">http://regex.info/blog/2006-09-15/247</a><br />
+</li>
+<li>Bob Rudis’ pubcrawl package <a href="https://github.com/hrbrmstr/pubcrawl" class="uri">https://github.com/hrbrmstr/pubcrawl</a></li>
+<li>tidy textmining book <a href="https://www.tidytextmining.com/" class="uri">https://www.tidytextmining.com/</a></li>
+</ul>
+<div id="state-of-the-machine" class="section level5">
+<h5>State of the machine</h5>
+<p><details> <summary> At the moment of creation (when I knitted this document ) this was the state of my machine:click <strong>here (it will fold out)</strong> </summary></p>
+<pre class="r"><code>sessioninfo::session_info()</code></pre>
+<pre><code>## ─ Session info ──────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  os       Ubuntu 16.04.4 LTS          
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
+##  language en_US                       
+##  collate  en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2018-07-20                  
+## 
+## ─ Packages ──────────────────────────────────────────────────────────────
+##  package     * version    date       source                            
+##  archive       1.0.0      2018-07-03 Github (jimhester/archive@11e65d7)
+##  assertthat    0.2.0      2017-04-11 CRAN (R 3.5.0)                    
+##  backports     1.1.2      2017-12-13 CRAN (R 3.5.0)                    
+##  bindr         0.1.1      2018-03-13 CRAN (R 3.5.0)                    
+##  bindrcpp    * 0.2.2      2018-03-29 CRAN (R 3.5.0)                    
+##  blogdown      0.8        2018-07-15 CRAN (R 3.5.1)                    
+##  bookdown      0.7        2018-02-18 CRAN (R 3.5.0)                    
+##  broom         0.4.5      2018-07-03 CRAN (R 3.5.1)                    
+##  cellranger    1.1.0      2016-07-27 CRAN (R 3.5.0)                    
+##  cli           1.0.0      2017-11-05 CRAN (R 3.5.0)                    
+##  clisymbols    1.2.0      2017-05-21 CRAN (R 3.5.0)                    
+##  colorspace    1.3-2      2016-12-14 CRAN (R 3.5.0)                    
+##  crayon        1.3.4      2017-09-16 CRAN (R 3.5.0)                    
+##  digest        0.6.15     2018-01-28 CRAN (R 3.5.0)                    
+##  dplyr       * 0.7.6      2018-06-29 CRAN (R 3.5.1)                    
+##  emo           0.0.0.9000 2018-07-18 Github (hadley/emo@02a5206)       
+##  evaluate      0.10.1     2017-06-24 CRAN (R 3.5.0)                    
+##  fansi         0.2.3      2018-05-06 CRAN (R 3.5.1)                    
+##  forcats     * 0.3.0      2018-02-19 CRAN (R 3.5.0)                    
+##  foreign       0.8-70     2018-04-23 CRAN (R 3.5.0)                    
+##  ggplot2     * 3.0.0      2018-07-03 cran (@3.0.0)                     
+##  glue          1.3.0      2018-07-18 Github (tidyverse/glue@66de125)   
+##  gtable        0.2.0      2016-02-26 CRAN (R 3.5.0)                    
+##  haven         1.1.2      2018-06-27 CRAN (R 3.5.1)                    
+##  hms           0.4.2      2018-03-10 CRAN (R 3.5.0)                    
+##  htmltools     0.3.6      2017-04-28 CRAN (R 3.5.0)                    
+##  httr          1.3.1      2017-08-20 CRAN (R 3.5.0)                    
+##  janeaustenr   0.1.5      2017-06-10 CRAN (R 3.5.0)                    
+##  jsonlite      1.5        2017-06-01 CRAN (R 3.5.0)                    
+##  knitr         1.20       2018-02-20 CRAN (R 3.5.0)                    
+##  labeling      0.3        2014-08-23 CRAN (R 3.5.0)                    
+##  lattice       0.20-35    2017-03-25 CRAN (R 3.5.0)                    
+##  lazyeval      0.2.1      2017-10-29 CRAN (R 3.5.0)                    
+##  lubridate     1.7.4      2018-04-11 CRAN (R 3.5.0)                    
+##  magrittr      1.5        2014-11-22 CRAN (R 3.5.0)                    
+##  Matrix        1.2-14     2018-04-09 CRAN (R 3.5.0)                    
+##  mnormt        1.5-5      2016-10-15 CRAN (R 3.5.0)                    
+##  modelr        0.1.2      2018-05-11 CRAN (R 3.5.0)                    
+##  munsell       0.5.0      2018-06-12 CRAN (R 3.5.0)                    
+##  nlme          3.1-137    2018-04-07 CRAN (R 3.5.0)                    
+##  pillar        1.3.0      2018-07-14 CRAN (R 3.5.1)                    
+##  pkgconfig     2.0.1      2017-03-21 CRAN (R 3.5.0)                    
+##  plyr          1.8.4      2016-06-08 CRAN (R 3.5.0)                    
+##  psych         1.8.4      2018-05-06 CRAN (R 3.5.0)                    
+##  pubcrawl    * 0.1.0      2018-07-03 Github (hrbrmstr/pubcrawl@a977f3b)
+##  purrr       * 0.2.5      2018-05-29 CRAN (R 3.5.0)                    
+##  R6            2.2.2      2017-06-17 CRAN (R 3.5.0)                    
+##  Rcpp          0.12.17    2018-05-18 CRAN (R 3.5.0)                    
+##  readr       * 1.1.1      2017-05-16 CRAN (R 3.5.0)                    
+##  readxl        1.1.0      2018-04-20 CRAN (R 3.5.0)                    
+##  reshape2      1.4.3      2017-12-11 CRAN (R 3.5.0)                    
+##  rlang         0.2.1      2018-05-30 CRAN (R 3.5.0)                    
+##  rmarkdown     1.10       2018-06-11 CRAN (R 3.5.0)                    
+##  rprojroot     1.3-2      2018-01-03 CRAN (R 3.5.0)                    
+##  rstudioapi    0.7        2017-09-07 CRAN (R 3.5.0)                    
+##  rvest         0.3.2      2016-06-17 CRAN (R 3.5.0)                    
+##  scales        0.5.0      2017-08-24 CRAN (R 3.5.0)                    
+##  sessioninfo   1.0.0      2017-06-21 CRAN (R 3.5.1)                    
+##  SnowballC     0.5.1      2014-08-09 CRAN (R 3.5.0)                    
+##  stringi       1.2.3      2018-06-12 CRAN (R 3.5.0)                    
+##  stringr     * 1.3.1      2018-05-10 CRAN (R 3.5.0)                    
+##  tibble      * 1.4.2      2018-01-22 CRAN (R 3.5.0)                    
+##  tidyr       * 0.8.1      2018-05-18 CRAN (R 3.5.0)                    
+##  tidyselect    0.2.4      2018-02-26 CRAN (R 3.5.0)                    
+##  tidytext    * 0.1.9      2018-05-29 CRAN (R 3.5.0)                    
+##  tidyverse   * 1.2.1      2017-11-14 CRAN (R 3.5.0)                    
+##  tokenizers    0.2.1      2018-03-29 CRAN (R 3.5.0)                    
+##  utf8          1.1.4      2018-05-24 CRAN (R 3.5.0)                    
+##  withr         2.1.2      2018-03-15 CRAN (R 3.5.0)                    
+##  xfun          0.3        2018-07-06 CRAN (R 3.5.1)                    
+##  xml2          1.2.0      2018-01-24 CRAN (R 3.5.0)                    
+##  xslt          1.3        2017-11-18 CRAN (R 3.5.0)                    
+##  yaml          2.1.19     2018-05-01 CRAN (R 3.5.0)</code></pre>
+<p>How did I make the plot at the top? I created it seperately and added the image later on top.</p>
+<pre><code>{HH1_cleaned %&gt;% 
+  unnest_tokens(output = word, input = content, token = &quot;words&quot;) %&gt;% 
+  group_by(chapter) %&gt;% 
+  count(word) %&gt;% 
+  bind_tf_idf(term = word, document = chapter, n = n) %&gt;% 
+  top_n(2, wt = tf_idf) %&gt;% 
+  ungroup() %&gt;%  
+  mutate(word = reorder(word, tf_idf), Chapter = as.factor(chapter)) %&gt;% 
+  ggplot(aes(word, tf_idf, fill = chapter))+
+  geom_col(show.legend = FALSE)+
+  facet_wrap(~Chapter,scales = &quot;free&quot;)+
+  coord_flip()+
+  labs(
+    title = &quot;Hitchhiker&#39;s Guide to the Galaxy - Douglas Adams: what is each chapter about?&quot;,
+    subtitle = &quot;Top 2 most typical words per chapter (TF-IDF scores)&quot;,
+    x = &quot;&quot;, y = &quot;&quot;, caption = &quot;Roel M. Hogervorst 2018 - clean code blog&quot;
+  ) } %&gt;% ggsave(filename = &quot;trie2.png&quot;,plot = ., width = 9, height = 6, dpi = &quot;screen&quot;)</code></pre>
+<p></details></p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>as we call it in the biz<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="http://blog.rmhogervorst.nl//tags/beginner/">beginner</a>&nbsp;
+            
+              <a href="http://blog.rmhogervorst.nl//tags/ebooks/">ebooks</a>&nbsp;
+            
+              <a href="http://blog.rmhogervorst.nl//tags/pubcrawl/">pubcrawl</a>&nbsp;
+            
+              <a href="http://blog.rmhogervorst.nl//tags/tidy/">tidy</a>&nbsp;
+            
+              <a href="http://blog.rmhogervorst.nl//tags/tutorial/">tutorial</a>&nbsp;
+            
+              <a href="http://blog.rmhogervorst.nl//tags/regex/">regex</a>&nbsp;
+            
+          </div>
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:hogervorst.rm@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/RMHogervorst" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://gitlab.com/rmhogervorst" title="GitLab">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://bitbucket.org/RMHogervorst" title="Bitbucket">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/RMHoge" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/rmhogervorst" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/5573955/roel-hogervorst" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://keybase.io/rmhogervorst" title="Keybase">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-key fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="http://blog.rmhogervorst.nl/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="rmhogervorst.nl">Roel M. Hogervorst</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="http://blog.rmhogervorst.nl/">a blog about R</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.44</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+<br> See anything wrong? Click to add them to <a href="https://github.com/RMHogervorst/cleancode/issues" >the issue tracker</a> <br>
+            
+
+
+
+
+  
+
+
+
+<a href='https://github.com/RMHogervorst/blog/tree/master/content/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package.Rmd'>or edit this page on github.</a>
+
+
+
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="http://blog.rmhogervorst.nl/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="http://blog.rmhogervorst.nl/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

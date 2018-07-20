@@ -1,0 +1,374 @@
+---
+title: Reading in an epub (ebook) file with the pubcrawl package
+author: Roel M. Hogervorst
+date: '2018-07-19'
+categories:
+  - blog
+tags:
+  - beginner
+  - ebooks
+  - pubcrawl
+  - tidy
+  - tutorial
+  - regex
+slug: reading-in-an-epub-file-with-the-pubcrawl-package
+---
+
+In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: `r paste0(emo::ji("beer"),emo::ji("book"),emo::ji("package")) ` .
+I will show the reading in part, (one line of code) and some other actions you might want to perform on textfiles before they are ready for text analysis.
+
+After you read in your epub file you can do some cool analyses on it, but that is part of the next blogpost. See how cool this is?
+
+![A look at the top 2 words (tf-idf) in every chapter of Hitchhikers guide to the Galaxy](/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/endresult.png)
+
+
+## a short diversion into how the package came to be (not required)
+Recently I wanted to read in an epub book format with R. There was no such package!
+
+Twitter #rstats hyve-mind to the rescue:
+
+```{r echo=FALSE}
+blogdown::shortcode('tweet', '984345828671344640')
+```
+
+I did some digging and found out that epub is a relatively easy format,
+it is a zip file (compressed file) with xml files in it (incidently that looks like words docx file format). I went to work and before my day was over Bob Rudis had already 
+created a package to read in epub format files!
+
+```{r echo=FALSE}
+blogdown::shortcode('tweet', '984372777623879680')
+```
+
+
+So here is the link: https://github.com/hrbrmstr/pubcrawl where you can download the package. It returns the files in a nice tidy format.
+
+Any epub contains in the zip (a compressed folder)  several xml documents(a sort of website like formatted documents), the pubcrawl package unpackes the archive and places these files into a row per document. 
+
+
+# Preperation
+
+* Install the pubcrawl package (see below)
+* load the pubcrawl package 
+* load the tidyverse package
+* locate the epub file you want to read in and point to it
+
+```{r}
+library(pubcrawl)
+suppressPackageStartupMessages(library(tidyverse))  
+```
+
+In my case I cannot share the real file with you, because it is copyrighted, but it is the Hitchhikers guide to the galaxy, the first of the series and a lovely book.
+
+```{r,include=FALSE}
+epublocation <- "~/Documents/actief/Projecten/hhgttg/data/Adams, Douglas/Hitchhiker's Guide to the Galaxy, The/Hitchhiker's Guide to the Galaxy, The - Douglas Adams.epub"
+```
+
+# Exploration
+
+```{r}
+HH1 <- epub_to_text(epublocation)
+HH1
+```
+
+
+As you can see there is a path, size, date and content column.
+The files are not the same size, so after loading the epub you are most likely not done. You need to work a bit to get it in a nice format for text analyses, such is life. 
+
+Lets explore one of the files: file number 2: 'part10_...'
+
+*If you have only worked with tidyverse verbs this can be a bit difficult to understand: I asked the second row and first till second column. it would be equivalent to HH1 %>% filter(path == "OEBPS/part1.xhtml") %>% select(path,size)*
+
+```{r}
+HH1[2,1:2] # base R to the rescue!
+HH1[2,4]
+```
+
+hmm, There is an almost empty page before every chapter it seems. It just says the booktitle.
+
+Let's check another page:
+
+```{r}
+HH1[3,4]
+```
+
+how many characters are there in this thingy?
+
+```{r}
+#HH1[3,4] %>% nchar()  # old way
+HH1[3,4] %>% str_length()  # stringr way
+HH1[2,4] %>% str_length()  # stringr way
+```
+
+Right in the second row there are 38 characters, and in the third row 8867.
+
+## Filtering on filename
+
+We could select the rows with more than a certain amount of characters, but there is also another way. I noticed that the filenames in path are structered in a certain way.
+
+There are files like this: "OEBPS/part10_split_000.xhtml" and like this OEBPS/part20_split_001.xhtml. only the files with split_001.. in it contain the text. 
+
+so we can filter on name in 'path'
+
+```
+HH1 %>% filter(str_detect(path, "split_001.xhtml"))
+```
+This will only return rows where somewhere in the path column the string 'split_001.xhtml' is found.
+That leaves us with less rows and another peculiarity
+
+## extracting the chapter numbers
+
+```{r}
+HH1 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+    select(content) %>% head(3)
+```
+
+
+Every chapter starts with CHAPTER followed by a number.
+
+We can use regular expressions for that!
+
+> Some people, when confronted with a problem, think "I know, I'll use regular expressions." Now they have two problems. --  Jamie Zawinski (1997)
+
+Don't be afraid, it is not the use of regex^[as we call it in the biz] that is a problem, but the overuse of it. 
+Let's see if we can extract the chapter, put it in a different column and remove that part from the main text. A regular expression tells the computer what to search for, in fact I already used one before: the 'split_001' part. But in our case such a precise match is not what we need. We need something to match "CHAPTER" followed by ANY number.
+The regex code for numbers is like this "[0-9]{1,3}", which means: any number between 0 and 9, one up to and including three times so it matches 9 but also 10 or 100 (there are not hundred chapters but I was a bit cautious)
+
+```
+HH1 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+    mutate(chapter = str_extract(content, "CHAPTER [0-9]{1,3}"))
+```
+But we are not yet there, I actually only want the number, but I don't want to match any number in the text, only numbers from the phrase CHAPTER [0-9].
+So let's cut the number from there, I now use a pipe IN a mutate, it might be confusing but I think it still is very useful. 
+
+```
+HH1 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+mutate(chapter = str_extract(content, "CHAPTER [0-9]{1,3}") %>% 
+               str_extract("[0-9]{1,3}") %>% 
+               as.integer())
+```               
+               
+The first str_extract pulls the "CHAPTER 3"-like text parts out. From that, I pull 
+out the number alone, and finally I convert that to an integer (because chapters are 
+never negative and usually in steps of 1).
+
+## taking out the rebundant information
+The chapter number is now in a seperate column, but it's also in the
+text. That will not do. 
+
+```
+HH1 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+mutate(chapter = str_extract(content, "CHAPTER [0-9]{1,3}") %>% 
+               str_extract("[0-9]{1,3}") %>% 
+               as.integer(),
+           content = str_remove(content, "CHAPTER [0-9]{1,3}"))
+```
+Now the chapters work out nicely. However, while checking the results I found
+that there is stil a piece of annoying markup in the texts:
+
+```
+# A tibble: 35 x 5
+   path             size date                content                                  chapter
+   <chr>           <dbl> <dttm>              <chr>                                      <int>
+ 1 OEBPS/part10_s… 11867 2010-06-03 17:20:56 "\n      A computer chatted to itself i…       9
+ 2 OEBPS/part11_s…  3281 2010-06-03 17:20:56 "\n      The Infinite Improbability Dri…      10
+
+```
+`\n` translates to newline. But when we read in the file with tidytext newlines are automatically removed. Every chapter ends though, with this markup:
+"Unknown\n      Unknown"
+
+If we do a text analysis than Unknown will be frequently found word while it is 
+actually an artefact. Let's remove that:
+
+```
+HH1 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+mutate(chapter = str_extract(content, "CHAPTER [0-9]{1,3}") %>% 
+               str_extract("[0-9]{1,3}") %>% 
+               as.integer(),
+           content = str_remove(content, "CHAPTER [0-9]{1,3}"),
+           content = str_remove(content, "Unknown\n      Unknown")) 
+```
+
+## Rearanging and keeping only relevant information
+
+I want the chapternumber first, the tibble ordered by it, and only chapternumber and content. so the final steps are:
+
+```
+prevous stuff %>% 
+    arrange(chapter) %>% 
+    select(chapter, content)
+```
+
+## Let's take a step back, creating a function out of the pipeline
+
+We have whole set of instructions. What if I want to do this on multible books?
+I can copy the entire set of instructions 5 times and replace the source, but 
+we can also create a function.
+
+# Cleaning up the file
+
+We can copy the entire pipeline and make it function.
+
+Normally when we make a function it goes something like this
+
+```
+nameoffunctoin <- function(argument){
+    do  something with the argument
+    return something
+}
+```
+
+But in this case we can also create a function when we don't start with a dataframe, but with a dot (= . ) and assign the entire chain to a name.
+
+This creates a functional sequence (fseq for short), but you only have to remember that this is incredibly useful and saves you time in the future.
+
+```{r function}
+extract_TEXT <-  . %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+    mutate(chapter = str_extract(content, "CHAPTER [0-9]{1,3}") %>% 
+               str_extract("[0-9]{1,3}") %>% 
+               as.integer(),
+           content = str_remove(content, "CHAPTER [0-9]{1,3}"),
+           content = str_remove(content, "Unknown\n      Unknown")) %>% 
+    arrange(chapter) %>% 
+    select(chapter, content)
+class(extract_TEXT)
+```
+
+I now have a function that cleans up the entire datafile. If this was a larger project
+I  would place functions like this in a seperate utilities.R file and load it at the top of this document.
+
+```{r}
+HH1_cleaned <- 
+    HH1 %>% 
+    extract_TEXT()
+```
+
+# A small tidytext exploration
+
+This is a bit fast for beginners, but I will pay more attention to this process in a follow up blog post so bear with me.
+
+What are the most typical words for every chapter (as in, more typical for that chapter compared to the the entire book, known as tf-idf)?
+
+*I have split the file into pieces of chapter *
+
+```{r}
+library(tidytext)
+dataset <- HH1_cleaned %>% 
+    unnest_tokens(output = word, input = content, token = "words") %>% 
+    group_by(chapter) %>% 
+    count(word) %>% 
+    bind_tf_idf(term = word, document = chapter, n = n) %>% 
+    top_n(5, wt = tf_idf) %>% 
+    ungroup() %>% 
+    mutate(word = reorder(word, tf_idf), Chapter = as.factor(chapter)) 
+
+dataset %>% 
+  filter(chapter < 8)  %>%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = "free")+
+    coord_flip()+
+    labs(
+        title = "Hitchhiker's Guide to the Galaxy",
+        subtitle = "Top 5 most typical words per chapter (first 7)",
+        x = "", y = "", caption = "Roel M. Hogervorst 2018 - clean code blog"
+    )
+
+dataset %>% 
+  filter(chapter > 7, chapter <15)  %>%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = "free")+
+    coord_flip()+
+    labs(
+        title = "Hitchhiker's Guide to the Galaxy",
+        subtitle = "Top 5 most typical words per chapter (second 7 chapters)",
+        x = "", y = "", caption = "Roel M. Hogervorst 2018 - clean code blog"
+    )
+dataset %>% 
+  filter(chapter >=15 , chapter < 22)  %>%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = "free")+
+    coord_flip()+
+    labs(
+        title = "Hitchhiker's Guide to the Galaxy",
+        subtitle = "Top 5 most typical words per chapter (third 7 chapters)",
+        x = "", y = "", caption = "Roel M. Hogervorst 2018 - clean code blog"
+    )
+dataset %>% 
+  filter(chapter >=22 , chapter < 29)  %>%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = "free")+
+    coord_flip()+
+    labs(
+        title = "Hitchhiker's Guide to the Galaxy",
+        subtitle = "Top 5 most typical words per chapter (fourth 7 chapters)",
+        x = "", y = "", caption = "Roel M. Hogervorst 2018 - clean code blog"
+    )    
+dataset %>% 
+  filter(chapter >=29 , chapter < 36)  %>%
+    ggplot(aes(word, tf_idf, fill = chapter))+
+    geom_col(show.legend = FALSE)+
+    facet_wrap(~Chapter,scales = "free")+
+    coord_flip()+
+    labs(
+        title = "Hitchhiker's Guide to the Galaxy",
+        subtitle = "Top 5 most typical words per chapter (fifth 7 chapters)",
+        x = "", y = "", caption = "Roel M. Hogervorst 2018 - clean code blog"
+    )
+```
+
+
+
+# How do I install it?
+
+go to github.com/hrbrmstr/pubcrawl and see instructions there, which will say something like: `devtools::install_github("hrbrmstr/pubcrawl")`
+
+
+
+# Resources, references and more
+
+- There is an website dedicated to research on the quote about regular expressions <http://regex.info/blog/2006-09-15/247>  
+- Bob Rudis' pubcrawl package <https://github.com/hrbrmstr/pubcrawl>
+- tidy textmining book <https://www.tidytextmining.com/>
+
+##### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine:click  **here (it will fold out)** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+How did I make the plot at the top?
+I created it seperately and added the image later on top. 
+
+```
+{HH1_cleaned %>% 
+  unnest_tokens(output = word, input = content, token = "words") %>% 
+  group_by(chapter) %>% 
+  count(word) %>% 
+  bind_tf_idf(term = word, document = chapter, n = n) %>% 
+  top_n(2, wt = tf_idf) %>% 
+  ungroup() %>%  
+  mutate(word = reorder(word, tf_idf), Chapter = as.factor(chapter)) %>% 
+  ggplot(aes(word, tf_idf, fill = chapter))+
+  geom_col(show.legend = FALSE)+
+  facet_wrap(~Chapter,scales = "free")+
+  coord_flip()+
+  labs(
+    title = "Hitchhiker's Guide to the Galaxy - Douglas Adams: what is each chapter about?",
+    subtitle = "Top 2 most typical words per chapter (TF-IDF scores)",
+    x = "", y = "", caption = "Roel M. Hogervorst 2018 - clean code blog"
+  ) } %>% ggsave(filename = "trie2.png",plot = ., width = 9, height = 6, dpi = "screen")
+```
+</details>
+
+

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" > 
+
+  <title>a blog about R</title>
+  <meta property="og:title" content="a blog about R" />
+  <meta name="twitter:title" content="a blog about R" />
+  <meta name="description" content="Hi I&rsquo;m Roel and this is a my blog.
+What is this blog about? I&rsquo;d like to write useful posts for people who are just beginning with R, or regular analysts, who do not yet create packages. This blog is not just me sharing knowledge or tricks with you, but it&rsquo;s also a useful way to document what I just learned. In a way when you are reading this, you and I are learning side by side.">
+  <meta property="og:description" content="Hi I&rsquo;m Roel and this is a my blog.
+What is this blog about? I&rsquo;d like to write useful posts for people who are just beginning with R, or regular analysts, who do not yet create packages. This blog is not just me sharing knowledge or tricks with you, but it&rsquo;s also a useful way to document what I just learned. In a way when you are reading this, you and I are learning side by side.">
+  <meta name="twitter:description" content="Hi I&rsquo;m Roel and this is a my blog.
+What is this blog about? I&rsquo;d like to write useful posts for people who are just beginning with R, or regular analysts, who do not yet create packages. …">
+  <meta name="author" content="Roel M. Hogervorst"/>
+  <link href='http://blog.rmhogervorst.nl/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="http://blog.rmhogervorst.nl/img/avatar-icon.png" />
+  <meta name="twitter:image" content="http://blog.rmhogervorst.nl/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@RMHoge" />
+  <meta name="twitter:creator" content="@RMHoge" />
+  <meta property="og:url" content="http://blog.rmhogervorst.nl/about/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="a blog about R" />
+
+  <meta name="generator" content="Hugo 0.44" />
+  <link rel="canonical" href="http://blog.rmhogervorst.nl/about/" />
+  <link rel="alternate" href="http://blog.rmhogervorst.nl/index.xml" type="application/rss+xml" title="a blog about R">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://blog.rmhogervorst.nl/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="http://blog.rmhogervorst.nl/css/syntax.css" /><link rel="stylesheet" href="http://blog.rmhogervorst.nl/css/codeblock.css" />
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://blog.rmhogervorst.nl/">a blog about R</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="a blog about R" href="http://blog.rmhogervorst.nl/">
+            <img class="avatar-img" src="http://blog.rmhogervorst.nl/img/avatar-icon.png" alt="a blog about R" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<p>Hi I&rsquo;m Roel
+and this is a my blog.</p>
+
+<h2 id="what-is-this-blog-about">What is this blog about?</h2>
+
+<p>I&rsquo;d like to write useful posts for people who are just beginning with R, or regular analysts, who do not yet create packages. This blog is not just me sharing knowledge or tricks with you, but it&rsquo;s also a useful way to document what I just learned. In a way when you are reading this, you and I are learning side by side. I learned so much from people online that I would love to give something back, and I hope it makes me a better writer.</p>
+
+<p>I&rsquo;d like to thank the community here too: I love the #rstats twitter, rweekly and r-bloggers. Since no one really takes in my rss feed (I think) I syndicate my blog to r-bloggers and to r-weekly.</p>
+
+<h2 id="wow-how-did-you-get-into-r">Wow! How did you get into R?</h2>
+
+<blockquote>
+<p>you must be really smart!</p>
+</blockquote>
+
+<p><em>No I&rsquo;m not, I am very very good at googling and knowing what an answer should look like though</em></p>
+
+<p>I first taught myself some R while starting my PhD program at Leiden University.
+And when I say I taught myself, I really mean I took the <a href="https://www.coursera.org/learn/r-programming">Coursera Course: R programming</a> (thank you Jeff Leek, Roger Peng and Brian Caffo, and all the people in the forums!). After a year I dropped out of the PhD program and worked for the <a href="https://www.universiteitleiden.nl/en/social-behavioural-sciences/psychology/methodology-and-statistics">Methodology and Statistics group</a> within the department of Psychology of Leiden University. I worked on a prediction project and had many many inspiring people around me. Many of them have the R-bug and love of geekery. A very nurtering environment. I developed a much broader understanding of statistics there.
+After about a year I wanted to learn more techniques and joined a commercial traineeship program at <a href="https://xomnia.com/services/traineeships/">Xomnia</a>. I came into contact with all the other trainees from differnet backgrounds and took weekly classes.</p>
+
+<h2 id="correct">Correct</h2>
+
+<p>Did I make a mistake? Are you excited about learning? Is there something I should really blog about? Did you find spelling mistakes (very probable, I make them alll the time)? I have an abundance of social links at the bottom of the page to reach me. Some of you even found my academic email account, now that is dedication (also don&rsquo;t do that anymore, because I no longer work in academia) !</p>
+
+<p>If you found <a href="/well-known/security.txt">security issues.  See this link to contact me securely</a>  if you so desire.</p>
+
+
+        
+
+        
+      </article>
+
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:hogervorst.rm@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/RMHogervorst" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://gitlab.com/rmhogervorst" title="GitLab">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://bitbucket.org/RMHogervorst" title="Bitbucket">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/RMHoge" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/rmhogervorst" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/5573955/roel-hogervorst" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://keybase.io/rmhogervorst" title="Keybase">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-key fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="http://blog.rmhogervorst.nl/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="rmhogervorst.nl">Roel M. Hogervorst</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="http://blog.rmhogervorst.nl/">a blog about R</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.44</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+<br> See anything wrong? Click to add them to <a href="https://github.com/RMHogervorst/cleancode/issues" >the issue tracker</a> <br>
+            
+
+
+
+
+  
+
+
+
+<a href='https://github.com/RMHogervorst/blog/tree/master/content/about.md'>or edit this page on github.</a>
+
+
+
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="http://blog.rmhogervorst.nl/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="http://blog.rmhogervorst.nl/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+
