@@ -1,5 +1,5 @@
 theme = "beautifulhugo"
-baseURL = "http://blog.rmhogervorst.nl/"
+baseURL = "https://blog.rmhogervorst.nl/"
 languageCode = "en-us"
 title = "a blog about R"
 pygmentsCodeFences = true
