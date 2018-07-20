@@ -1,0 +1,12 @@
+### this adds headers to the file
+# Header rules for Netlify
+
+# Prevent embedding & provide XSS protection
+# Also preload resources to speed up and unblock rendering
+/*
+  X-Frame-Options: DENY
+  X-Clacks-Overhead: "GNU Terry Pratchett"
+
+  # Test @ https://report-uri.com/account/reports/csp/
+  # Build @ https://report-uri.com/home/generate
+	Content-Security-Policy-Report-Only: default-src 'none'; form-action 'none'; frame-ancestors 'none'; report-uri https://e9b47d122d8b9285221bc68ecaa261b3.report-uri.com/r/d/csp/wizard
