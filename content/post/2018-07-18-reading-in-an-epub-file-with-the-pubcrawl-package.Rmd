@@ -12,6 +12,7 @@ tags:
   - tutorial
   - regex
 slug: reading-in-an-epub-file-with-the-pubcrawl-package
+share_img: '/post/2018-07-18-reading-in-an-epub-file-with-the-pubcrawl-package_files/endresult.png'
 ---
 
 In this tutorial I show how to read in a epub file (f.i. from your ebook collection on you computer) into R with the pubcrawl package. In emoji speak: `r paste0(emo::ji("beer"),emo::ji("book"),emo::ji("package")) ` .
@@ -331,7 +332,7 @@ dataset %>%
 
 # How do I install it?
 
-go to github.com/hrbrmstr/pubcrawl and see instructions there, which will say something like: `devtools::install_github("hrbrmstr/pubcrawl")`
+go to <https://github.com/hrbrmstr/pubcrawl> and see instructions there, which will say something like: `devtools::install_github("hrbrmstr/pubcrawl")`
 
 
 
