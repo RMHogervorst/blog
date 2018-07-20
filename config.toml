@@ -6,7 +6,7 @@ pygmentsCodeFences = true
 pygmentsUseClasses = true
 enableEmoji = true
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
-publishDir = "docs"
+publishDir = "public"
 
 [permalinks]
     post = "/blog/:year/:month/:day/:slug/"
