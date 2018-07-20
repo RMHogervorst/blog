@@ -6,6 +6,9 @@
 /*
   X-Frame-Options: DENY
   X-Clacks-Overhead: "GNU Terry Pratchett"
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: origin;same-origin;strict-origin-when-cross-origin;
 
   # Test @ https://report-uri.com/account/reports/csp/
   # Build @ https://report-uri.com/home/generate
