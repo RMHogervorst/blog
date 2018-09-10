@@ -1,0 +1,269 @@
+---
+title: Use `purrr` to feed four cats
+author: Reigo Hendrikson & Roel M. Hogervorst
+date: '2018-09-10'
+slug: use-purrr-to-feed-four-cats
+categories:
+  - blog
+  - R
+tags:
+  - purrr
+  - intermediate
+  - for loop
+  - functional
+  - emo
+subtitle: 'Replacing a for loop with purrr::map_*'
+share_img: /post/2018-09-04-use-purrr-to-feed-four-cats_files/cat-3469551_640modified.jpg
+---
+
+
+
+<div id="use-purrr-to-feed-four-cats" class="section level3">
+<h3>Use <code>purrr</code> to feed four cats</h3>
+<p>In this example we will show you how to go from a ‘for loop’ to purrr.
+Use this as a cheatsheet when you want to replace your for loops.</p>
+<p>Imagine having 4 cats. Four real cats who need food, care and love to live a happy life. They are starting to meow, so it’s time to feed them. Our real life algorithm would be:</p>
+<ul>
+<li>give food to cat 1</li>
+<li>give food to cat 2</li>
+<li>…</li>
+</ul>
+<p>But life is not that simple. Some of your cats are good cats and some are bad. You want to spoil the good cats and give normal food to the bad cats (Clearly the authors do not have cats in real life because Cats will complain no matter what).</p>
+</div>
+<div id="elements-of-the-four-cats-problem" class="section level2">
+<h2>Elements of the four cats problem</h2>
+<p>Let’s work out this ‘problem’ in R. In real life we would have to have some place for the cats and their bowls. In R the place for cats and their bowls can be a data.frame (or tibble).</p>
+<p>Let’s start with the cats. The cats have a name and a temperament: they are good (❤️) or bad (⚡). Let’s call that goodness<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<pre class="r"><code>library(tibble)
+library(dplyr)
+library(purrr)
+cats &lt;- tribble(
+    ~Name, ~Good,
+    &quot;Suzie&quot;, TRUE,
+    &quot;Margaret&quot;, FALSE,
+    &quot;Donald&quot;, FALSE,
+    &quot;Tibbles&quot;, TRUE
+    )
+
+as_cat &lt;- 
+    function(name){
+        paste(emo::ji(&quot;cat&quot;), name)
+    } 
+
+as_temperament &lt;- 
+    function(good) {
+        ifelse(good, emo::ji(&quot;heart&quot;), emo::ji(&quot;lightning&quot;))
+}
+
+cats$Name &lt;- as_cat(cats$Name)
+cats$Good &lt;- as_temperament(cats$Good)
+
+cats</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   Name        Good 
+##   &lt;chr&gt;       &lt;chr&gt;
+## 1 🐱 Suzie    ❤️   
+## 2 🐱 Margaret 🌩   
+## 3 🐱 Donald   🌩   
+## 4 🐱 Tibbles  ❤️</code></pre>
+<p>Now we have to feed the cats. Only good cats get premium quality super-awesome-food. Bad cats get normal food.</p>
+<p>If you have used <code>dplyr</code> or <code>ifelse</code> statements before, this example is super silly and inefficient. But for people coming from different programming languages and people who started out with for loops, this is the approach you might use.</p>
+<p>To feed the cat, we have to determine if the cat is Good or not. We don’t want to type to much, we are lazy data scientist after all. So we create a function to do our work.</p>
+<pre class="r"><code>good_kitty &lt;- 
+    function(x) {
+    if(x == emo::ji(&quot;heart&quot;)) {
+        paste0(emo::ji(&quot;cake&quot;),&quot; Premium food&quot;)
+    } else {
+        paste0(emo::ji(&quot;bread&quot;), &quot; Normal food&quot;)
+    }
+    }
+
+good_kitty(cats$Good[1])</code></pre>
+<pre><code>## [1] &quot;\U0001f370 Premium food&quot;</code></pre>
+<pre class="r"><code># alternative function name
+# feed_with &lt;- function(temperament) {
+#     if (temperament == as_temperament(T)) { # 
+#         paste0(emo::ji(&quot;cake&quot;),&quot; Premium food&quot;)
+#     } else {
+#         paste0(emo::ji(&quot;bread&quot;), &quot; Normal food&quot;)
+#     }
+# }</code></pre>
+<p>We also want to cuddle our cats, unfortunately some of the cats don’t
+want to be pet. Suzie and Donald don’t want to be cuddled.
+So let’s create a function that takes care of that.</p>
+<pre class="r"><code>pet_cat &lt;- 
+    function(name){
+    if(name %in%  as_cat(c(&quot;Margaret&quot;, &quot;Tibbles&quot;))){
+        &quot;pet&quot;
+    }else{
+        &quot;don&#39;t pet, stay away!&quot;
+    }
+}
+pet_cat(as_cat(&quot;Donald&quot;))</code></pre>
+<pre><code>## [1] &quot;don&#39;t pet, stay away!&quot;</code></pre>
+<pre class="r"><code>pet_cat(as_cat(&quot;Tibbles&quot;))</code></pre>
+<pre><code>## [1] &quot;pet&quot;</code></pre>
+</div>
+<div id="assigning-food-and-love-to-kitties" class="section level2">
+<h2>Assigning food and love to kitties</h2>
+<p>There’s two things we want to do. Give food and give cuddles.</p>
+<p>For every row we want to do two things:</p>
+<ul>
+<li>give food based on Goodness</li>
+<li>pet based on name</li>
+</ul>
+<p>This is something we would want to use a ‘for loop’ for.
+If you have programmed with C(++) or python, this is a natural
+approach. And it is not wrong to do this in R too.</p>
+<pre class="r"><code># First we create place for the Food to go into
+# and for the petting to take place. 
+cats$Food &lt;- NA
+cats$Petting &lt;- NA</code></pre>
+<p>Then we start a ‘for loop’:</p>
+<pre class="r"><code>for (cat in 1:nrow(cats)){
+    cats$Food[cat] &lt;- good_kitty(cats$Good[cat])
+    cats$Petting[cat] &lt;- pet_cat(cats$Name[cat])
+}
+cats</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   Name        Good  Food            Petting              
+##   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt;                
+## 1 🐱 Suzie    ❤️    🍰 Premium food don&#39;t pet, stay away!
+## 2 🐱 Margaret 🌩    🍞 Normal food  pet                  
+## 3 🐱 Donald   🌩    🍞 Normal food  don&#39;t pet, stay away!
+## 4 🐱 Tibbles  ❤️    🍰 Premium food pet</code></pre>
+<p>A ‘for loop’ is you telling your computer: ‘I will only tell you this
+once, but you must do it to everything in the collection’.
+To make that work the computer needs to know what the iterator part
+is: <code>(something in collection)</code> in this case <code>(cat in 1:nrow(cats))</code>,
+what needs to happen inside the loop: <code>{actions}</code>, and the use of a
+variable that takes a different value every iteration <code>something</code> or in this case <code>cat</code>. People often use <code>i</code> for this value <code>for (i in list)</code> but as you can see, it really doesn’t matter.</p>
+<p>Let’s get into a bit more details</p>
+<div id="whats-going-on-in-the-for-loop" class="section level3">
+<h3>What’s going on in the for loop?</h3>
+<p>inside the loop we see <code>cats$Food[cat]</code>, we’re taking the <code>Food</code> column in the <code>cats</code> data.frame. And then we index <code>[]</code> it.
+<code>cats$Food[1]</code> would take the first item in this collection, <code>cats$Food[2]</code> the second, etc.</p>
+<p>Were does the index come from?</p>
+<p>For loops are dumb. They don’t know and don’t care about the collection
+they are moving through. The only thing they know is that they move through every element of the collection until the end.
+In our case the collection is <code>1:nrow(cats)</code>, a sequence from 1 to
+the number of rows in the data.frame.</p>
+<p>When your ‘for loop’ doesn’t behave as you expect the best way to
+debug it is to print the index at the start of the loop.</p>
+</div>
+</div>
+<div id="functional-approach" class="section level2">
+<h2>Functional approach</h2>
+<p>For loops are very often used and very handy. But they do require a
+bit of mental overhead, you need to think about the collection
+you are iterating over and use the correct indices to put stuff in.
+It’s easy to get lost.</p>
+<p>With the <code>purrr</code> package we approach the problem from another direction:
+we think about small steps. We want to execute the pet and feeding functions on every row, we do not care about the specifics of the row number.</p>
+<p>In the purrr style of thinking (functional programming) we want to ‘map’ the function to the data. We do care about the outcome of every execution, we want that to be character.<br />
+Before showing the purrr solution we remove <code>Food</code> and <code>Petting</code> from cats (this is necessary evil, of if this is really upsetting to you, we wait for half a day before starting again).</p>
+<pre class="r"><code># reset the Food and Petting
+cats$Food &lt;- NULL
+cats$Petting &lt;- NULL</code></pre>
+<p>Let’s use <code>map_chr</code></p>
+<pre class="r"><code># execute on every element of cats$Good the good kitty function and 
+# then cats$Name on pet_cat function
+cats$Food &lt;- map_chr(cats$Good, good_kitty)
+cats$Petting &lt;- map_chr(cats$Name, pet_cat)
+cats</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   Name        Good  Food            Petting              
+##   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt;                
+## 1 🐱 Suzie    ❤️    🍰 Premium food don&#39;t pet, stay away!
+## 2 🐱 Margaret 🌩    🍞 Normal food  pet                  
+## 3 🐱 Donald   🌩    🍞 Normal food  don&#39;t pet, stay away!
+## 4 🐱 Tibbles  ❤️    🍰 Premium food pet</code></pre>
+<p>The results are the same.</p>
+</div>
+<div id="resources" class="section level2">
+<h2>Resources</h2>
+<p>Just when we were finishing up this post there was an excellent <a href="https://mobile.twitter.com/apreshill/status/1036986558887342080">tweet thread</a> on
+purrr resources!</p>
+<p>Complete list at moment of writing</p>
+<ul>
+<li><a href="https://mobile.twitter.com/WeAreRLadies/status/1034817323922804737" class="uri">https://mobile.twitter.com/WeAreRLadies/status/1034817323922804737</a></li>
+<li><a href="https://github.com/jenniferthompson/RLadiesIntroToPurrr" class="uri">https://github.com/jenniferthompson/RLadiesIntroToPurrr</a></li>
+<li><a href="https://jennybc.github.io/purrr-tutorial/" class="uri">https://jennybc.github.io/purrr-tutorial/</a></li>
+<li><a href="https://github.com/cwickham/purrr-tutorial" class="uri">https://github.com/cwickham/purrr-tutorial</a></li>
+<li><a href="https://github.com/jennybc/row-oriented-workflows#readme" class="uri">https://github.com/jennybc/row-oriented-workflows#readme</a></li>
+<li><a href="https://amber.rbind.io/blog/2018/03/26/purrr_iterations/" class="uri">https://amber.rbind.io/blog/2018/03/26/purrr_iterations/</a></li>
+</ul>
+<div id="this-post-is-a-created-by-roel-reigo-with-lots-of-help-by-sathira" class="section level3">
+<h3>This post is a created by Roel &amp; Reigo, with lots of help by Sathira</h3>
+<p>I met Sathira and Reigo at the satRday in Amsterdam this september 2018.
+We worked on this project during the open source day.</p>
+<ul>
+<li>Follow Reigo Hedrikson on <a href="https://twitter.com/ReigoHendrikson">twitter</a> and <a href="https://github.com/rendrikson">github</a>.</li>
+<li>Find and follow Sathira on <a href="https://twitter.com/s_owla">twitter</a> and <a href="https://github.com/sowla">github</a></li>
+</ul>
+<p>Head image is <a href="https://pixabay.com/en/cat-pet-feed-orange-cute-3469551/" class="uri">https://pixabay.com/en/cat-pet-feed-orange-cute-3469551/</a></p>
+</div>
+<div id="state-of-the-machine" class="section level3">
+<h3>State of the machine</h3>
+<details>
+<p><summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong> </summary></p>
+<pre class="r"><code>sessioninfo::session_info()</code></pre>
+<pre><code>## ─ Session info ──────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  os       macOS High Sierra 10.13.6   
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2018-09-10                  
+## 
+## ─ Packages ──────────────────────────────────────────────────────────────
+##  package     * version    date       source                         
+##  assertthat    0.2.0      2017-04-11 CRAN (R 3.5.0)                 
+##  backports     1.1.2      2017-12-13 CRAN (R 3.5.0)                 
+##  bindr         0.1.1      2018-03-13 CRAN (R 3.5.0)                 
+##  bindrcpp      0.2.2      2018-03-29 CRAN (R 3.5.0)                 
+##  blogdown      0.8        2018-07-15 CRAN (R 3.5.0)                 
+##  bookdown      0.7        2018-02-18 CRAN (R 3.5.0)                 
+##  cli           1.0.0      2017-11-05 CRAN (R 3.5.0)                 
+##  clisymbols    1.2.0      2017-05-21 CRAN (R 3.5.0)                 
+##  crayon        1.3.4      2017-09-16 CRAN (R 3.5.0)                 
+##  digest        0.6.15     2018-01-28 CRAN (R 3.5.0)                 
+##  dplyr       * 0.7.6      2018-06-29 CRAN (R 3.5.1)                 
+##  emo           0.0.0.9000 2018-09-04 Github (hadley/emo@02a5206)    
+##  evaluate      0.11       2018-07-17 CRAN (R 3.5.0)                 
+##  fansi         0.2.3      2018-05-06 CRAN (R 3.5.0)                 
+##  glue          1.3.0      2018-09-04 Github (tidyverse/glue@4e74901)
+##  htmltools     0.3.6      2017-04-28 CRAN (R 3.5.0)                 
+##  knitr         1.20       2018-02-20 CRAN (R 3.5.0)                 
+##  lubridate     1.7.4      2018-04-11 CRAN (R 3.5.0)                 
+##  magrittr      1.5        2014-11-22 CRAN (R 3.5.0)                 
+##  pillar        1.3.0      2018-07-14 CRAN (R 3.5.0)                 
+##  pkgconfig     2.0.1      2017-03-21 CRAN (R 3.5.0)                 
+##  purrr       * 0.2.5      2018-05-29 CRAN (R 3.5.0)                 
+##  R6            2.2.2      2017-06-17 CRAN (R 3.5.0)                 
+##  Rcpp          0.12.18    2018-07-23 CRAN (R 3.5.0)                 
+##  rlang         0.2.2      2018-08-16 cran (@0.2.2)                  
+##  rmarkdown     1.10       2018-06-11 CRAN (R 3.5.0)                 
+##  rprojroot     1.3-2      2018-01-03 CRAN (R 3.5.0)                 
+##  rstudioapi    0.7        2017-09-07 CRAN (R 3.5.0)                 
+##  sessioninfo   1.0.0      2017-06-21 CRAN (R 3.5.0)                 
+##  stringi       1.2.4      2018-07-20 CRAN (R 3.5.0)                 
+##  stringr       1.3.1      2018-05-10 CRAN (R 3.5.0)                 
+##  tibble      * 1.4.2      2018-01-22 CRAN (R 3.5.0)                 
+##  tidyselect    0.2.4      2018-02-26 CRAN (R 3.5.0)                 
+##  utf8          1.1.4      2018-05-24 CRAN (R 3.5.0)                 
+##  withr         2.1.2      2018-03-15 CRAN (R 3.5.0)                 
+##  xfun          0.3        2018-07-06 CRAN (R 3.5.0)                 
+##  yaml          2.2.0      2018-07-25 CRAN (R 3.5.0)</code></pre>
+</details>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Incidently this is a great way to label things. Don’t create a gender column with male or female (or other), but make the label the description: female TRUE/FALSE<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
