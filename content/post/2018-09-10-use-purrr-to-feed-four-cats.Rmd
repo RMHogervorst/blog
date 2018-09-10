@@ -218,7 +218,7 @@ We worked on this project during the open source day.
 * Find and follow Sathira on [twitter](https://twitter.com/s_owla) and [github](https://github.com/sowla)
 
 
-Head image is https://pixabay.com/en/cat-pet-feed-orange-cute-3469551/
+Head image is from shttps://pixabay.com/en/cat-pet-feed-orange-cute-3469551/
 
 
 ### State of the machine
