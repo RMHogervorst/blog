@@ -21,7 +21,10 @@ share_img: '/post/2018-09-10-use-purrr-to-feed-four-cats_files/cat-3469551_640mo
 In this example we will show you how to go from a 'for loop' to purrr. 
 Use this as a cheatsheet when you want to replace your for loops.
 
-Imagine having 4 cats. Four real cats who need food, care and love to live a happy life. They are starting to meow, so it's time to feed them. Our real life algorithm would be:
+Imagine having 4 cats. (like this one:)
+
+![here is one cate](/post/2018-09-10-use-purrr-to-feed-four-cats_files/cat-3469551_640modified.jpg){width=200px}
+Four real cats who need food, care and love to live a happy life. They are starting to meow, so it's time to feed them. Our real life algorithm would be:
 
 * give food to cat 1
 * give food to cat 2
