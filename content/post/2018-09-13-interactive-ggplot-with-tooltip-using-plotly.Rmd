@@ -1,0 +1,61 @@
+---
+title: interactive ggplot with tooltip using plotly
+author: Roel M. Hogervorst
+date: '2018-09-13'
+slug: interactive-ggplot-with-tooltip-using-plotly
+categories:
+  - blog
+  - R
+tags:
+  - beginner
+  - plotly
+  - ggplot2
+  - exploratory
+subtitle: 'tldr: wrap ggplotly around ggplot and add info in aes()'
+share_img: 'https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139'
+---
+A quick Random R thing I use a lot, recently learned, and I want you to know it too. 
+
+In this post I'll show you how to make a quick interactive plot with ggplot and plotly, so that values are displayed when you hover your mouse over it. Why would you want this? If you are exploring the data, you want some quick insights into which values are where. 
+
+
+
+We first load the libraries and dataset.
+
+```{r}
+library(ggplot2)
+library(plotly)
+mtcars2 <- mtcars # I know, you've seen this set before
+mtcars2$car <- rownames(mtcars) 
+mtcars2$cyl <- as.factor(mtcars$cyl)
+```
+
+Then we plot a simple plot (non interactive). 
+*Also note that ggplot2 doesn't know what to do with name = car, but doesn't complain either*
+
+```{r}
+p1<- ggplot(mtcars2, aes(mpg, wt, name = car, color = cyl)) + geom_point()
+p1
+```
+
+Now me make it interactive, on mouseover we want to see something.
+Everything we added to the ggplot aesthetics are now available under
+the tooltip (you can change that).
+
+```{r}
+ggplotly(p1)
+```
+
+And that's it. It's just a simple trick. Wrap your ggplot in ggplotly and it works. 
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
