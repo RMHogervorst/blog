@@ -5,7 +5,7 @@ and this is a my blog.
 ## What is this blog about?
 I'd like to write useful posts for people who are just beginning with R, or regular analysts, who do not yet create packages. This blog is not just me sharing knowledge or tricks with you, but it's also a useful way to document what I just learned. In a way when you are reading this, you and I are learning side by side. I learned so much from people online that I would love to give something back, and I hope it makes me a better writer.  
 
-I'd like to thank the community here too: I love the #rstats twitter, rweekly and r-bloggers. Since no one really takes in my rss feed (I think) I syndicate my blog to r-bloggers and to r-weekly. 
+I'd like to thank the community here too: I love the #rstats twitter, rweekly and r-bloggers. Since no one really takes in my rss feed (I think) I syndicate my blog to [r-bloggers](https://www.r-bloggers.com/) and to [r-weekly](https://rweekly.org/). 
 
 ## Wow! How did you get into R?
 

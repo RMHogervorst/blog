@@ -6,6 +6,9 @@ subtitle: Where to start
 In this guide I'll show you where to find more information / help about R, packages, and RStudio.
 I will mostly link to excellent tutorials. 
 
+
+What if I already learned R before? [karl broman has a page for you](http://kbroman.org/hipsteR/)
+
 Many people fall into the trap of 'thinking that they need to learn R'. You don't have to learn
 R. You want to solve problems with R. You will never learn R, it is an entire programming language and you will be surprised all the time. That is good! It means you are learning. Don't give up, don't hesitate to ask questions and try to find something that you are really passionate about. Use the passion and curiosity to learn new things. I didn't set out to learn about the magick package, I wanted to add dancing banana's to a gif. Enjoy!
 
