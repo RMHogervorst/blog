@@ -1,0 +1,198 @@
+---
+title: Tweeting wikidata info
+author: Roel M. Hogervorst
+date: '2018-11-19'
+slug: tweeting-wikidata-info
+categories:
+  - blog
+  - R
+tags:
+  - intermediate
+  - rtweet
+  - wikidata
+  - sparql
+  - docker
+  - tutorial
+  - glue
+  - WikidataQueryServiceR
+  - wikipedia
+subtitle: ''
+share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
+---
+
+
+
+<p>In this explainer I walk you through the steps I took to create a twitter bot
+that tweets daily about people who died on that date.</p>
+<p>I created a script that queries wikidata, takes that information and creates
+a sentence. That sentence is then tweeted.</p>
+<p>For example:</p>
+<div class="figure">
+<img src="/post/2018-11-19-tweeting-wikidata-info_files/Screenshot%20from%202018-11-19%2021-32-11.png" alt="A tweet I literally just send out from the docker container" />
+<p class="caption">A tweet I literally just send out from the docker container</p>
+</div>
+<p>I hope you are has excited as I am about this project. Here it comes!</p>
+<p>There are 3 parts:</p>
+<ol style="list-style-type: decimal">
+<li>Talk to wikidata and retrieve information about 10 people that died today</li>
+<li>Grab one of the deaths and create a sentence</li>
+<li>Post that sentence to twitter in the account <a href="https://twitter.com/WikidataB">wikidatabot</a></li>
+<li>Throw it all into a docker container so it can run on the computer of someone else (AKA: THA CLOUD)</li>
+</ol>
+<p>You might wonder, why people who died? To which I answer, emphatically but not
+really helpfully: ‘valar morghulis’.</p>
+<div id="talk-to-wikidata-and-retrieve-information" class="section level1">
+<h1>1. Talk to wikidata and retrieve information</h1>
+<p>I think wikidata is one of the coolest knowledge bases in the world, it contains
+facts about people, other animals, places, and the world. It powers many boxes
+you see in Wikipedia pages. For instance <a href="https://en.wikipedia.org/wiki/Charles_I_of_England">this random page about Charles the first</a> has a box on the
+right that says something about his ancestors, successors and coronation.
+The same information can be displayed in <a href="https://nl.wikipedia.org/wiki/Karel_I_van_Engeland">Dutch</a>.
+This is very cool and saves Wikipedia a lot of work. However, we can also use it!</p>
+<p>You can create your own query about the world in <a href="https://query.wikidata.org/">the query editor</a>. But it is quite hard to figure out how to do that. These queries need to made in
+a specific way. I just used an example from wikidata: ‘who’s birthday is it today?’
+and modified it to search for people’s death (that’s how I learn, modify
+something and see if I broke it). It looks a lot like SQL, but is slightly different.</p>
+<p>Of course this editor is nice for us humans, but we want the computer to do it
+so we can send a query to wikidata. I was extremely lazy and used the
+<code>WikidataQueryServiceR</code> created by wiki-guru Mikhail Popov <span class="citation">[@bearlogo]</span>(<a href="https://twitter.com/bearloga" class="uri">https://twitter.com/bearloga</a>).</p>
+<p>This is the query I ended up using (It looks very much like the birthdays one
+but with added information):</p>
+<pre class="r"><code>querystring &lt;- 
+&#39;SELECT # what variables do you want to return (defined later on)
+  ?entityLabel (YEAR(?date) AS ?year) 
+  ?cause_of_deathLabel 
+  ?place_of_deathLabel 
+  ?manner_of_deathLabel  
+  ?country_of_citizenshipLabel 
+  ?country_of_birth
+  ?date_of_birth
+WHERE {
+  BIND(MONTH(NOW()) AS ?nowMonth) # this is a very cool trick
+  BIND(DAY(NOW()) AS ?nowDay)
+  ?entity wdt:P570 ?date.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language &quot;en&quot;. }
+  ?entity wdt:P509 ?cause_of_death.
+  OPTIONAL { ?entity wdt:P20 ?place_of_death. }
+  OPTIONAL { ?entity wdt:P1196 ?manner_of_death. }
+  FILTER(((MONTH(?date)) = ?nowMonth) &amp;&amp; ((DAY(?date)) = ?nowDay))
+  OPTIONAL { ?entity wdt:P27 ?country_of_citizenship. }
+  OPTIONAL { ?entity wdt:p19 ?country_of_birth}
+  OPTIONAL { ?entity wdt:P569 ?date_of_birth.}
+}
+LIMIT 10&#39;</code></pre>
+<p>Try this in <a href="https://query.wikidata.org/">the query editor</a></p>
+<p>When I created this blog post (every day the result will be different)
+the result looked like this:</p>
+<pre class="r"><code>library(WikidataQueryServiceR)
+result &lt;- query_wikidata(querystring)</code></pre>
+<pre><code>## 10 rows were returned by WDQS</code></pre>
+<pre class="r"><code>result[1:3,1:3]# first 3 rows, first 3 columsn</code></pre>
+<pre><code>##                  entityLabel year cause_of_deathLabel
+## 1 Rafael García-Plata y Osma 1918           influenza
+## 2        Dobroslava Menclová 1978       traffic crash
+## 3             Alan J. Pakula 1998       traffic crash</code></pre>
+<p>The query returns name, year, cause of death, manner of death
+(didn’t know which one to use), place of death, country of citizenship, country
+of birth and date of birth.
+I can now glue all these parts together to create a sentence of sorts</p>
+</div>
+<div id="grab-one-of-the-deaths-and-create-a-sentence" class="section level1">
+<h1>2. grab one of the deaths and create a sentence</h1>
+<p>I will use glue to make text, but the paste functions from base R is also fine.</p>
+<p>These are the first lines for instance:</p>
+<pre class="r"><code>library(glue)
+glue_data(result[1:2,], &quot;Today in {year} in the place {place_of_deathLabel} died {entityLabel} with cause: {cause_of_deathLabel}. {entityLabel} was born on {as.Date(date_of_birth, &#39;%Y-%m-%d&#39;)}. Find more info on this cause of death on www.en.wikipedia.org/wiki/{cause_of_deathLabel}.  #wikidata&quot;)</code></pre>
+<pre><code>## Today in 1918 in the place Cáceres died Rafael García-Plata y Osma with cause: influenza. Rafael García-Plata y Osma was born on 1870-03-04. Find more info on this cause of death on www.en.wikipedia.org/wiki/influenza.  #wikidata
+## Today in 1978 in the place Plzeň died Dobroslava Menclová with cause: traffic crash. Dobroslava Menclová was born on 1904-01-02. Find more info on this cause of death on www.en.wikipedia.org/wiki/traffic crash.  #wikidata</code></pre>
+</div>
+<div id="post-that-sentence-to-twitter-in-the-account-wikidatabot" class="section level1">
+<h1>Post that sentence to twitter in the account wikidatabot</h1>
+<p>I created the twitter account <a href="https://twitter.com/WikidataB">wikidatabot</a> and
+added pictures 2fa and some bio information. I wanted to make it clear that it
+was a bot. To post something on your behalf on twitter requires a developers
+account. Go to <a href="https://developer.twitter.com" class="uri">https://developer.twitter.com</a> and create that account. In my case
+I had to manually verify twice because apparently everything I did screamed bot activity
+to twitter (they were not entirely wrong). You have to sign some boxes,
+acknowledge the code of conduct and understand twitter’s terms.</p>
+<p>The next step is to create a twitter app but I will leave that explanation to
+rtweet, because <a href="https://rtweet.info/articles/auth.html">that vignette</a> is very
+very helpful.</p>
+<p>When you’re done, you can post to twitter on your account with the help of
+a consumer key, access key, consumer token and access token. You will need them
+all and you will have to keep them a secret (or other people can post on your
+account, and that is something you really don’t want).</p>
+<p>With those secrets and the rtweet package you can create a token that enables
+you to post to twitter.</p>
+<p>And it is seriously as easy as:</p>
+<pre class="r"><code>rtweet::post_tweet(status = tweettext, token = token )</code></pre>
+<div class="figure">
+<img src="/post/2018-11-19-tweeting-wikidata-info_files/Screenshot%20from%202018-11-19%2021-32-11.png" alt="Again the same tweet" />
+<p class="caption">Again the same tweet</p>
+</div>
+</div>
+<div id="throw-it-all-into-a-docker-container" class="section level1">
+<h1>4 Throw it all into a docker container</h1>
+<p>I want to post this every day but to make it run in the cloud it would be nice
+if R and the code would be nicely packed together. That is where docker comes in,
+you can define what packages you want and a mini operating system is created
+that will run for everyone on ever computer (if they have docker).
+The whole example script and docker file can be found <a href="https://github.com/RMHogervorst/tweetwikidatadeaths">here on github</a>.</p>
+<p>And that’s it. If you have suggestions on how to run it every day in the cloud
+for cheap, let me know by <a href="https://twitter.com/RoelMHogervorst">twitter</a> or by opening an issue on <a href="https://github.com/RMHogervorst/tweetwikidatadeaths/issues/new">github</a>.</p>
+<div id="things-that-could-be-done-better" class="section level2">
+<h2>Things that could be done better:</h2>
+<ul>
+<li>I can run the container, but I don’t know how to make it run in the cloud</li>
+<li>I ask for 10 deaths and pick one randomly, I don’t know if there is a random function in sparql</li>
+<li>I put the (twitter) keys into the script, it would be better to use environment variables for that</li>
+<li>rtweet and WikidataQueryServiceR have lots of dependencies that make the docker container difficult to build (mostly time consuming)</li>
+<li>I guess I could just build the query and post to wikidata, but using WikidataQueryServiceR was much faster</li>
+<li>I wish I knew how to use the rocker:tidyverse container to run a script, but I haven’t figured that out yet</li>
+</ul>
+<div id="state-of-the-machine" class="section level3">
+<h3>State of the machine</h3>
+<details>
+<p><summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong> </summary></p>
+<pre class="r"><code>sessioninfo::session_info()</code></pre>
+<pre><code>## ─ Session info ──────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  os       Ubuntu 16.04.5 LTS          
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
+##  language en_US                       
+##  collate  en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2018-11-19                  
+## 
+## ─ Packages ──────────────────────────────────────────────────────────────
+##  package               * version date       source         
+##  backports               1.1.2   2017-12-13 CRAN (R 3.5.0) 
+##  blogdown                0.8     2018-07-15 CRAN (R 3.5.1) 
+##  bookdown                0.7     2018-02-18 CRAN (R 3.5.0) 
+##  clisymbols              1.2.0   2017-05-21 CRAN (R 3.5.0) 
+##  crayon                  1.3.4   2017-09-16 CRAN (R 3.5.0) 
+##  curl                    3.2     2018-03-28 CRAN (R 3.5.0) 
+##  digest                  0.6.15  2018-01-28 CRAN (R 3.5.0) 
+##  evaluate                0.11    2018-07-17 CRAN (R 3.5.1) 
+##  glue                  * 1.3.0   2018-07-17 CRAN (R 3.5.1) 
+##  htmltools               0.3.6   2017-04-28 CRAN (R 3.5.0) 
+##  httr                    1.3.1   2017-08-20 CRAN (R 3.5.0) 
+##  knitr                   1.20    2018-02-20 CRAN (R 3.5.0) 
+##  magrittr                1.5     2014-11-22 CRAN (R 3.5.0) 
+##  R6                      2.2.2   2017-06-17 CRAN (R 3.5.0) 
+##  Rcpp                    0.12.18 2018-07-23 cran (@0.12.18)
+##  rmarkdown               1.10    2018-06-11 CRAN (R 3.5.0) 
+##  rprojroot               1.3-2   2018-01-03 CRAN (R 3.5.0) 
+##  sessioninfo             1.0.0   2017-06-21 CRAN (R 3.5.1) 
+##  stringi                 1.2.4   2018-07-20 cran (@1.2.4)  
+##  stringr                 1.3.1   2018-05-10 CRAN (R 3.5.0) 
+##  WikidataQueryServiceR * 0.1.1   2017-04-28 CRAN (R 3.5.1) 
+##  withr                   2.1.2   2018-03-15 CRAN (R 3.5.0) 
+##  xfun                    0.3     2018-07-06 CRAN (R 3.5.1) 
+##  yaml                    2.2.0   2018-07-25 CRAN (R 3.5.1)</code></pre>
+</details>
+</div>
+</div>
+</div>

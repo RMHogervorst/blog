@@ -1,0 +1,183 @@
+---
+title: Tweeting daily famous deaths from wikidata to twitter with R and docker
+author: Roel M. Hogervorst
+date: '2018-11-19'
+slug: tweeting-wikidata-info
+categories:
+  - blog
+  - R
+tags:
+  - intermediate
+  - rtweet
+  - wikidata
+  - sparql
+  - docker
+  - tutorial
+  - glue
+  - WikidataQueryServiceR
+  - wikipedia
+subtitle: 'A tweet a day keeps the insanity at bay'
+share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
+---
+
+In this explainer I walk you through the steps I took to create a twitter bot
+that tweets daily about people who died on that date. 
+
+I created a script that queries wikidata, takes that information and creates
+a sentence. That sentence is then tweeted. 
+
+For example:
+
+![A tweet I literally just send out from the docker container](/post/2018-11-19-tweeting-wikidata-info_files/Screenshot from 2018-11-19 21-32-11.png)
+
+
+I hope you are has excited as I am about this project. Here it comes!
+
+There are 3 parts:
+
+1. Talk to wikidata and retrieve information about 10 people that died today
+2. Grab one of the deaths and create a sentence
+3. Post that sentence to twitter in the account [wikidatabot](https://twitter.com/WikidataB)
+4. Throw it all into a docker container so it can run on the computer of someone else (AKA: THA CLOUD)
+
+You might wonder, why people who died? To which I answer, emphatically but not 
+really helpfully: 'valar morghulis'.
+
+# 1. Talk to wikidata and retrieve information
+
+I think wikidata is one of the coolest knowledge bases in the world, it contains
+facts about people, other animals, places, and the world. It powers many boxes
+you see in Wikipedia pages. For instance [this random page about Charles the first](https://en.wikipedia.org/wiki/Charles_I_of_England) has a box on the
+right that says something about his ancestors, successors and coronation.
+The same information can be displayed in [Dutch](https://nl.wikipedia.org/wiki/Karel_I_van_Engeland). 
+This is very cool and saves Wikipedia a lot of work. However, we can also use it!
+
+You can create your own query about the world in [the query editor](https://query.wikidata.org/). But it is quite hard to figure out how to do that. These queries need to made in
+a specific way. I just used an example from wikidata: 'who's birthday is it today?'
+and modified it to search for people's death (that's how I learn, modify 
+something and see if I broke it). It looks a lot like SQL, but is slightly different.
+
+Of course this editor is nice for us humans, but we want the computer to do it
+so we can send a query to wikidata. I was extremely lazy and used the 
+`WikidataQueryServiceR` created by wiki-guru Mikhail Popov [@bearlogo](https://twitter.com/bearloga).
+
+This is the query I ended up using (It looks very much like the birthdays one
+but with added information):
+
+```{r}
+querystring <- 
+'SELECT # what variables do you want to return (defined later on)
+  ?entityLabel (YEAR(?date) AS ?year) 
+  ?cause_of_deathLabel 
+  ?place_of_deathLabel 
+  ?manner_of_deathLabel  
+  ?country_of_citizenshipLabel 
+  ?country_of_birth
+  ?date_of_birth
+WHERE {
+  BIND(MONTH(NOW()) AS ?nowMonth) # this is a very cool trick
+  BIND(DAY(NOW()) AS ?nowDay)
+  ?entity wdt:P570 ?date.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+  ?entity wdt:P509 ?cause_of_death.
+  OPTIONAL { ?entity wdt:P20 ?place_of_death. }
+  OPTIONAL { ?entity wdt:P1196 ?manner_of_death. }
+  FILTER(((MONTH(?date)) = ?nowMonth) && ((DAY(?date)) = ?nowDay))
+  OPTIONAL { ?entity wdt:P27 ?country_of_citizenship. }
+  OPTIONAL { ?entity wdt:p19 ?country_of_birth}
+  OPTIONAL { ?entity wdt:P569 ?date_of_birth.}
+}
+LIMIT 10'
+```
+
+Try this in [the query editor](https://query.wikidata.org/)
+
+When I created this blog post (every day the result will be different) 
+the result looked like this:
+
+```{r}
+library(WikidataQueryServiceR)
+result <- query_wikidata(querystring)
+result[1:3,1:3]# first 3 rows, first 3 columsn
+```
+
+The query returns name, year, cause of death, manner of death 
+ (didn't know which one to use), place of death, country of citizenship, country
+ of birth and date of birth. 
+I can now glue all these parts together to create a sentence of sorts
+
+# 2. grab one of the deaths and create a sentence
+I will use glue to make text, but the paste functions from base R is also fine.
+
+These are the first lines for instance:
+
+```{r}
+library(glue)
+glue_data(result[1:2,], "Today in {year} in the place {place_of_deathLabel} died {entityLabel} with cause: {cause_of_deathLabel}. {entityLabel} was born on {as.Date(date_of_birth, '%Y-%m-%d')}. Find more info on this cause of death on www.en.wikipedia.org/wiki/{cause_of_deathLabel}.  #wikidata")
+```
+
+# Post that sentence to twitter in the account wikidatabot
+
+I created the twitter account [wikidatabot](https://twitter.com/WikidataB) and
+added pictures 2fa and some bio information. I wanted to make it clear that it
+was a bot. To post something on your behalf on twitter requires a developers
+account. Go to https://developer.twitter.com and create that account. In my case
+I had to manually verify twice because apparently everything I did screamed bot activity
+to twitter (they were not entirely wrong). You have to sign some boxes, 
+acknowledge the code of conduct and understand twitter's terms. 
+
+The next step is to create a twitter app but I will leave that explanation to
+rtweet, because [that vignette](https://rtweet.info/articles/auth.html) is very
+very helpful. 
+
+When you're done, you can post to twitter on your account with the help of 
+a consumer key, access key, consumer token and access token. You will need them
+all and you will have to keep them a secret (or other people can post on your 
+account, and that is something you really don't want).
+
+With those secrets and the rtweet package you can create a token that enables
+you to post to twitter. 
+
+And it is seriously as easy as:
+
+```{r, eval=FALSE}
+rtweet::post_tweet(status = tweettext, token = token )
+```
+
+
+![Again the same tweet](/post/2018-11-19-tweeting-wikidata-info_files/Screenshot from 2018-11-19 21-32-11.png)
+
+
+
+# 4 Throw it all into a docker container
+
+I want to post this every day but to make it run in the cloud it would be nice
+if R and the code would be nicely packed together. That is where docker comes in,
+you can define what packages you want and a mini operating system is created
+that will run for everyone on ever computer (if they have docker). 
+The whole example script and docker file can be found [here on github](https://github.com/RMHogervorst/tweetwikidatadeaths).
+
+And that's it. If you have suggestions on how to run it every day in the cloud
+for cheap, let me know by [twitter](https://twitter.com/RoelMHogervorst) or by opening an issue on [github](https://github.com/RMHogervorst/tweetwikidatadeaths/issues/new).
+
+
+## Things that could be done better:
+
+- I can run the container, but I don't know how to make it run in the cloud
+- I ask for 10 deaths and pick one randomly, I don't know if there is a random function in sparql
+- I put the (twitter) keys into the script, it would be better to use environment variables for that
+- rtweet and WikidataQueryServiceR have lots of dependencies that make the docker container difficult to build (mostly time consuming)
+- I guess I could just build the query and post to wikidata, but using WikidataQueryServiceR was much faster
+- I wish I knew how to use the rocker:tidyverse container to run a script, but I haven't figured that out yet
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+

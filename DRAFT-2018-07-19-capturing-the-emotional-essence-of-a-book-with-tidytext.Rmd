@@ -1,0 +1,61 @@
+---
+title: Capturing the emotional essence of a book with tidytext
+author: Roel M. Hogervorst
+date: '2018-07-19'
+slug: capturing-the-emotional-essence-of-a-book-with-tidytext
+categories:
+  - blog
+tags:
+  - intermediate
+  - analysis
+  - tidytext
+  - tidyverse
+  - hhgttg
+  - pubcrawl
+subtitle: ''
+draft: true
+---
+
+
+Can we detect the essence of a set of books with automated tools? In this case I want to extract the most important words and the emotions in books. But mostly I just wanted to play around with tidytext tools on one of my favorite book series: the Hitch hikers guide to the galaxy! 
+
+![bookwords tf-idf here?]()
+![adsfadsfadsaf](/post/2018-07-19-capturing-the-emotional-essence-of-a-book-with-tidytext_files/IMG_20180608_183814485.jpg)
+
+<!-- why this problem -->
+Imagin  you have a set of books but you want to know what they are about? One thing we can do is sentiment analysis <https://www.tidytextmining.com/sentiment.html "an amazing book with great examples that I learned a lot from">.  
+
+<!--approach -->
+
+I load in the dataset (a set of epub files from my computer), transform them into a tidy format. Do a tf-idf per book and return the words that are more typical for a specific book than for the entire series. I create several plots of sentiment and tf-idf with ggplot2 and the tidytext package. 
+
+I love the tidytext package by David Robinson and Julia Silge @R-tidytext !
+
+<!--packages used and data used -->
+
+```{r}
+library(tidytext)
+library(tidyverse)
+library(pubcrawl)
+```
+
+The books are of course copyrighted so I cannot share the files with you, that would be piracy. 
+I organize my projects per folder
+
+<!--step by step through process -->
+
+<!--conclusion  -->
+
+
+##### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: click here </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+
+</details>
+
+
