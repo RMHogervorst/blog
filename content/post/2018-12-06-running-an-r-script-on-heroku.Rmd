@@ -1,0 +1,116 @@
+---
+title: Running an R script on heroku
+author: Roel M. Hogervorst
+date: '2018-12-06'
+slug: running-an-r-script-on-heroku
+categories:
+  - blog
+  - R
+tags:
+  - heroku
+  - rtweet
+  - tutorial
+  - wikidata
+  - WikidataQueryServiceR
+subtitle: 'Automate alllll the things!'
+share_img: 'https://media.giphy.com/media/XmyFwYm8DzBU4/giphy.gif'
+---
+
+In this post I will show you how to run an R script on heroku every day. This is a continuation of my [previous post on tweeting a death from wikidata](https://blog.rmhogervorst.nl/blog/2018/11/19/tweeting-wikidata-info/). 
+
+# Why would I want to run a script on heroku?
+
+It is extremely simple, you don't need to spin up a machine in the cloud on AWS, Google, Azure or Nerdalize. You can just run the script and it works. You can even make it run every day. Heroku does not support R out of the box. So you have to tell heroku to install R (they call that a buildpack).
+
+# What do you need?
+I combined information from [this medium post](https://medium.com/@DaveQuartey/how-i-installed-r-on-heroku-ff8286233d2c) by Dave Quartey and the [description of the buildpack](https://github.com/virtualstaticvoid/heroku-buildpack-r/tree/heroku-16) that Dave refers to in that post.
+
+For this to work you need two scripts:
+
+1. A init.R script that installs the packages and sets up the machine
+2. The script that you want to run
+
+Heroku works a bit like github. 
+You download and install the heroku command line interface (CLI) and then you can tell heroku what to do, and what scripts need to be moved to heroku. 
+
+# Setting up your project
+I'm assuming you're starting out in a fresh
+folder with only your script in it.
+
+1. Create an heroku account.
+2. Download and install [the heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+3. do 'heroku login' you make a round trip to the website to verify it is really you
+
+
+4. Take your script, look what packages it needs, write those packages down.
+
+Make a script called init.R and modify 
+it to install packages:
+
+```{r,eval=FALSE}
+my_packages <- c("glue","rtweet","WikidataQueryServiceR")
+ install_if_missing <- function(p) {
+ if(p %in% rownames(installed.packages())==FALSE){
+ install.packages(p)}
+ }
+
+invisible(sapply(my_packages, install_if_missing))
+```
+
+In the folder you have now 2 scripts:
+`init.R` and your original script. 
+
+5. set up the heroku project
+
+- `heroku create `
+
+this will create a app with a random name, if you want to control the name type `heroku create NAME`
+
+6. Set the heroku stack to 'heroku-16' (because that is what the buildpack is made for, also I don't actually know what these stacks are...)
+
+- `heroku stack:set 'heroku-16`
+
+7. Install the R environment (buildpack) in your heroku project
+
+- `heroku buildpacks:set https://github.com/virtualstaticvoid/heroku-buildpack-r.git#heroku-16`
+
+8. Add the two scripts to git and push them to heroku
+
+```
+git init  # if you haven't already
+git add init.R YOUROTHERSCRIPT
+git commit 
+git push heroku master
+```
+
+9. And now everything works (probably)!
+
+![](https://media.giphy.com/media/COvkHUsABRWwM/giphy.gif)
+
+
+10. Make it run every day (*)
+
+To make this heroku app run every day you need a scheduler. Go to the [heroku website](https://devcenter.heroku.com/articles/scheduler#installing-the-add-on) and install it in your app, or use the command line.
+
+`heroku addons:create scheduler:standard`
+
+Before you do, you have to add a credit card to heroku, if you use heroku a lot it will cost you money. 
+
+11. Configure the scheduler (*):
+
+It says something like run or it has a '$'-sign and a white space after it.
+This is what I used (my script is called runtask.R):  `Rscript app/runtask.R`. 
+
+It took me a while to find out where the script was in the app, but apparently it is in the app directory. 
+
+
+And this is what it does:
+
+![screenshot of past few tweets](/post/2018-12-06-running-an-r-script-on-heroku_files/Screenshot_2018-12-06 wikidata_people_bot ( WikidataB) Twitter.png)
+
+
+And that's it! 
+
+Let me know if you succeed!
+
+You can find the sourcecode for both projects in: <https://github.com/RMHogervorst/tweetwikidatadeaths>

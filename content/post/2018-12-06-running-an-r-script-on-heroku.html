@@ -1,0 +1,105 @@
+---
+title: Running an R script on heroku
+author: Roel M. Hogervorst
+date: '2018-12-06'
+slug: running-an-r-script-on-heroku
+categories:
+  - blog
+  - R
+tags:
+  - heroku
+  - rtweet
+  - tutorial
+  - wikidata
+  - WikidataQueryServiceR
+subtitle: 'Automate alllll the things!'
+share_img: 'https://media.giphy.com/media/XmyFwYm8DzBU4/giphy.gif'
+---
+
+
+
+<p>In this post I will show you how to run an R script on heroku every day. This is a continuation of my <a href="https://blog.rmhogervorst.nl/blog/2018/11/19/tweeting-wikidata-info/">previous post on tweeting a death from wikidata</a>.</p>
+<div id="why-would-i-want-to-run-a-script-on-heroku" class="section level1">
+<h1>Why would I want to run a script on heroku?</h1>
+<p>It is extremely simple, you don’t need to spin up a machine in the cloud on AWS, Google, Azure or Nerdalize. You can just run the script and it works. You can even make it run every day. Heroku does not support R out of the box. So you have to tell heroku to install R (they call that a buildpack).</p>
+</div>
+<div id="what-do-you-need" class="section level1">
+<h1>What do you need?</h1>
+<p>I combined information from <a href="https://medium.com/@DaveQuartey/how-i-installed-r-on-heroku-ff8286233d2c">this medium post</a> by Dave Quartey and the <a href="https://github.com/virtualstaticvoid/heroku-buildpack-r/tree/heroku-16">description of the buildpack</a> that Dave refers to in that post.</p>
+<p>For this to work you need two scripts:</p>
+<ol style="list-style-type: decimal">
+<li>A init.R script that installs the packages and sets up the machine</li>
+<li>The script that you want to run</li>
+</ol>
+<p>Heroku works a bit like github.
+You download and install the heroku command line interface (CLI) and then you can tell heroku what to do, and what scripts need to be moved to heroku.</p>
+</div>
+<div id="setting-up-your-project" class="section level1">
+<h1>Setting up your project</h1>
+<p>I’m assuming you’re starting out in a fresh
+folder with only your script in it.</p>
+<ol style="list-style-type: decimal">
+<li>Create an heroku account.</li>
+<li>Download and install <a href="https://devcenter.heroku.com/articles/heroku-cli">the heroku CLI</a></li>
+<li><p>do ‘heroku login’ you make a round trip to the website to verify it is really you</p></li>
+<li><p>Take your script, look what packages it needs, write those packages down.</p></li>
+</ol>
+<p>Make a script called init.R and modify
+it to install packages:</p>
+<pre class="r"><code>my_packages &lt;- c(&quot;glue&quot;,&quot;rtweet&quot;,&quot;WikidataQueryServiceR&quot;)
+ install_if_missing &lt;- function(p) {
+ if(p %in% rownames(installed.packages())==FALSE){
+ install.packages(p)}
+ }
+
+invisible(sapply(my_packages, install_if_missing))</code></pre>
+<p>In the folder you have now 2 scripts:
+<code>init.R</code> and your original script.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>set up the heroku project</li>
+</ol>
+<ul>
+<li><code>heroku create</code></li>
+</ul>
+<p>this will create a app with a random name, if you want to control the name type <code>heroku create NAME</code></p>
+<ol start="6" style="list-style-type: decimal">
+<li>Set the heroku stack to ‘heroku-16’ (because that is what the buildpack is made for, also I don’t actually know what these stacks are…)</li>
+</ol>
+<ul>
+<li><code>heroku stack:set 'heroku-16</code></li>
+</ul>
+<ol start="7" style="list-style-type: decimal">
+<li>Install the R environment (buildpack) in your heroku project</li>
+</ol>
+<ul>
+<li><code>heroku buildpacks:set https://github.com/virtualstaticvoid/heroku-buildpack-r.git#heroku-16</code></li>
+</ul>
+<ol start="8" style="list-style-type: decimal">
+<li>Add the two scripts to git and push them to heroku</li>
+</ol>
+<pre><code>git init  # if you haven&#39;t already
+git add init.R YOUROTHERSCRIPT
+git commit 
+git push heroku master</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>And now everything works (probably)!</li>
+</ol>
+<p><img src="https://media.giphy.com/media/COvkHUsABRWwM/giphy.gif" /></p>
+<ol start="10" style="list-style-type: decimal">
+<li>Make it run every day (*)</li>
+</ol>
+<p>To make this heroku app run every day you need a scheduler. Go to the <a href="https://devcenter.heroku.com/articles/scheduler#installing-the-add-on">heroku website</a> and install it in your app, or use the command line.</p>
+<p><code>heroku addons:create scheduler:standard</code></p>
+<p>Before you do, you have to add a credit card to heroku, if you use heroku a lot it will cost you money.</p>
+<ol start="11" style="list-style-type: decimal">
+<li>Configure the scheduler (*):</li>
+</ol>
+<p>It says something like run or it has a ‘$’-sign and a white space after it.
+This is what I used (my script is called runtask.R): <code>Rscript app/runtask.R</code>.</p>
+<p>It took me a while to find out where the script was in the app, but apparently it is in the app directory.</p>
+<p>And this is what it does:</p>
+<div class="figure">
+<img src="/post/2018-12-06-running-an-r-script-on-heroku_files/Screenshot_2018-12-06%20wikidata_people_bot%20(%20WikidataB)%20Twitter.png" alt="screenshot of past few tweets" />
+<p class="caption">screenshot of past few tweets</p>
+</div>
+</div>

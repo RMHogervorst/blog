@@ -1,5 +1,5 @@
 ---
-title: Tweeting wikidata info
+title: Tweeting daily famous deaths from wikidata to twitter with R and docker
 author: Roel M. Hogervorst
 date: '2018-11-19'
 slug: tweeting-wikidata-info
@@ -16,7 +16,7 @@ tags:
   - glue
   - WikidataQueryServiceR
   - wikipedia
-subtitle: ''
+subtitle: 'A tweet a day keeps the insanity at bay'
 share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
 ---
 
@@ -88,10 +88,10 @@ the result looked like this:</p>
 result &lt;- query_wikidata(querystring)</code></pre>
 <pre><code>## 10 rows were returned by WDQS</code></pre>
 <pre class="r"><code>result[1:3,1:3]# first 3 rows, first 3 columsn</code></pre>
-<pre><code>##                  entityLabel year cause_of_deathLabel
-## 1 Rafael García-Plata y Osma 1918           influenza
-## 2        Dobroslava Menclová 1978       traffic crash
-## 3             Alan J. Pakula 1998       traffic crash</code></pre>
+<pre><code>##        entityLabel year cause_of_deathLabel
+## 1     Billy Franey 1940           influenza
+## 2     Éva Lehoczky 2016                fire
+## 3 Rosalia Lombardo 1920           influenza</code></pre>
 <p>The query returns name, year, cause of death, manner of death
 (didn’t know which one to use), place of death, country of citizenship, country
 of birth and date of birth.
@@ -103,8 +103,8 @@ I can now glue all these parts together to create a sentence of sorts</p>
 <p>These are the first lines for instance:</p>
 <pre class="r"><code>library(glue)
 glue_data(result[1:2,], &quot;Today in {year} in the place {place_of_deathLabel} died {entityLabel} with cause: {cause_of_deathLabel}. {entityLabel} was born on {as.Date(date_of_birth, &#39;%Y-%m-%d&#39;)}. Find more info on this cause of death on www.en.wikipedia.org/wiki/{cause_of_deathLabel}.  #wikidata&quot;)</code></pre>
-<pre><code>## Today in 1918 in the place Cáceres died Rafael García-Plata y Osma with cause: influenza. Rafael García-Plata y Osma was born on 1870-03-04. Find more info on this cause of death on www.en.wikipedia.org/wiki/influenza.  #wikidata
-## Today in 1978 in the place Plzeň died Dobroslava Menclová with cause: traffic crash. Dobroslava Menclová was born on 1904-01-02. Find more info on this cause of death on www.en.wikipedia.org/wiki/traffic crash.  #wikidata</code></pre>
+<pre><code>## Today in 1940 in the place Hollywood died Billy Franey with cause: influenza. Billy Franey was born on 1889-06-23. Find more info on this cause of death on www.en.wikipedia.org/wiki/influenza.  #wikidata
+## Today in 2016 in the place Budapest died Éva Lehoczky with cause: fire. Éva Lehoczky was born on 1925-03-07. Find more info on this cause of death on www.en.wikipedia.org/wiki/fire.  #wikidata</code></pre>
 </div>
 <div id="post-that-sentence-to-twitter-in-the-account-wikidatabot" class="section level1">
 <h1>Post that sentence to twitter in the account wikidatabot</h1>
@@ -164,33 +164,33 @@ for cheap, let me know by <a href="https://twitter.com/RoelMHogervorst">twitter<
 ##  language en_US                       
 ##  collate  en_US.UTF-8                 
 ##  tz       Europe/Amsterdam            
-##  date     2018-11-19                  
+##  date     2018-12-06                  
 ## 
 ## ─ Packages ──────────────────────────────────────────────────────────────
-##  package               * version date       source         
-##  backports               1.1.2   2017-12-13 CRAN (R 3.5.0) 
-##  blogdown                0.8     2018-07-15 CRAN (R 3.5.1) 
-##  bookdown                0.7     2018-02-18 CRAN (R 3.5.0) 
-##  clisymbols              1.2.0   2017-05-21 CRAN (R 3.5.0) 
-##  crayon                  1.3.4   2017-09-16 CRAN (R 3.5.0) 
-##  curl                    3.2     2018-03-28 CRAN (R 3.5.0) 
-##  digest                  0.6.15  2018-01-28 CRAN (R 3.5.0) 
-##  evaluate                0.11    2018-07-17 CRAN (R 3.5.1) 
-##  glue                  * 1.3.0   2018-07-17 CRAN (R 3.5.1) 
-##  htmltools               0.3.6   2017-04-28 CRAN (R 3.5.0) 
-##  httr                    1.3.1   2017-08-20 CRAN (R 3.5.0) 
-##  knitr                   1.20    2018-02-20 CRAN (R 3.5.0) 
-##  magrittr                1.5     2014-11-22 CRAN (R 3.5.0) 
-##  R6                      2.2.2   2017-06-17 CRAN (R 3.5.0) 
-##  Rcpp                    0.12.18 2018-07-23 cran (@0.12.18)
-##  rmarkdown               1.10    2018-06-11 CRAN (R 3.5.0) 
-##  rprojroot               1.3-2   2018-01-03 CRAN (R 3.5.0) 
-##  sessioninfo             1.0.0   2017-06-21 CRAN (R 3.5.1) 
-##  stringi                 1.2.4   2018-07-20 cran (@1.2.4)  
-##  stringr                 1.3.1   2018-05-10 CRAN (R 3.5.0) 
-##  WikidataQueryServiceR * 0.1.1   2017-04-28 CRAN (R 3.5.1) 
-##  withr                   2.1.2   2018-03-15 CRAN (R 3.5.0) 
-##  xfun                    0.3     2018-07-06 CRAN (R 3.5.1) 
+##  package               * version date       source        
+##  backports               1.1.2   2017-12-13 CRAN (R 3.5.0)
+##  blogdown                0.8     2018-07-15 CRAN (R 3.5.1)
+##  bookdown                0.7     2018-02-18 CRAN (R 3.5.0)
+##  clisymbols              1.2.0   2017-05-21 CRAN (R 3.5.0)
+##  crayon                  1.3.4   2017-09-16 CRAN (R 3.5.0)
+##  curl                    3.2     2018-03-28 CRAN (R 3.5.0)
+##  digest                  0.6.15  2018-01-28 CRAN (R 3.5.0)
+##  evaluate                0.11    2018-07-17 CRAN (R 3.5.1)
+##  glue                  * 1.3.0   2018-07-17 CRAN (R 3.5.1)
+##  htmltools               0.3.6   2017-04-28 CRAN (R 3.5.0)
+##  httr                    1.3.1   2017-08-20 CRAN (R 3.5.0)
+##  knitr                   1.20    2018-02-20 CRAN (R 3.5.0)
+##  magrittr                1.5     2014-11-22 CRAN (R 3.5.0)
+##  R6                      2.2.2   2017-06-17 CRAN (R 3.5.0)
+##  Rcpp                    1.0.0   2018-11-07 CRAN (R 3.5.1)
+##  rmarkdown               1.10    2018-06-11 CRAN (R 3.5.0)
+##  rprojroot               1.3-2   2018-01-03 CRAN (R 3.5.0)
+##  sessioninfo             1.0.0   2017-06-21 CRAN (R 3.5.1)
+##  stringi                 1.2.4   2018-07-20 cran (@1.2.4) 
+##  stringr                 1.3.1   2018-05-10 CRAN (R 3.5.0)
+##  WikidataQueryServiceR * 0.1.1   2017-04-28 CRAN (R 3.5.1)
+##  withr                   2.1.2   2018-03-15 CRAN (R 3.5.0)
+##  xfun                    0.3     2018-07-06 CRAN (R 3.5.1)
 ##  yaml                    2.2.0   2018-07-25 CRAN (R 3.5.1)</code></pre>
 </details>
 </div>
