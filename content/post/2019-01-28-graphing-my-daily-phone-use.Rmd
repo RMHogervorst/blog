@@ -1,0 +1,125 @@
+---
+title: "2019 01 28 Graphing My Daily Phone Use"
+author: Roel M. Hogervorst
+date: 2019-01-28T21:37:19+01:00
+categories:
+  - blog
+subtitle: ""
+tags: []
+share_img:'https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139'
+---
+
+<!-- 
+[analysis]: After reading this post, the r-user (or outsider) will understand how I got to certain answers and (preferably) agrees with them and is excited to start a similar approach on their dataset.
+
+This is the kind of thing that might end up in data is beautiful (or ugly) on reddit.
+
+Title: contains the main answer or question: Do things get darker in later episodes of..
+-->
+
+How many times do I look at my phone? I set up a [small program on my phone](https://blog.rmhogervorst.nl/blog/2019/01/28/logging-my-phone-use-with-tasker/ "With tasker, A previous blog post about how I did that")
+to count the screen activations and logged to a file. In this post I show 
+what went wrong and how to plot the results. 
+
+## The data
+
+I set up a small program on my phone that counts every day how many times I use
+my phone (to be specific, it counts the times the screen has been activated).
+
+My data looks like this:
+
+```
+"screen_log";"1-19-19";"17.30";"7"
+"screen_log";"1-19-19";"17.33";"8"
+"screen_log";"1-19-19";"17.36";"9"
+"screen_log";"1-19-19";"17.38";"10"
+```
+
+To account for comma use and possible problems I set up the program on my
+phone to write a ";"-seperated file that records screen_log, the date, the
+time and the current value of screen_count. Every day around 12 o clock it reset
+the counter to 0.
+I thought it would be cool to compare different days.
+
+## The problems
+I started the data collection on januari 19th around 17:00h, so the first day
+is already halfway through.
+For reasons I cannot fathom, sometimes the system date is recorded in the USA
+style MONTH-DAY-YEAR and sometimes in the rest-of-the-world style of DAY-MONTH-YEAR.
+I wish I could set it to YEAR-MONTH-DAY (ISO 8601). 
+
+## Reading in the data
+
+I use read_csv2, which expects ";" as a seperator and never converts text to factor.
+This particular textfile has no headers, so I tell R what to call the columns.
+
+```{r, eval=FALSE}
+library(tidyverse) # what else
+screenlog <- read_csv2("data/screenlog.csv",col_names = c("type","date","time","counter"))
+```
+
+## Data cleaning
+I have to deal with the different time formats, so I set up a regex that works
+only with Januari, if it detects -01-19 it pulls out the numbers before that,
+if it detects the other variant it takes the second part. 
+I combine the date and time into a timestamp and pull out the hours and minutes,
+before combining the hours and minutes into HMS time class. 
+Finally I remove anything over 23 hours, because in that period the counter is
+reset. 
+
+
+```{r, eval=FALSE}
+screenlog <-   
+  screenlog %>% 
+    mutate(
+        day = case_when( 
+            str_detect(date, "[0-9]{1,2}-01-19") ~ 
+                str_replace(date, "([0-9]{1,2})-01-19","\\1"),
+            str_detect(date, "1-[0-9]{1,2}-19") ~ 
+              str_replace(date, "1-([0-9]{1,2})-19", "\\1") ,
+            TRUE ~  NA_character_
+            ),
+        timestamp = paste0("2019-01-",day, " ",time),
+        timestamp = as.POSIXct(timestamp,tz = "GMT", format = "%Y-%m-%d %H.%M"),
+        hours = str_replace(time,"\\.[0-9]{1,2}", "") %>% as.numeric(),
+        minutes = str_replace(time,"[0-9]{1,2}\\.", "") %>% as.numeric(),
+        time = hms::hms(hours = hours, minutes = minutes)
+        ) %>% 
+    filter(hours < 23)
+```
+
+## How does it look?
+
+First an overview:
+
+```{r}
+screenlog %>% 
+    ggplot(aes(timestamp, counter, color = day))+
+    geom_step()+
+    ggtitle("Times I looked at my screen during vacation", subtitle = "daily values")+
+    theme_light()
+```
+
+
+![Daily cumulative screen looking values](/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png){width=80%}
+
+But that is difficult to compare, so I also show them overlayed:
+
+```{r}
+screenlog %>% 
+    ggplot(aes(time, counter, group = day, color = day))+
+    geom_step()+
+    ggtitle("Times I looked at my screen during vacation", subtitle = "overlay plot")+
+    theme_light()
+```
+
+![overlay of cumulative screen lookings every day on the same hourly scale](/post/2019-01-28-graphing-my-daily-phone-use_files/screenlook_overlay.png){width=80%}
+
+
+# Fin
+The only remaining question is: what did I do on the 25th that I looked soooo (326 times) many 
+times on my screen?
+Is there a bug in the counting? Was I really bored, did I take a lot of photo's?
+I was in the Botanical Gardens of Malaga and did take a lot of pictures with my
+phone. 
+
