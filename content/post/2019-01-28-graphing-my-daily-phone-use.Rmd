@@ -1,21 +1,19 @@
 ---
-title: "2019 01 28 Graphing My Daily Phone Use"
+title: "Graphing My Daily Phone Use"
 author: Roel M. Hogervorst
-date: 2019-01-28T21:37:19+01:00
+date: '2019-01-28'
+slug: graphing-my-daily-phone-use
 categories:
   - blog
-subtitle: ""
-tags: []
-share_img:'https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139'
+  - R
+tags:   
+  - tasker
+  - intermediate
+  - phone
+subtitle: ''
+share_img: '/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png'
 ---
 
-<!-- 
-[analysis]: After reading this post, the r-user (or outsider) will understand how I got to certain answers and (preferably) agrees with them and is excited to start a similar approach on their dataset.
-
-This is the kind of thing that might end up in data is beautiful (or ugly) on reddit.
-
-Title: contains the main answer or question: Do things get darker in later episodes of..
--->
 
 How many times do I look at my phone? I set up a [small program on my phone](https://blog.rmhogervorst.nl/blog/2019/01/28/logging-my-phone-use-with-tasker/ "With tasker, A previous blog post about how I did that")
 to count the screen activations and logged to a file. In this post I show 
@@ -92,7 +90,7 @@ screenlog <-
 
 First an overview:
 
-```{r}
+```{r, eval=FALSE}
 screenlog %>% 
     ggplot(aes(timestamp, counter, color = day))+
     geom_step()+
@@ -105,7 +103,7 @@ screenlog %>%
 
 But that is difficult to compare, so I also show them overlayed:
 
-```{r}
+```{r, eval=FALSE}
 screenlog %>% 
     ggplot(aes(time, counter, group = day, color = day))+
     geom_step()+
