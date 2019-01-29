@@ -1,0 +1,109 @@
+---
+title: "Graphing My Daily Phone Use"
+author: Roel M. Hogervorst
+date: '2019-01-28'
+slug: graphing-my-daily-phone-use
+categories:
+  - blog
+  - R
+tags:   
+  - tasker
+  - intermediate
+  - phone
+subtitle: ''
+share_img: '/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png'
+---
+
+
+
+<p>How many times do I look at my phone? I set up a <a href="https://blog.rmhogervorst.nl/blog/2019/01/28/logging-my-phone-use-with-tasker/" title="With tasker, A previous blog post about how I did that">small program on my phone</a>
+to count the screen activations and logged to a file. In this post I show
+what went wrong and how to plot the results.</p>
+<div id="the-data" class="section level2">
+<h2>The data</h2>
+<p>I set up a small program on my phone that counts every day how many times I use
+my phone (to be specific, it counts the times the screen has been activated).</p>
+<p>My data looks like this:</p>
+<pre><code>&quot;screen_log&quot;;&quot;1-19-19&quot;;&quot;17.30&quot;;&quot;7&quot;
+&quot;screen_log&quot;;&quot;1-19-19&quot;;&quot;17.33&quot;;&quot;8&quot;
+&quot;screen_log&quot;;&quot;1-19-19&quot;;&quot;17.36&quot;;&quot;9&quot;
+&quot;screen_log&quot;;&quot;1-19-19&quot;;&quot;17.38&quot;;&quot;10&quot;</code></pre>
+<p>To account for comma use and possible problems I set up the program on my
+phone to write a “;”-seperated file that records screen_log, the date, the
+time and the current value of screen_count. Every day around 12 o clock it reset
+the counter to 0.
+I thought it would be cool to compare different days.</p>
+</div>
+<div id="the-problems" class="section level2">
+<h2>The problems</h2>
+<p>I started the data collection on januari 19th around 17:00h, so the first day
+is already halfway through.
+For reasons I cannot fathom, sometimes the system date is recorded in the USA
+style MONTH-DAY-YEAR and sometimes in the rest-of-the-world style of DAY-MONTH-YEAR.
+I wish I could set it to YEAR-MONTH-DAY (ISO 8601).</p>
+</div>
+<div id="reading-in-the-data" class="section level2">
+<h2>Reading in the data</h2>
+<p>I use read_csv2, which expects “;” as a seperator and never converts text to factor.
+This particular textfile has no headers, so I tell R what to call the columns.</p>
+<pre class="r"><code>library(tidyverse) # what else
+screenlog &lt;- read_csv2(&quot;data/screenlog.csv&quot;,col_names = c(&quot;type&quot;,&quot;date&quot;,&quot;time&quot;,&quot;counter&quot;))</code></pre>
+</div>
+<div id="data-cleaning" class="section level2">
+<h2>Data cleaning</h2>
+<p>I have to deal with the different time formats, so I set up a regex that works
+only with Januari, if it detects -01-19 it pulls out the numbers before that,
+if it detects the other variant it takes the second part.
+I combine the date and time into a timestamp and pull out the hours and minutes,
+before combining the hours and minutes into HMS time class.
+Finally I remove anything over 23 hours, because in that period the counter is
+reset.</p>
+<pre class="r"><code>screenlog &lt;-   
+  screenlog %&gt;% 
+    mutate(
+        day = case_when( 
+            str_detect(date, &quot;[0-9]{1,2}-01-19&quot;) ~ 
+                str_replace(date, &quot;([0-9]{1,2})-01-19&quot;,&quot;\\1&quot;),
+            str_detect(date, &quot;1-[0-9]{1,2}-19&quot;) ~ 
+              str_replace(date, &quot;1-([0-9]{1,2})-19&quot;, &quot;\\1&quot;) ,
+            TRUE ~  NA_character_
+            ),
+        timestamp = paste0(&quot;2019-01-&quot;,day, &quot; &quot;,time),
+        timestamp = as.POSIXct(timestamp,tz = &quot;GMT&quot;, format = &quot;%Y-%m-%d %H.%M&quot;),
+        hours = str_replace(time,&quot;\\.[0-9]{1,2}&quot;, &quot;&quot;) %&gt;% as.numeric(),
+        minutes = str_replace(time,&quot;[0-9]{1,2}\\.&quot;, &quot;&quot;) %&gt;% as.numeric(),
+        time = hms::hms(hours = hours, minutes = minutes)
+        ) %&gt;% 
+    filter(hours &lt; 23)</code></pre>
+</div>
+<div id="how-does-it-look" class="section level2">
+<h2>How does it look?</h2>
+<p>First an overview:</p>
+<pre class="r"><code>screenlog %&gt;% 
+    ggplot(aes(timestamp, counter, color = day))+
+    geom_step()+
+    ggtitle(&quot;Times I looked at my screen during vacation&quot;, subtitle = &quot;daily values&quot;)+
+    theme_light()</code></pre>
+<div class="figure">
+<img src="/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png" alt="Daily cumulative screen looking values" style="width:80.0%" />
+<p class="caption">Daily cumulative screen looking values</p>
+</div>
+<p>But that is difficult to compare, so I also show them overlayed:</p>
+<pre class="r"><code>screenlog %&gt;% 
+    ggplot(aes(time, counter, group = day, color = day))+
+    geom_step()+
+    ggtitle(&quot;Times I looked at my screen during vacation&quot;, subtitle = &quot;overlay plot&quot;)+
+    theme_light()</code></pre>
+<div class="figure">
+<img src="/post/2019-01-28-graphing-my-daily-phone-use_files/screenlook_overlay.png" alt="overlay of cumulative screen lookings every day on the same hourly scale" style="width:80.0%" />
+<p class="caption">overlay of cumulative screen lookings every day on the same hourly scale</p>
+</div>
+</div>
+<div id="fin" class="section level1">
+<h1>Fin</h1>
+<p>The only remaining question is: what did I do on the 25th that I looked soooo (326 times) many
+times on my screen?
+Is there a bug in the counting? Was I really bored, did I take a lot of photo’s?
+I was in the Botanical Gardens of Malaga and did take a lot of pictures with my
+phone.</p>
+</div>
