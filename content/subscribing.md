@@ -21,5 +21,8 @@ Are you interested in only certain kind of blogs you can also follow a tag only
 
 
 ## Other ways
-I'll try tweet everything as well (see tweet button below).
+I'll try to tweet everything as well (see tweet button below).
+
+I also aggregate some of my posts on [dev.to](https://dev.to "a great platform for developers") 
+
 
