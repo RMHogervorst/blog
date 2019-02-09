@@ -190,7 +190,7 @@ ggplot(data = NLD, aes(x = long, y = lat))+
 
     ## Regions defined for each Polygons
 
-![](http://rmhogervorst.nl/cleancode/images/figures/unnamed-chunk-5-1.png)
+![](/img/figures/unnamed-chunk-5-1.png)
 
 We got a message: Regions defined for each Polygons, this is ggplot telling us that some work was done on the background to reshape the data for plotting use.
 
@@ -208,7 +208,7 @@ ggplot()+
 
     ## Regions defined for each Polygons
 
-![](http://rmhogervorst.nl/cleancode/images/figures/unnamed-chunk-6-1.png)
+![](/img/figures/unnamed-chunk-6-1.png)
 
 This looks better, but for people from the Netherlands, this still doesn't look quite right. The country is stretched in a weird way and the center, filled with a [big ass man made lake](https://en.wikipedia.org/wiki/IJsselmeer "this lake used to be a sea, but we didn't want a sea anymore") should not by plotted.
 
@@ -222,7 +222,7 @@ ggplot()+
 
     ## Regions defined for each Polygons
 
-![](http://rmhogervorst.nl/cleancode/images/figures/unnamed-chunk-7-1.png)
+![](/img/figures/unnamed-chunk-7-1.png)
 
 
 Lets first take out the lakes. This is where local knowledge comes to play. If we look at the level\_1 names `NLD@data$NAME_1 %>% unique()`, we see 14 different areas. However, there are only 12 provinces in the Netherlands. 2 of these areas are actually lakes: "IJsselmeer" and "Zeeuwse meren". We can get those out by using subset.[2]. The command says: subset NLD where NLD$NAME\_! is NOT the two lakes.
@@ -243,7 +243,7 @@ ggplot(NLD_fixed) +
   coord_map()
 ```
 
-![](http://rmhogervorst.nl/cleancode/images/figures/unnamed-chunk-8-1.png)
+![](/img/figures/unnamed-chunk-8-1.png)
 
 Let's add some color!
 
@@ -256,7 +256,7 @@ ggplot(NLD_fixed) +
   coord_map()
 ```
 
-![](http://rmhogervorst.nl/cleancode/images/figures/unnamed-chunk-9-1.png)
+![](/img/figures/unnamed-chunk-9-1.png)
 
 Combine the map with another dataset and color the tiles
 --------------------------------------------------------

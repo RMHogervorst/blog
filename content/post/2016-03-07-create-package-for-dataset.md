@@ -174,7 +174,7 @@ Once installed you can use the package anytime you like with `library(package)` 
 
 Build a source or binary version:
 
-![rstudiowebsite image of sharing ](http://www.rstudio.com/images/docs/build_pane_build.png)
+![rstudiowebsite image of sharing ](https://www.rstudio.com/images/docs/build_pane_build.png)
 
 After you build the source package, a file is created, in my case:
 "coffeedata_0.1.0.tar". That file is shareble and can be installed on someones computer. They will need to build from source. 

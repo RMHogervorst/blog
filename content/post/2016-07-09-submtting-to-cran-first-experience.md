@@ -21,7 +21,7 @@ First a description of my brand new package: badgecreatr, then a description of 
 
 When you go around github looking at projects you often see these interesting images in the readme 
 [![Build Status](https://travis-ci.org/hadley/ggplot2.svg?branch=master)](https://travis-ci.org/hadley/ggplot2)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggplot2)](http://cran.r-project.org/package=ggplot2)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ggplot2)](https://cran.r-project.org/package=ggplot2)
 
 The ones you see above are from [ggplot2](https://github.com/hadley/ggplot2). 
 
