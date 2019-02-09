@@ -12,8 +12,10 @@
   # Feature-Policy   # don't know what to do with this one yet
   # Test @ https://report-uri.com/account/reports/csp/
   # Build @ https://report-uri.com/home/generate
-	Content-Security-Policy-Report-Only: default-src cdnjs.cloudflare.com 'self' blog.rmhogervorst.nl code.jquery.com fonts.googleapis.com fonts.gstatic.com maxcdn.bootstrapcdn.com; font-src cdnjs.cloudflare.com; img-src blog.rmhogervorst.nl; script-src cdnjs.cloudflare.com code.jquery.com; style-src blog.rmhogervorst.nl cdnjs.cloudflare.com fonts.googleapis.com maxcdn.bootstrapcdn.com; report-uri https://e9b47d122d8b9285221bc68ecaa261b3.report-uri.com/r/d/csp/wizard
+	Content-Security-Policy-Report-Only: default-src cdnjs.cloudflare.com 'self' blog.rmhogervorst.nl code.jquery.com fonts.googleapis.com fonts.gstatic.com maxcdn.bootstrapcdn.com; font-src cdnjs.cloudflare.com; img-src blog.rmhogervorst.nl; script-src cdnjs.cloudflare.com code.jquery.com; style-src blog.rmhogervorst.nl cdnjs.cloudflare.com fonts.googleapis.com maxcdn.bootstrapcdn.com; report-uri https://e9b47d122d8b9285221bc68ecaa261b3.report-uri.com/r/d/csp/reportOnly
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   
-  
+# Reporting api https://docs.report-uri.com/setup/reporting-api/
+Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://e9b47d122d8b9285221bc68ecaa261b3.report-uri.com/a/d/g"}],"include_subdomains":true}
+
   
