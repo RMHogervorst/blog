@@ -31,7 +31,7 @@ publishDir = "public"
   github = "RMHogervorst"
   gitlab = "rmhogervorst"
   bitbucket = "RMHogervorst"
-  twitter = "RMHoge"
+  twitter = "RoelMHogervorst"
   linkedin = "rmhogervorst"
   stackoverflow = "users/5573955/roel-hogervorst"
  
@@ -49,3 +49,13 @@ publishDir = "public"
     name = "Getting updates"
     url = "subscribing"
     weight = 3
+
+[[menu.main]]
+    name = "all tags"
+    url = "tags/"
+    weight = 4
+
+[[menu.main]]
+    name = "all categories"
+    url = "categories/"
+    weight = 4

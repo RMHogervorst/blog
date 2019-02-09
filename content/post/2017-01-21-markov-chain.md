@@ -30,7 +30,7 @@ But first cleaning
 I'm using the packages dplyr, stringr, tidytext and tidyr.
 If you'd like to follow along download the [dataset](https://github.com/RTrek/TNG/raw/master/data/TNG.rda "this link goes to the dataset ~26 mb, if you don't trust that, go to that repo and download the csv file from data-raw") and load it in R with load("path to file")
 
-The dataset itself is rather large `dim(TNG) #110176     17` with 11 thousand rows and 17 variables. However we will only use the variables `type`, `who` and `text`. `Type` contains either "description" or "speech". We only need speech. Because I was a novice and because in general I'm not very tidy [2](Which%20is%20rather%20ironic%20since%20I%20like%20to%20adore%20to%20Tidy%20principles...) this dataset is rather dirty. I copied and did not sanitize the who part. This means that if you filter on "Riker", you will not get everything he said. The script has weird things like: "Riker's com voice", "Riker's voice" and several variants of "V.O." (means voice over).
+The dataset itself is rather large `dim(TNG) #110176     17` with 11 thousand rows and 17 variables. However we will only use the variables `type`, `who` and `text`. `Type` contains either "description" or "speech". We only need speech. Because I was a novice and because in general I'm not very tidy [2] (Which is rather ironic since I like to adore to Tidy principles...) this dataset is rather dirty. I copied and did not sanitize the who part. This means that if you filter on "Riker", you will not get everything he said. The script has weird things like: "Riker's com voice", "Riker's voice" and several variants of "V.O." (means voice over).
 
 Cleaning the who column
 -----------------------
@@ -145,7 +145,7 @@ return_third_word <- function( woord1, woord2){
 -   return the rows where word 1 matches woord1, and word2 matches woord2.
 -   Of those rows \* return a single random row, where the randomness is weighted by occurrence. \* Return the single word.
 
-I also used a bit of [non-standard evalation (NSE)](http://rmhogervorst.nl/cleancode/blog/2016/06/13/NSE_standard_evaluation_dplyr.html "link to NSE article") just for fun.
+I also used a bit of [non-standard evalation (NSE)](https://blog.rmhogervorst.nl/blog/2016/06/13/nse_standard_evaluation_dplyr/ "link to NSE article") just for fun.
 
 ### Sentence generator
 

@@ -31,7 +31,7 @@ More information about the file can be found in the [Toelichting.pdf](https://ww
 *We can already work with this file, because it is in an open format, but for this exercise I will transform it to a .sav file. [See the transformation here](https://github.com/RMHogervorst/cleancodeexamples/blob/master/scripts/dplyr-example-duo.R "Github example of csv -> .sav with haven")*
 
 Download the .sav [file](https://github.com/rmhogervorst/datasets/ingeschrevenwo2015.sav) to start. Do remember where you put the file, you will need it later. 
-Or let R download the file, even better for reasons of [reproducability](https://blog.rmhogervorst.nl//tags/reproducibility/ "all posts about repro-research").
+Or let R download the file, even better for reasons of [reproducability](https://blog.rmhogervorst.nl/tags/ "all posts").
 Consider starting a new [project](https://blog.rmhogervorst.nl//tags/rproject/ "with a rProject you files will be more organized") for this example.
 
 # Opening the file in Rstudio

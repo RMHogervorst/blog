@@ -115,7 +115,7 @@ I don't want to keep track of the correct way to cite sources, that is just a wa
 This is how it looks on my computer
 ![a snapshot of zotero on my pc](/img/example_zotero_look.PNG)
 
-I use the extension [betterbibtex](link), that adds extra functionality to Zotero. In this case it also takes care of synchronizing the bibtext file that you export to the folder you're working in and the corresponding collection in Zotero. (see further on).
+I use the extension [betterbibtex](https://github.com/retorquere/zotero-better-bibtex "I think this is the link, I'm fixing this post in 2018"), that adds extra functionality to Zotero. In this case it also takes care of synchronizing the bibtext file that you export to the folder you're working in and the corresponding collection in Zotero. (see further on).
 
 I export the collection from zotero into the rstudio folder. ![zotero keep updated image](/img/example_zotero_keep_updated.PNG)
 
