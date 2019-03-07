@@ -12,10 +12,10 @@
   # Feature-Policy   # don't know what to do with this one yet
   # Test @ https://report-uri.com/account/reports/csp/
   # Build @ https://report-uri.com/home/generate
-	Content-Security-Policy-Report-Only: default-src cdnjs.cloudflare.com 'self' blog.rmhogervorst.nl code.jquery.com fonts.googleapis.com fonts.gstatic.com maxcdn.bootstrapcdn.com; font-src cdnjs.cloudflare.com; img-src blog.rmhogervorst.nl; script-src cdnjs.cloudflare.com code.jquery.com; style-src blog.rmhogervorst.nl cdnjs.cloudflare.com fonts.googleapis.com maxcdn.bootstrapcdn.com; report-uri https://e9b47d122d8b9285221bc68ecaa261b3.report-uri.com/r/d/csp/reportOnly
+	Content-Security-Policy: default-src cdnjs.cloudflare.com 'self' blog.rmhogervorst.nl code.jquery.com fonts.googleapis.com fonts.gstatic.com maxcdn.bootstrapcdn.com pbs.twimg.com platform.twitter.com d33wubrfki0l68.cloudfront.net syndication.twitter.com www.youtube.com; font-src cdnjs.cloudflare.com fonts.gstatic.com cdn.joinhoney.com fonts.googleapis.com github.com maxcdn.bootstrapcdn.com themes.googleusercontent.com 'self'; img-src blog.rmhogervorst.nl 'self' cdnjs.cloudflare.com i.ytimg.com media.giphy.com pbs.twimg.com platform.twitter.com d33wubrfki0l68.cloudfront.net syndication.twitter.com lubor.netlify.com; script-src cdnjs.cloudflare.com code.jquery.com maxcdn.bootstrapcdn.com 'self' blog.rmhogervorst.nl platform.twitter.com s3.amazonaws.com syndication.twitter.com d33wubrfki0l68.cloudfront.net cdn.syndication.twimg.com cdn.walkme.com; style-src blog.rmhogervorst.nl cdnjs.cloudflare.com fonts.googleapis.com maxcdn.bootstrapcdn.com platform.twitter.com 'self' d33wubrfki0l68.cloudfront.net use.fontawesome.com; child-src platform.twitter.com syndication.twitter.com www.youtube.com; form-action syndication.twitter.com; frame-src platform.twitter.com syndication.twitter.com www.youtube.com; media-src ssl.gstatic.com; script-src-elem blog.rmhogervorst.nl platform.twitter.com cdn.syndication.twimg.com 'self' mathjax.rstudio.com; style-src-elem platform.twitter.com 'self'; report-uri https://e9b47d122d8b9285221bc68ecaa261b3.report-uri.com/r/d/csp/reportOnly
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   
 # Reporting api https://docs.report-uri.com/setup/reporting-api/
 Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://e9b47d122d8b9285221bc68ecaa261b3.report-uri.com/a/d/g"}],"include_subdomains":true}
 
-  
+  NEL: {"report_to":"default","max_age":31536000,"include_subdomains":true}
