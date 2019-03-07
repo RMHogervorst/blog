@@ -50,17 +50,7 @@ publishDir = "public"
     url = "subscribing"
     weight = 3
 
-[[menu.main.more]]
-    name = "all tags"
-    url = "tags/"
-    weight = 4
-
-[[menu.main.more]]
-    name = "all categories"
-    url = "categories/"
-    weight = 4
-
-[[menu.main.more]]
-    name = "half ideas"
-    url = "https://notes.rmhogervorst.nl/"
-    weight = 4
+[[menu.main]]
+    name = "search and more "
+    url = "search_and_more/"
+    weight = 3
