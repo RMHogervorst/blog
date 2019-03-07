@@ -29,8 +29,9 @@ I'm not saying it is incorrect, but it might lead you into trouble.
 
 example: we have some data, some different calculations and we want to plot that.
 
-<details> <summary> I load tidyverse and create a modified mtcars set here, 
-but if you don't care you can leave it unopened </summary>
+<details> <summary> 
+**I load tidyverse and create a modified mtcars set in this hidden part, 
+but if you don't care you can leave it unopened** </summary>
 
 *Cool how this folds away right? It even works on github markdown, if you want to know how I did this, I explain it [here](https://notes.rmhogervorst.nl/post/2019/02/09/code-folding-github-markdown/)*
 

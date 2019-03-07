@@ -21,9 +21,9 @@ share_img: 'post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph
 <p>Can we make the computer say something about characters in a book? In this piece I will search for the names of characters and the words around those names in books. What can we learn about a character from text analysis? Of course it’s also just another excuse for me to read the Hitchhikers series! I will break down the text into chunks of two words, extract the word pairs that matter and visualize the results. Come an play along with your favorite book.</p>
 <div id="inspiration" class="section level1">
 <h1>Inspiration</h1>
-<p>The Hitchhiker’s Guide to the Galaxy (HHGTTG for short) is a series of scifi novels<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> about the last surviving man, Arthur Dent, after the destruction of earth. And I love it.</p>
+<p>The Hitchhiker’s Guide to the Galaxy (HHGTTG for short) is a series of scifi novels<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> about the last surviving man, Arthur Dent, after the destruction of earth. And I love it.</p>
 <p>Arthur is an anti-hero, he’s not brave, he’s not smart, he sort of stumbles through life and things happen to him, he has almost no agency. That is something you realize while you are reading the book, but can we find that in the text as well? What can we find out about the actions of people in a book by looking at words around subjects in a book?</p>
-<p>I’m inspired by the amazing text work of Julia Silge. For instance on “She giggles, he gallops”<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> (link at the bottom of page, really check it out!) Julia and her co-writers scanned through 2000 movie manuscripts and extracted words around gender pronouns. They show that women will more likely snuggle, giggle, squeal, and sob, relative to men. Conversely, men are more likely to strap, gallop, shoot, howl, and kill. See more in <a href="https://pudding.cool/2017/08/screen-direction/">she giggles, he gallops</a>.</p>
+<p>I’m inspired by the amazing text work of Julia Silge. For instance on “She giggles, he gallops”<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> (link at the bottom of page, really check it out!) Julia and her co-writers scanned through 2000 movie manuscripts and extracted words around gender pronouns. They show that women will more likely snuggle, giggle, squeal, and sob, relative to men. Conversely, men are more likely to strap, gallop, shoot, howl, and kill. See more in <a href="https://pudding.cool/2017/08/screen-direction/">she giggles, he gallops</a>.</p>
 <p>So what can we do with these books? I will walk through all the main characters (and Marvin) and at the end I also look at gender pronouns (he vs she). There is already a problem: there is only one woman in the cast. This could be a problem.</p>
 <p>Many of the steps I take here are copied from the <a href="www.tidytextmining.com">tidytextmining book</a>.</p>
 </div>
@@ -40,13 +40,14 @@ share_img: 'post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph
 </ul>
 <p>leading to:</p>
 <div class="figure">
-<img src="/post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph_files/arthur_is_confused.png" alt="Arthur Dent is confused (words connected to Arthur)" style="width:80.0%" style="height:80.0%" />
+<img src="/post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph_files/arthur_is_confused.png" alt="Arthur Dent is confused (words connected to Arthur)" style="width:80.0%;height:80.0%" />
 <p class="caption">Arthur Dent is confused (words connected to Arthur)</p>
 </div>
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>The books are of course copyrighted so I cannot share the files with you, that would be piracy. books loaded, cannot do it per chapter, because the chapters are messed up in some of the books. I do it per book. that’s life.</p>
+<p>The books are of course copyrighted so I cannot share the files with you, that would be piracy.
+books loaded, cannot do it per chapter, because the chapters are messed up in some of the books. I do it per book. that’s life.</p>
 </div>
 <div id="packages" class="section level2">
 <h2>packages</h2>
@@ -130,8 +131,11 @@ head(person_actions,4)</code></pre>
 ## 4 arthur dent&#39;s       4</code></pre>
 <div id="create-a-cool-plotting-theme" class="section level3">
 <h3>Create a cool plotting theme</h3>
-<p>I will plot several of the same sort of network plots and I don’t want to set the theme every time. You could use: <code>theme_set()</code> but I created a function here. the function takes data, and you can set a title and subtitle, no need for NSE here.</p>
-<p>I use a black background, because, you know, space! it’s big! And empty, and empty is black, because absence of light is dark… Or something. And there is a lot of black because the Guide says:</p>
+<p>I will plot several of the same sort of network plots and I don’t want to set
+the theme every time. You could use: <code>theme_set()</code> but I created a function here.
+the function takes data, and you can set a title and subtitle, no need for NSE here.</p>
+<p>I use a black background, because, you know, space! it’s big! And empty, and empty is black, because absence of light is dark… Or something.
+And there is a lot of black because the Guide says:</p>
 <blockquote>
 <p>Space is big. You just won’t believe how vastly, hugely, mind- bogglingly big it is. I mean, you may think it’s a long way down the road to the chemist’s, but that’s just peanuts to space.</p>
 </blockquote>
@@ -187,7 +191,7 @@ set.seed(42) # if I redo everything looks the same</code></pre>
     create_hhgttg_plot(&quot;Zaphod is more emotional&quot;, &quot;He stares, is angry, bitterly and shrugs&quot;)</code></pre>
 <pre><code>## Using `nicely` as default layout</code></pre>
 <p><img src="/post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>Tricia McMillan, the smartest person in the book<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> (after Marvin, the android with a brain the size of a galaxy; and should we count him as a person?), mostly just stands and watches what the others are doing. She has two names, and the two names do not appear to have overlapping words. Tricia is most commonly referred to simply as “Trillian”, a modification of her birth name, which she adopted because it sounded more “space-like”.</p>
+<p>Tricia McMillan, the smartest person in the book<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> (after Marvin, the android with a brain the size of a galaxy; and should we count him as a person?), mostly just stands and watches what the others are doing. She has two names, and the two names do not appear to have overlapping words. Tricia is most commonly referred to simply as “Trillian”, a modification of her birth name, which she adopted because it sounded more “space-like”.</p>
 <pre class="r"><code>person_actions %&gt;% 
     filter(word1 %in% c(&quot;tricia&quot;, &quot;trillian&quot;)) %&gt;% 
     filter(word2 != &quot;mcmillan&quot;) %&gt;% 
@@ -211,7 +215,8 @@ set.seed(42) # if I redo everything looks the same</code></pre>
 </div>
 <div id="looking-at-it-from-the-word-perspective" class="section level2">
 <h2>looking at it from the word perspective</h2>
-<p>Using the parts of speech data frame in tidytext I can select all verbs and select verbs I’m interested in.</p>
+<p>Using the parts of speech data frame in tidytext I can select all
+verbs and select verbs I’m interested in.</p>
 <pre class="r"><code>action_words &lt;- 
     unnested_hhgttg %&gt;% 
     ungroup() %&gt;% 
@@ -279,7 +284,11 @@ action_words %&gt;% filter(n&gt;3) %&gt;% pull(word2) %&gt;% unique()</code></pr
 </div>
 <div id="he-vs-she" class="section level2">
 <h2>He vs She</h2>
-<p>Let’s try again with the basics, he vs she. She is used a lot less. he is used 1413 times, and she 373 times. And disproportionately in the last book ‘mostly harmless’. I recall that there is a new character in the final book, Random, the daughter of Arthur.</p>
+<p>Let’s try again with the basics, he vs she.
+She is used a lot less. he is used 1413 times, and she 373 times.
+And disproportionately in the last book ‘mostly harmless’.
+I recall that there is a new character in the final book,
+Random, the daughter of Arthur.</p>
 <pre class="r"><code>she_he &lt;- HHGTTG %&gt;% 
     unnest_tokens(output = &quot;bigram&quot;, content, token = &quot;ngrams&quot;, n=2) %&gt;% 
     group_by(book) %&gt;% 
@@ -300,9 +309,11 @@ she_he %&gt;%
 ## 4 4 So Long, and Thanks for All the Fish     97
 ## 5 5 Mostly Harmless                         190</code></pre>
 <p>What verbs are more he-like, and she-like?</p>
-<p>I threw away the he and she when I did a anti_join of stop words, so let’s start over again.</p>
+<p>I threw away the he and she when I did a anti_join of stop words, so
+let’s start over again.</p>
 <p>I’m following parts of the procedures from here: <a href="https://www.tidytextmining.com/twitter.html#word-frequencies-1" class="uri">https://www.tidytextmining.com/twitter.html#word-frequencies-1</a></p>
-<p>To account for the difference in numbers I calculate the frequency per he and per she and divide those 2.</p>
+<p>To account for the difference in numbers I calculate the
+frequency per he and per she and divide those 2.</p>
 <pre class="r"><code>logratio_she_he &lt;- 
   she_he %&gt;% 
   group_by(word1,word2) %&gt;% 
@@ -366,110 +377,112 @@ logratio_she_he %&gt;%
 </ul>
 <div id="state-of-the-machine" class="section level3">
 <h3>State of the machine</h3>
-<p><details> <summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong> </summary></p>
+<details>
+<p><summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong> </summary></p>
 <pre class="r"><code>sessioninfo::session_info()</code></pre>
 <pre><code>## ─ Session info ──────────────────────────────────────────────────────────
 ##  setting  value                       
-##  version  R version 3.5.1 (2018-07-02)
+##  version  R version 3.5.2 (2018-12-20)
 ##  os       Ubuntu 16.04.5 LTS          
 ##  system   x86_64, linux-gnu           
 ##  ui       X11                         
 ##  language en_US                       
 ##  collate  en_US.UTF-8                 
+##  ctype    en_US.UTF-8                 
 ##  tz       Europe/Amsterdam            
-##  date     2018-07-24                  
+##  date     2019-01-29                  
 ## 
 ## ─ Packages ──────────────────────────────────────────────────────────────
-##  package     * version    date       source                           
-##  assertthat    0.2.0      2017-04-11 CRAN (R 3.5.0)                   
-##  backports     1.1.2      2017-12-13 CRAN (R 3.5.0)                   
-##  bindr         0.1.1      2018-03-13 CRAN (R 3.5.0)                   
-##  bindrcpp    * 0.2.2      2018-03-29 CRAN (R 3.5.0)                   
-##  blogdown      0.8        2018-07-15 CRAN (R 3.5.1)                   
-##  bookdown      0.7        2018-02-18 CRAN (R 3.5.0)                   
-##  broom         0.4.5      2018-07-03 CRAN (R 3.5.1)                   
-##  cellranger    1.1.0      2016-07-27 CRAN (R 3.5.0)                   
-##  cli           1.0.0      2017-11-05 CRAN (R 3.5.0)                   
-##  clisymbols    1.2.0      2017-05-21 CRAN (R 3.5.0)                   
-##  colorspace    1.3-2      2016-12-14 CRAN (R 3.5.0)                   
-##  crayon        1.3.4      2017-09-16 CRAN (R 3.5.0)                   
-##  digest        0.6.15     2018-01-28 CRAN (R 3.5.0)                   
-##  dplyr       * 0.7.6      2018-06-29 CRAN (R 3.5.1)                   
-##  evaluate      0.10.1     2017-06-24 CRAN (R 3.5.0)                   
-##  fansi         0.2.3      2018-05-06 CRAN (R 3.5.1)                   
-##  farver        1.0        2018-07-16 Github (thomasp85/farver@d29b48c)
-##  forcats     * 0.3.0      2018-02-19 CRAN (R 3.5.0)                   
-##  foreign       0.8-70     2018-04-23 CRAN (R 3.5.0)                   
-##  ggforce       0.1.3      2018-07-07 CRAN (R 3.5.1)                   
-##  ggplot2     * 3.0.0      2018-07-03 cran (@3.0.0)                    
-##  ggraph      * 1.0.2      2018-07-07 CRAN (R 3.5.1)                   
-##  ggrepel       0.8.0      2018-05-09 CRAN (R 3.5.0)                   
-##  glue          1.3.0      2018-07-18 Github (tidyverse/glue@66de125)  
-##  gridExtra     2.3        2017-09-09 CRAN (R 3.5.0)                   
-##  gtable        0.2.0      2016-02-26 CRAN (R 3.5.0)                   
-##  haven         1.1.2      2018-06-27 CRAN (R 3.5.1)                   
-##  hms           0.4.2      2018-03-10 CRAN (R 3.5.0)                   
-##  htmltools     0.3.6      2017-04-28 CRAN (R 3.5.0)                   
-##  httr          1.3.1      2017-08-20 CRAN (R 3.5.0)                   
-##  igraph        1.2.1      2018-03-10 CRAN (R 3.5.0)                   
-##  janeaustenr   0.1.5      2017-06-10 CRAN (R 3.5.0)                   
-##  jsonlite      1.5        2017-06-01 CRAN (R 3.5.0)                   
-##  knitr         1.20       2018-02-20 CRAN (R 3.5.0)                   
-##  labeling      0.3        2014-08-23 CRAN (R 3.5.0)                   
-##  lattice       0.20-35    2017-03-25 CRAN (R 3.5.0)                   
-##  lazyeval      0.2.1      2017-10-29 CRAN (R 3.5.0)                   
-##  lubridate     1.7.4      2018-04-11 CRAN (R 3.5.0)                   
-##  magrittr      1.5        2014-11-22 CRAN (R 3.5.0)                   
-##  MASS          7.3-50     2018-04-30 CRAN (R 3.5.0)                   
-##  Matrix        1.2-14     2018-04-09 CRAN (R 3.5.0)                   
-##  mnormt        1.5-5      2016-10-15 CRAN (R 3.5.0)                   
-##  modelr        0.1.2      2018-05-11 CRAN (R 3.5.0)                   
-##  munsell       0.5.0      2018-06-12 CRAN (R 3.5.0)                   
-##  nlme          3.1-137    2018-04-07 CRAN (R 3.5.0)                   
-##  pillar        1.3.0      2018-07-14 CRAN (R 3.5.1)                   
-##  pkgconfig     2.0.1      2017-03-21 CRAN (R 3.5.0)                   
-##  plyr          1.8.4      2016-06-08 CRAN (R 3.5.0)                   
-##  psych         1.8.4      2018-05-06 CRAN (R 3.5.0)                   
-##  purrr       * 0.2.5      2018-05-29 CRAN (R 3.5.0)                   
-##  R6            2.2.2      2017-06-17 CRAN (R 3.5.0)                   
-##  Rcpp          0.12.18    2018-07-23 cran (@0.12.18)                  
-##  readr       * 1.1.1      2017-05-16 CRAN (R 3.5.0)                   
-##  readxl        1.1.0      2018-04-20 CRAN (R 3.5.0)                   
-##  reshape2      1.4.3      2017-12-11 CRAN (R 3.5.0)                   
-##  rlang         0.2.1      2018-05-30 CRAN (R 3.5.0)                   
-##  rmarkdown     1.10       2018-06-11 CRAN (R 3.5.0)                   
-##  rprojroot     1.3-2      2018-01-03 CRAN (R 3.5.0)                   
-##  rstudioapi    0.7        2017-09-07 CRAN (R 3.5.0)                   
-##  rvest         0.3.2      2016-06-17 CRAN (R 3.5.0)                   
-##  scales      * 0.5.0      2017-08-24 CRAN (R 3.5.0)                   
-##  sessioninfo   1.0.0      2017-06-21 CRAN (R 3.5.1)                   
-##  SnowballC     0.5.1      2014-08-09 CRAN (R 3.5.0)                   
-##  stringi       1.2.4      2018-07-20 cran (@1.2.4)                    
-##  stringr     * 1.3.1      2018-05-10 CRAN (R 3.5.0)                   
-##  tibble      * 1.4.2      2018-01-22 CRAN (R 3.5.0)                   
-##  tidygraph   * 1.1.0      2018-02-10 CRAN (R 3.5.0)                   
-##  tidyr       * 0.8.1      2018-05-18 CRAN (R 3.5.0)                   
-##  tidyselect    0.2.4      2018-02-26 CRAN (R 3.5.0)                   
-##  tidytext    * 0.1.9      2018-05-29 CRAN (R 3.5.0)                   
-##  tidyverse   * 1.2.1      2017-11-14 CRAN (R 3.5.0)                   
-##  tokenizers    0.2.1      2018-03-29 CRAN (R 3.5.0)                   
-##  tweenr        0.1.5.9999 2018-07-16 Github (thomasp85/tweenr@4d4f8d1)
-##  units         0.6-0      2018-06-09 CRAN (R 3.5.0)                   
-##  utf8          1.1.4      2018-05-24 CRAN (R 3.5.0)                   
-##  viridis       0.5.1      2018-03-29 CRAN (R 3.5.0)                   
-##  viridisLite   0.3.0      2018-02-01 CRAN (R 3.5.0)                   
-##  withr         2.1.2      2018-03-15 CRAN (R 3.5.0)                   
-##  xfun          0.3        2018-07-06 CRAN (R 3.5.1)                   
-##  xml2          1.2.0      2018-01-24 CRAN (R 3.5.0)                   
-##  yaml          2.1.19     2018-05-01 CRAN (R 3.5.0)</code></pre>
-<p></details></p>
+##  package     * version  date       lib source        
+##  assertthat    0.2.0    2017-04-11 [1] CRAN (R 3.5.0)
+##  backports     1.1.3    2018-12-14 [1] CRAN (R 3.5.2)
+##  bindr         0.1.1    2018-03-13 [1] CRAN (R 3.5.0)
+##  bindrcpp    * 0.2.2    2018-03-29 [1] CRAN (R 3.5.0)
+##  blogdown      0.9      2018-10-23 [1] CRAN (R 3.5.2)
+##  bookdown      0.9      2018-12-21 [1] CRAN (R 3.5.2)
+##  broom         0.5.1    2018-12-05 [1] CRAN (R 3.5.2)
+##  cellranger    1.1.0    2016-07-27 [1] CRAN (R 3.5.0)
+##  cli           1.0.1    2018-09-25 [1] CRAN (R 3.5.1)
+##  colorspace    1.3-2    2016-12-14 [1] CRAN (R 3.5.0)
+##  crayon        1.3.4    2017-09-16 [1] CRAN (R 3.5.0)
+##  digest        0.6.18   2018-10-10 [1] CRAN (R 3.5.2)
+##  dplyr       * 0.7.8    2018-11-10 [1] CRAN (R 3.5.1)
+##  evaluate      0.12     2018-10-09 [1] CRAN (R 3.5.2)
+##  fansi         0.4.0    2018-10-05 [1] CRAN (R 3.5.1)
+##  farver        1.1.0    2018-11-20 [1] CRAN (R 3.5.2)
+##  forcats     * 0.3.0    2018-02-19 [1] CRAN (R 3.5.0)
+##  generics      0.0.2    2018-11-29 [1] CRAN (R 3.5.2)
+##  ggforce       0.1.3    2018-07-07 [1] CRAN (R 3.5.1)
+##  ggplot2     * 3.1.0    2018-10-25 [1] CRAN (R 3.5.2)
+##  ggraph      * 1.0.2    2018-07-07 [1] CRAN (R 3.5.1)
+##  ggrepel       0.8.0    2018-05-09 [1] CRAN (R 3.5.0)
+##  glue          1.3.0    2018-07-17 [1] CRAN (R 3.5.1)
+##  gridExtra     2.3      2017-09-09 [1] CRAN (R 3.5.0)
+##  gtable        0.2.0    2016-02-26 [1] CRAN (R 3.5.0)
+##  haven         2.0.0    2018-11-22 [1] CRAN (R 3.5.2)
+##  hms           0.4.2    2018-03-10 [1] CRAN (R 3.5.0)
+##  htmltools     0.3.6    2017-04-28 [1] CRAN (R 3.5.0)
+##  httr          1.4.0    2018-12-11 [1] CRAN (R 3.5.1)
+##  igraph        1.2.2    2018-07-27 [1] CRAN (R 3.5.1)
+##  janeaustenr   0.1.5    2017-06-10 [1] CRAN (R 3.5.0)
+##  jsonlite      1.6      2018-12-07 [1] CRAN (R 3.5.1)
+##  knitr         1.21     2018-12-10 [1] CRAN (R 3.5.2)
+##  labeling      0.3      2014-08-23 [1] CRAN (R 3.5.0)
+##  lattice       0.20-38  2018-11-04 [4] CRAN (R 3.5.1)
+##  lazyeval      0.2.1    2017-10-29 [1] CRAN (R 3.5.0)
+##  lubridate     1.7.4    2018-04-11 [1] CRAN (R 3.5.0)
+##  magrittr      1.5      2014-11-22 [1] CRAN (R 3.5.0)
+##  MASS          7.3-51.1 2018-11-01 [4] CRAN (R 3.5.1)
+##  Matrix        1.2-15   2018-11-01 [4] CRAN (R 3.5.1)
+##  modelr        0.1.2    2018-05-11 [1] CRAN (R 3.5.0)
+##  munsell       0.5.0    2018-06-12 [1] CRAN (R 3.5.0)
+##  nlme          3.1-137  2018-04-07 [4] CRAN (R 3.5.0)
+##  pillar        1.3.1    2018-12-15 [1] CRAN (R 3.5.2)
+##  pkgconfig     2.0.2    2018-08-16 [1] CRAN (R 3.5.1)
+##  plyr          1.8.4    2016-06-08 [1] CRAN (R 3.5.0)
+##  purrr       * 0.2.5    2018-05-29 [1] CRAN (R 3.5.0)
+##  R6            2.3.0    2018-10-04 [1] CRAN (R 3.5.1)
+##  Rcpp          1.0.0    2018-11-07 [1] CRAN (R 3.5.1)
+##  readr       * 1.3.1    2018-12-21 [1] CRAN (R 3.5.2)
+##  readxl        1.2.0    2018-12-19 [1] CRAN (R 3.5.2)
+##  rlang         0.3.0.1  2018-10-25 [1] CRAN (R 3.5.1)
+##  rmarkdown     1.11     2018-12-08 [1] CRAN (R 3.5.2)
+##  rstudioapi    0.8      2018-10-02 [1] CRAN (R 3.5.1)
+##  rvest         0.3.2    2016-06-17 [1] CRAN (R 3.5.0)
+##  scales      * 1.0.0    2018-08-09 [1] CRAN (R 3.5.1)
+##  sessioninfo   1.1.1    2018-11-05 [1] CRAN (R 3.5.2)
+##  SnowballC     0.5.1    2014-08-09 [1] CRAN (R 3.5.0)
+##  stringi       1.2.4    2018-07-20 [1] CRAN (R 3.5.1)
+##  stringr     * 1.3.1    2018-05-10 [1] CRAN (R 3.5.0)
+##  tibble      * 2.0.0    2019-01-04 [1] CRAN (R 3.5.2)
+##  tidygraph   * 1.1.1    2018-11-20 [1] CRAN (R 3.5.2)
+##  tidyr       * 0.8.2    2018-10-28 [1] CRAN (R 3.5.1)
+##  tidyselect    0.2.5    2018-10-11 [1] CRAN (R 3.5.1)
+##  tidytext    * 0.2.0    2018-10-17 [1] CRAN (R 3.5.2)
+##  tidyverse   * 1.2.1    2017-11-14 [1] CRAN (R 3.5.0)
+##  tokenizers    0.2.1    2018-03-29 [1] CRAN (R 3.5.0)
+##  tweenr        1.0.1    2018-12-14 [1] CRAN (R 3.5.2)
+##  units         0.6-2    2018-12-05 [1] CRAN (R 3.5.2)
+##  utf8          1.1.4    2018-05-24 [1] CRAN (R 3.5.0)
+##  viridis       0.5.1    2018-03-29 [1] CRAN (R 3.5.0)
+##  viridisLite   0.3.0    2018-02-01 [1] CRAN (R 3.5.0)
+##  withr         2.1.2    2018-03-15 [1] CRAN (R 3.5.0)
+##  xfun          0.4      2018-10-23 [1] CRAN (R 3.5.2)
+##  xml2          1.2.0    2018-01-24 [1] CRAN (R 3.5.0)
+##  yaml          2.2.0    2018-07-25 [1] CRAN (R 3.5.1)
+## 
+## [1] /home/roel/R/x86_64-pc-linux-gnu-library/3.5
+## [2] /usr/local/lib/R/site-library
+## [3] /usr/lib/R/site-library
+## [4] /usr/lib/R/library</code></pre>
+</details>
 </div>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>and radio plays and a TV-show and a movie, but we don’t talk about the movie and TV-series, it’s like jar-jar binks. The radio plays are amazing though.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>find her at <a href="https://juliasilge.com" class="uri">https://juliasilge.com</a> and <a href="https://twitter.com/juliasilge">twitter</a><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>a brilliant mathematician and astrophysicist<a href="#fnref3">↩</a></p></li>
+<li id="fn1"><p>and radio plays and a TV-show and a movie, but we don’t talk about the movie and TV-series, it’s like jar-jar binks. The radio plays are amazing though.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>find her at <a href="https://juliasilge.com" class="uri">https://juliasilge.com</a> and <a href="https://twitter.com/juliasilge">twitter</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>a brilliant mathematician and astrophysicist <a href="#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
