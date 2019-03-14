@@ -3,11 +3,13 @@ baseURL = "https://blog.rmhogervorst.nl/"
 languageCode = "en-us"
 title = "Roel's R-tefacts"
 pygmentsCodeFences = true
-pygmentsUseClasses = true
+pygmentsUseClasses = false
+pygmentsStyle = "trac"
+pygmentsUseClassic = true
 enableEmoji = true
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 publishDir = "public"
-
+  
 [permalinks]
     post = "/blog/:year/:month/:day/:slug/"
     
@@ -21,7 +23,7 @@ publishDir = "public"
   readingTime = true
   modifyLink = true
   GithubEdit = "https://github.com/RMHogervorst/blog/tree/master/content/"
-
+  useHLJS = true
 
 [Author]
   name = "Roel M. Hogervorst"
