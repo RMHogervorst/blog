@@ -76,4 +76,6 @@ all this is loaded, and not yet blocked
 - Some explanations on how to set up several things on the netlify side  <https://www.netlify.com/docs/ssl/>
 - the [report-uri website](https://report-uri.com/)
 - if you want to delve a bit deeper in [what header to set and to scan your website](https://securityheaders.com)
+- [a post about setting up netlify and report-uri](https://www.josephearl.co.uk/post/static-sites-netlify-security/)
+- [awesome blogpost by Bob Rudis about CSP on r websites](https://rud.is/b/2019/03/10/wrangling-content-security-policies-in-r/)
 
