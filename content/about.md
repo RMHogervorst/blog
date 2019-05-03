@@ -21,4 +21,4 @@ After about a year I wanted to learn more techniques and joined a commercial tra
 ## Correcting me
 Did I make a mistake? Are you excited about learning? Is there something I should really blog about? Did you find spelling mistakes (very probable, I make them alll the time)? I have an abundance of social links at the bottom of the page to reach me. Some of you even found my academic email account, now that is dedication (also don't do that anymore, because I no longer work in academia) ! There is also a edit this page at the bottom of every webpage where you can make an edit on github. 
 
-If you found [security issues.  See this link to contact me securely](/well-known/security.txt)  if you so desire.  
+If you found [security issues.  See this link to contact me securely](/.well-known/security.txt)  if you so desire.  
