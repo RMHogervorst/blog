@@ -1,0 +1,150 @@
+---
+title: 'Gosset part 2: small sample statistics'
+author: Roel M. Hogervorst
+date: '2019-07-12'
+slug: gosset-part-2-small-sample-statistics
+categories:
+  - blog
+  - R
+tags:
+  - gosset
+  - t-distribution
+subtitle: ''
+share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
+---
+
+<!-- content  -->
+<!-- 
+ 
+Good tutorials are: 
+- quick. tell what you want to do, how to do it
+- easy: success is important. playtest the tutorial under different circumstances
+- not to easy: Don't get htem throug ht toturoial onluy to runinto a wall later on. 
+
+
+FOCUS WAS ON HOPS, 
+
+FROM ZILIAK: So the crucial question facing scientific brewers
+was: how can experimental science advance economies of scale in brewing? And
+how can inferential statistics help to control and improve product, while at the
+same time, help to reduce average total costs for the firm?
+Take the choice of hops, for example. In 1898, Guinness used 4.72 million
+imperial pounds of the fruitful yellow cone. The traditional method of choosing
+hops based on looks or fragrance wasn’t efficient or reliable on this large scale. But
+was it any more reliable to take small samples out of a larger quantity of hops, test
+them for certain key characteristics, and then draw an inference about the general
+quality of the whole lot?
+
+
+In 1898, Thomas B. Case, Guinness’s first scientific brewer, led a team to
+address this question. Case and his team felt that the key characteristic was the
+degree of soft resins in the hops. Thus, Case analyzed the average percentage of soft
+and hard resins found in samples of 50 grams taken from several seasons of
+American and Kent hops (Case, 1898, p. 47). He compared his samples with those
+of a cooperating scientist named Briant. For example, Case examined 11 samples
+of hops (n ⫽ 11) from Kent in 1897, finding on average 8.1 percent soft resins
+content. Briant examined 14 samples drawn from the same lot, finding 8.4 percent
+soft resins—a difference of 0.3 percentage points. The mean difference between
+their two samples of “American, 1895” was even higher, at 0.7 percent (soft resins)
+and 1.0 percent (hard).
+
+
+Gosset underscored a positive correlation in the normal distribution curve between
+“the square root of the number of observations” and the level of statistical signifi-
+cance. Other things equal, he wrote, “the greater the number of observations of
+which means are taken [the larger the sample size], the smaller the [probable or
+standard] error” (p. 5). “And the curve which represents their frequency of error,”
+he illustrated, “becomes taller and narrower” (p. 7).
+Since its discovery in the early nineteenth century, tables of the normal
+probability curve had been created for large samples; Stigler (1986, 1999) offers a
+useful early history of the normal distribution. The relation between sample size
+and “significance” was rarely explored.
+
+Gosset’s analysis focused on malt extract, which was measured in “degrees
+saccharine” per barrel of 168 lbs. malt. 13 At the time, an extract in the neighbor-
+hood of 133° gave the targeted level of alcohol content for Guinness’s beer. A
+higher extract affected the life of the beer, and also the alcohol content—which in
+turn affected the excise tax paid on alcoholic beverages. In Gosset’s view, ⫾.5 was
+a difference or error in malt extract level which Guinness and its customers could
+swallow. “It might be maintained,” he said, that malt extract “should be [estimated]
+within .5 of the true result with a probability of 10 to 1” (p. 7). Using mean
+differences of extract values with samples drawn from the Main and Experimental
+breweries, he then calculated the odds of observing the stipulated accuracy for
+small and large numbers of observations (p. 7). He found:
+
+QUESTION IS THIS: 
+YOU CANNOT TEST EVERYTHING IN THE BAG, BUT THERE ARE FLUCTUATIONS IN THE SAMPLES
+HOW  MANY SAMPLES MUST YOU TAKE TO COME CLOSE TO THE 'TRUE' AVERAGE AMOUNT OF
+THAT ENTIRE BATCH. 
+
+IT WAS KNOWN THAT A LARGE SAMPLE WOULD FIND THE TRUE MEAN. BUT THAT IS NOT 
+PRACTICAL, WE CAN ONLY TEST SO MANY OF THE BAG, EVERY HOP YOU TEST CAN NO LONGER
+BE USED FOR THE PROCESS. IT IS ALSO RELATIVELY EXPENSIVE TO TEST THE SAMPLE
+SO THE COSTS ARE INCREASING. 
+
+SO HOW MANY SAMPLES MUST YOU TAKE TO BE CERTAIN ENOUGHT THAT THE BAG WAS GOOD?
+
+THE GENIOUS OF THIS GOSSET WAS THAT HE SIMULATED SAMPLING PROCESS BY
+- TAKING A BAG OF WHICH HE HAD TAKEN MANY MANY SAMPLES SO THEY ACTUALLY KNEW
+WHAT THE AVERAGE OF THE BAG WAS. 
+- HE DETERMINED THAT THE IDEAL WAS 133 DEGREES OF SUCROSE OR SOMETHING
+- HE DETERMINED THAT .5 FROM THAT POINT WAS NOT NOTICIBLE BY DRINKERS
+- HE SET A THRESHOLD OF HOW MANY TIMES HE AT LEAST WOULD WANT TO BE RIGHT
+- HE THAN SIMULATED TAKING SAMPLES OUT OF THAT BIG BAG OF NUMBERS
+- AND COUNTING IF THE SAMPLE AVERAGE WAS IN THAT INTERVAL
+[KOPF FINALLY MADE THIS CLEAR TO ME, HE SIMULATED]
+
+Odds in favour of smaller error than .5 [are:]
+2
+3
+4
+5
+82
+observations
+⬙
+⬙
+⬙
+⬙
+4:1
+7:1
+12:1
+19:1
+practically infinite
+Thus, Gosset (p. 8) concluded, “In order to get the accuracy we require [that
+is, 10 to 1 odds with .5 accuracy], we must, therefore, take the mean of [at least]
+four determinations.”
+
+
+ HE WAS NOT SATISFIED, AND SPEND A YEAR TALKING TO OTHER PEOPLE AND WORKING
+ IN LAB OF KARL PEARSON TO LEARN MORE.
+ HIS FINAL OUTPUT WAS A TABLE OF / DISTRIBUTION. 
+
+
+Notice that in Gosset’s view, setting the “degree of probability” to be “treated
+as sufficient” is not to be made “conventionally” or by “some outside authority in
+mathematics.” Instead, the “degree of certainty to be aimed at,” Gosset wrote,
+depends on the opportunity cost of following a result as if true, added to the
+opportunity cost of conducting the experiment itself. Gosset never deviated from
+this central position
+
+-->
+
+## References
+- [Wikipedia page (en) about Gosset](https://en.wikipedia.org/wiki/William_Sealy_Gosset)
+- [The Guinness Brewer who revolutionaized Statistics - Dan Kopf](https://priceonomics.com/the-guinness-brewer-who-revolutionized-statistics/)
+-  Student's Collected Papers - Pearson E. S. 1943s
+- [Retrospectives: Guinnessometrics: The Economic Foundation of “Student’s” t - Stephen T. Ziliak](https://doi.org/10.1257/jep.22.4.199)
+
+
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
