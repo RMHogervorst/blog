@@ -210,7 +210,7 @@ what would happen if they sampled from the all of the barrels.
 
 And that is what I will show in R code.
 
-
+So we are talking about sampling ![Randy Marshal sampling beer and wine (South Park)](/post/2019-08-11-gosset-part-2-small-sample-statistics_files/randy_sampling.gif)
 
 GIVEN A NORMAL BAG OF BARLEY/MALT EXTRACT WE WANT TO BE WITHIN .5 OF REAL VALUE
 10 TO 1. 
@@ -270,7 +270,7 @@ sampling_experiments <-
   tibble(
   N = seq_len(2500)
 ) %>% 
-  mutate(
+  mutate( # there is probably a more concise way to do this
     sample_02 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 2)),
     sample_03 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 3)),
     sample_04 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 4)),
