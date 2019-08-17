@@ -15,7 +15,12 @@ share_img: https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/William_Sea
 I think William Sealy Gosset, better known as 'Student' is the first data 
 scientist. He used math to solve real world business problems, he worked on
 experimental design, small sample statistics, quality control, and beer. In fact, 
-I think we should start a fanclub! W. S. Gosset had qualities that we should
+I think we should start a fanclub! 
+
+And as the first member of that fanclub, I have been to the Guinness brewery to 
+take a picture of Gosset's only visible legacy there. <img src="/post/2019-08-17-william-sealy-gosset-one-of-the-first-data-scientists_files/IMG_20180422_125809116.jpg" alt="Me with a plaque in the Guinness Storehouse commemorating Gosset" width="50%"/>
+
+W. S. Gosset had qualities that we should
 emulate. He was smart, resourceful, self-taught in statistics, humble^[Contemporary statisticians like W. Edward Deming, Udny Yule, and Florence Nightingale David, respectively called him a “very humble and pleasing personality,” “very pleasant chap” and “A nice man […] without a jealous bone in his body.” Both Karl Pearson and R.A. Fisher, the two most famous statistical thinkers of the early 20th Century, who were known to hate each other, found common ground in their fondness for Gosset.[The Guinness Brewer who revolutionized Statistics - Dan Kopf]] and like so
 many of us data scientists unfortunately, constrained by an NDA from his 
 employer^[The Guinness brewery realized they had a competitive advantage with their small sample tests over other breweries and thus they prevented all scientists in the company from publishing under their own name, mentioning the name Guinness or the word beer.] ...
