@@ -8,7 +8,7 @@ categories:
 tags:
   - gosset
   - data_science
-subtitle: 'Student's t-distribution'
+subtitle: 'The father of the t-distribution'
 share_img: https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/William_Sealy_Gosset.jpg/186px-William_Sealy_Gosset.jpg
 ---
 
