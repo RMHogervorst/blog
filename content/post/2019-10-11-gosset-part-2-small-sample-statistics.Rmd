@@ -39,12 +39,14 @@ I am a big fan of Gosset, look only at my work room:
 and so I am absolutely fascinated with the work that Gosset did. In fact I think
 he is the [first data scientist](/post/2019-08-17-william-sealy-gosset-one-of-the-first-data-scientists.html).
 
+If you are not interested in how beer is made, and just in the simulation go to [the heading simulation](#simulation).
+
 # Brewing beer (at scale)
 
 One of the problems William S. Gosset worked on was determining the quality
 of Malt. To [brew beer](https://en.wikipedia.org/wiki/Brewing) you need at least 3
-ingredients, yeast, hops and a cereal grain^[If you are fancy you can add other cool ingredients, if you are purist and you keep to the 1516 'reinheidsgebod' you only use barley, water and hops, yeast is necessary but not mentioned in the rules, because it's existence wasn't known, maybe the thought it was generatia spontanae or somethiing?]. On a high level it is very simple: You start with extracting the starch
-from the grain into water. You then flavour the resulting sweet liquid with
+ingredients, yeast, hops and a cereal grain^[If you are fancy you can add other cool ingredients, if you are purist and you keep to the 1516 'reinheidsgebod' you only use barley, water and hops, yeast is necessary but not mentioned in the rules, because it's existence wasn't known, maybe the thought it was generatia spontanae or something?]. On a high level it is very simple: You start with extracting the starch
+from the grain into water. You then flavor the resulting sweet liquid with
 hops and ferment that mixture with yeast. Put it in a barrel or bottles and you are done!
 This is quite doable for small batches, but boy does it get difficult at scale!
 
@@ -53,7 +55,7 @@ the cereal grain.
 
 ## Beer, malts and beer technique
 Now, beer brewing has been done since at least the 6th century BCE^[The secret to create alcohol out of literally everything, has been rediscovered again and again!], and all the steps in beer brewing 
-have their own specialised names^[from the wikipedia article I found the words: _wort_=the sugary liquid, _mashing_ = mixing malted barley with hot water, _liquor_ = hot water with sugar in it, _grist_ =crushed malt, _sparging_ = washing of grains, _lautering_ = seperation of wort with grain itself] , which are different in all languages. So I will
+have their own specialized names^[from the Wikipedia article I found the words: _wort_=the sugary liquid, _mashing_ = mixing malted barley with hot water, _liquor_ = hot water with sugar in it, _grist_ =crushed malt, _sparging_ = washing of grains, _lautering_ = separation of wort with grain itself] , which are different in all languages. So I will
 be talking about [malt](https://en.wikipedia.org/wiki/Malt), but remember that it is just a source of starch, a
 source of sugars *(I'm sorry chemists/ biologist, I have to simplify this a bit)*.
 
@@ -66,12 +68,12 @@ malted barley.
 
 *Grain, Barley, transforming into malt, as seen here.*  ![Malt and grain, detail of individual sprouted malt](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/malt_and_grain.jpg)
 
-Remember that we use the barley for its starch, which is converted into sugar. Sugar is converted by yeast into alcohol. Therefore the amount of sugar in the mixture determines the maximum ammount of alcohol the
+Remember that we use the barley for its starch, which is converted into sugar. Sugar is converted by yeast into alcohol. Therefore the amount of sugar in the mixture determines the maximum amount of alcohol the
 yeast can create. Higher alcohol content keeps the beer for longer
 periods, but it also changes the taste of the beer. 
-The Guiness brewers wanted consistent taste and consistent alcohol levels. 
+The Guinness brewers wanted consistent taste and consistent alcohol levels. 
 
-Too high alcohol levels would increase the tax Guiness was paying the British
+Too high alcohol levels would increase the tax Guinness was paying the British
 government. A lower level of alcohol would make
 the beer go bad earlier and crucially, customers would go to a competitor, and
 the customers might hate you.
@@ -83,7 +85,7 @@ the customers might hate you.
 ## Malt and sugars
 
 ![Barley in the sun](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/barley.jpg)
-Guiness Malt in Gosset's time, came from Irish and English Barley stock.
+Guinness Malt in Gosset's time, came from Irish and English Barley stock.
 Since the sugar content in malt can vary from batch to batch (more or less sun, different amounts of rain etc.), and we determined that you want the exact same taste in all your beer, brewers need to
 check the sugar content of the barley. In this time brewers were checking the sugar
 content per batch manually by sniffing the  barley, crumbling the material and visually
@@ -94,7 +96,7 @@ scalable. The Guinness brewery was one of the
 largest in the world and there were simply not enough master brewers.
 
 The sugar content of malt extract was measured by degrees saccharine per barrel
-of 168 poinds malt weight. In earlier experiments the brewers determined that
+of 168 pounds malt weight. In earlier experiments the brewers determined that
 an extract around 133 degrees saccharine gave the desired alcohol level.
 
 
@@ -108,25 +110,28 @@ within .5 of the true result with a probability of 10 to 1” -- Gosset, accordi
 
 However how can we be certain that a barrel has a sugar content of 133 degrees?
 
-They could take samples, and average those, but how many samples would give us
+They could take samples, and average those, but how many samples should you average
+to give
 enough certainty (that is with odds of 10 to 1 that the sample average is
-within 0.5 degree of the real value)? And every sample takes time and destroys a that sample from the barrel. 
+within 0.5 degree of the real value)? 
+And every sample takes time and destroys a that sample from the barrel. 
 
 
 ## Simulation
 
 ![Malt, green, a handful of green malt](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/320px-Grünmalz.jpg)
-So how do we find out how many samples you need to have an accurate estimation
+So how do we find out how many samples you need, to have an accurate estimation
 of your real value of the barrel?
 Gosset and his co workers actually used simulation; 
-They had a lot of samples for one barrel, and Gosset simulated what would
+From one representative barrel of malt extract they had taken a lot of samples.
+Gosset^[And coworkers, because boy this must have taken some time, and think about the calculations! all done by hand.] simulated what would
 happen if they drew and averaged multiple samples. 
 
 - What if we take 2 samples and average that out, is that close enough to the real value?
 - What if we take 3?
 - etc?
 
-By simulating these draws from one barrel, they generalized this patern to
+By simulating these draws from one barrel^[simulated because the samples had already been done so it was more a choose one of the values at random from this piece of paper] they generalized this pattern to
 what would happen if they sampled from the all of the barrels.
 
 And that is what I will show in R code. 
@@ -146,7 +151,7 @@ to check the barrels of malt extract. *How many samples do you have to get from 
 Let's first transform that odds to probabilities, because I don't know what
 those odds mean^[maybe this is a country specific thing, in the UK everyone seems to know 
 about odds and betting, but I can't get my head around it]. A 10 to 1 odds means ten successes and one failure, so it is really
-10 out of 11 sucesses, 10/11 gives us a probability of approximately 0.909.
+10 out of 11 successes, 10/11 gives us a probability of approximately 0.909.
 
 ### A coding example
 
@@ -160,8 +165,8 @@ library(tidyverse) # I am just lazy, purrr, and tibble and dplyr are enough
 ```
 
 *First we create a dataset.*  
-Say we have a large amount of MALT extract
-Like the brewers at Guiness we have took many many many many samples from one barrel, and so we know
+Say we have a large amount of Malt extract
+Like the brewers at Guinness we have taken many many many many samples from one barrel, and so we know
 what the actual saccharine level of the barrel is. This is relevant for simulation but 
 don't forget that we don't know the truth when we are working with actual data.
 
@@ -239,16 +244,16 @@ In our case for our bag of estimations we would say we need at least 5 samples t
 get these odds or better.
 
 ## Practical results
-Armed with this knowledge the Guinness brewery knew it could test the malt extract
+Armed with this knowledge the Guinness brewery knew it could test the malt extract barrels
 by taking 4 samples out of every batch to get an approximation of the true sugar
-content of a batch that would be correct in 10 out of 11 times.
+content of a batch that would be correct in 10 out of 11 times. 
 
-That meant that the brewery could use this technique to check the bags of malt
-extract, in stead of a master brewer sampling, and manually investigating the malt.
-You can scale the number of tests, but not the amount of brewers/ checkers.
+That meant that the brewery could use this technique to check the barrels of malt
+extract in a chemical way,  in stead of a master brewer sampling, and manually investigating the malt or barley.
+You can scale the number of tests, but not the amount of brewers / checkers.
 
 # From beer to general statistics
-The brewers were happy, Gosset was too. But he realised there must be a
+The Guinness owners were happy, Gosset was probably too. But he realized there must be a
 systematic way to determine how sure we can be about the values in the sample
 compared with the true value. He took a year sabbatical to work with statistician
 Karl Pierson on this problem. He found a relation that we can approximate the
@@ -256,7 +261,7 @@ Karl Pierson on this problem. He found a relation that we can approximate the
 deviation as a function of
 the sample size. 
 
-And that is what we today, call the **t-distribution**. 
+And that is what we today, call the [**t-distribution**](https://en.wikipedia.org/wiki/Student%27s_t-distribution). 
 
 
 ## Read more:

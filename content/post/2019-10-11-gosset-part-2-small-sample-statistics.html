@@ -36,13 +36,14 @@ say something useful about your data, this post is for you.</p>
 <p><img src="/post/2019-10-11-gosset-part-2-small-sample-statistics_files/my_room.jpg" alt="Yes that is the wikipedia portret of William Gosset!" />
 and so I am absolutely fascinated with the work that Gosset did. In fact I think
 he is the <a href="/post/2019-08-17-william-sealy-gosset-one-of-the-first-data-scientists.html">first data scientist</a>.</p>
+<p>If you are not interested in how beer is made, and just in the simulation go to <a href="#simulation">the heading simulation</a>.</p>
 </div>
 <div id="brewing-beer-at-scale" class="section level1">
 <h1>Brewing beer (at scale)</h1>
 <p>One of the problems William S. Gosset worked on was determining the quality
 of Malt. To <a href="https://en.wikipedia.org/wiki/Brewing">brew beer</a> you need at least 3
 ingredients, yeast, hops and a cereal grain<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. On a high level it is very simple: You start with extracting the starch
-from the grain into water. You then flavour the resulting sweet liquid with
+from the grain into water. You then flavor the resulting sweet liquid with
 hops and ferment that mixture with yeast. Put it in a barrel or bottles and you are done!
 This is quite doable for small batches, but boy does it get difficult at scale!</p>
 <p>Gosset’s work touched on all three ingredients of beer, but in this post I will look into
@@ -50,7 +51,7 @@ the cereal grain.</p>
 <div id="beer-malts-and-beer-technique" class="section level2">
 <h2>Beer, malts and beer technique</h2>
 <p>Now, beer brewing has been done since at least the 6th century BCE<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, and all the steps in beer brewing
-have their own specialised names<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> , which are different in all languages. So I will
+have their own specialized names<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> , which are different in all languages. So I will
 be talking about <a href="https://en.wikipedia.org/wiki/Malt">malt</a>, but remember that it is just a source of starch, a
 source of sugars <em>(I’m sorry chemists/ biologist, I have to simplify this a bit)</em>.</p>
 <p>The source of starch in beer is <a href="https://en.wikipedia.org/wiki/Barley">barley</a>,
@@ -60,11 +61,11 @@ In that process some enzymes are made that will break down starch to smaller
 sugars. The grains are now ready to start a new plant and, then we sort of kill that process by forced drying. So we end up with sad half germinated barley. This half germinated barley is called malt or
 malted barley.</p>
 <p><em>Grain, Barley, transforming into malt, as seen here.</em> <img src="/post/2019-10-11-gosset-part-2-small-sample-statistics_files/malt_and_grain.jpg" alt="Malt and grain, detail of individual sprouted malt" /></p>
-<p>Remember that we use the barley for its starch, which is converted into sugar. Sugar is converted by yeast into alcohol. Therefore the amount of sugar in the mixture determines the maximum ammount of alcohol the
+<p>Remember that we use the barley for its starch, which is converted into sugar. Sugar is converted by yeast into alcohol. Therefore the amount of sugar in the mixture determines the maximum amount of alcohol the
 yeast can create. Higher alcohol content keeps the beer for longer
 periods, but it also changes the taste of the beer.
-The Guiness brewers wanted consistent taste and consistent alcohol levels.</p>
-<p>Too high alcohol levels would increase the tax Guiness was paying the British
+The Guinness brewers wanted consistent taste and consistent alcohol levels.</p>
+<p>Too high alcohol levels would increase the tax Guinness was paying the British
 government. A lower level of alcohol would make
 the beer go bad earlier and crucially, customers would go to a competitor, and
 the customers might hate you.</p>
@@ -77,7 +78,7 @@ the customers might hate you.</p>
 <div id="malt-and-sugars" class="section level2">
 <h2>Malt and sugars</h2>
 <p><img src="/post/2019-10-11-gosset-part-2-small-sample-statistics_files/barley.jpg" alt="Barley in the sun" />
-Guiness Malt in Gosset’s time, came from Irish and English Barley stock.
+Guinness Malt in Gosset’s time, came from Irish and English Barley stock.
 Since the sugar content in malt can vary from batch to batch (more or less sun, different amounts of rain etc.), and we determined that you want the exact same taste in all your beer, brewers need to
 check the sugar content of the barley. In this time brewers were checking the sugar
 content per batch manually by sniffing the barley, crumbling the material and visually
@@ -86,7 +87,7 @@ checking it.</p>
 scalable. The Guinness brewery was one of the
 largest in the world and there were simply not enough master brewers.</p>
 <p>The sugar content of malt extract was measured by degrees saccharine per barrel
-of 168 poinds malt weight. In earlier experiments the brewers determined that
+of 168 pounds malt weight. In earlier experiments the brewers determined that
 an extract around 133 degrees saccharine gave the desired alcohol level.</p>
 <p>So you better make sure the malt extract sugar content is close to 133 degrees, if you want consistent beer.
 In Gosset’s view, 0.5 degrees was a difference or error in malt extract level
@@ -96,24 +97,27 @@ which Guinness and its customers could accept.</p>
 within .5 of the true result with a probability of 10 to 1” – Gosset, according to Guinessometrics - Stephen T. Ziliak (see full reference below)</p>
 </blockquote>
 <p>However how can we be certain that a barrel has a sugar content of 133 degrees?</p>
-<p>They could take samples, and average those, but how many samples would give us
+<p>They could take samples, and average those, but how many samples should you average
+to give
 enough certainty (that is with odds of 10 to 1 that the sample average is
-within 0.5 degree of the real value)? And every sample takes time and destroys a that sample from the barrel.</p>
+within 0.5 degree of the real value)?
+And every sample takes time and destroys a that sample from the barrel.</p>
 </div>
 <div id="simulation" class="section level2">
 <h2>Simulation</h2>
 <p><img src="/post/2019-10-11-gosset-part-2-small-sample-statistics_files/320px-Grünmalz.jpg" alt="Malt, green, a handful of green malt" />
-So how do we find out how many samples you need to have an accurate estimation
+So how do we find out how many samples you need, to have an accurate estimation
 of your real value of the barrel?
 Gosset and his co workers actually used simulation;
-They had a lot of samples for one barrel, and Gosset simulated what would
+From one representative barrel of malt extract they had taken a lot of samples.
+Gosset<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> simulated what would
 happen if they drew and averaged multiple samples.</p>
 <ul>
 <li>What if we take 2 samples and average that out, is that close enough to the real value?</li>
 <li>What if we take 3?</li>
 <li>etc?</li>
 </ul>
-<p>By simulating these draws from one barrel, they generalized this patern to
+<p>By simulating these draws from one barrel<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> they generalized this pattern to
 what would happen if they sampled from the all of the barrels.</p>
 <p>And that is what I will show in R code.</p>
 <p>So we are talking about sampling, but maybe not this kind of sampling… <img src="/post/2019-10-11-gosset-part-2-small-sample-statistics_files/randy_sampling.gif" alt="Randy Marshal sampling beer and wine (South Park)" /></p>
@@ -125,8 +129,8 @@ what would happen if they sampled from the all of the barrels.</p>
 beer you produce has the same alcohol content in every batch. Therefore you have
 to check the barrels of malt extract. <em>How many samples do you have to get from every barrel to be certain enough of its actual sugar content?</em></p>
 <p>Let’s first transform that odds to probabilities, because I don’t know what
-those odds mean<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. A 10 to 1 odds means ten successes and one failure, so it is really
-10 out of 11 sucesses, 10/11 gives us a probability of approximately 0.909.</p>
+those odds mean<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. A 10 to 1 odds means ten successes and one failure, so it is really
+10 out of 11 successes, 10/11 gives us a probability of approximately 0.909.</p>
 </div>
 <div id="a-coding-example" class="section level3">
 <h3>A coding example</h3>
@@ -136,8 +140,8 @@ range that Gosset defined, calculate how many times the sample was a correct
 representation of the barrel and finally determine how many samples are enough.</p>
 <pre class="r"><code>library(tidyverse) # I am just lazy, purrr, and tibble and dplyr are enough</code></pre>
 <p><em>First we create a dataset.</em><br />
-Say we have a large amount of MALT extract
-Like the brewers at Guiness we have took many many many many samples from one barrel, and so we know
+Say we have a large amount of Malt extract
+Like the brewers at Guinness we have taken many many many many samples from one barrel, and so we know
 what the actual saccharine level of the barrel is. This is relevant for simulation but
 don’t forget that we don’t know the truth when we are working with actual data.</p>
 <p>So this <code>degrees__sacharine</code> vector represents 3000 samples from one barrel of malt extract.</p>
@@ -209,24 +213,24 @@ get these odds or better.</p>
 </div>
 <div id="practical-results" class="section level2">
 <h2>Practical results</h2>
-<p>Armed with this knowledge the Guinness brewery knew it could test the malt extract
+<p>Armed with this knowledge the Guinness brewery knew it could test the malt extract barrels
 by taking 4 samples out of every batch to get an approximation of the true sugar
 content of a batch that would be correct in 10 out of 11 times.</p>
-<p>That meant that the brewery could use this technique to check the bags of malt
-extract, in stead of a master brewer sampling, and manually investigating the malt.
-You can scale the number of tests, but not the amount of brewers/ checkers.</p>
+<p>That meant that the brewery could use this technique to check the barrels of malt
+extract in a chemical way, in stead of a master brewer sampling, and manually investigating the malt or barley.
+You can scale the number of tests, but not the amount of brewers / checkers.</p>
 </div>
 </div>
 <div id="from-beer-to-general-statistics" class="section level1">
 <h1>From beer to general statistics</h1>
-<p>The brewers were happy, Gosset was too. But he realised there must be a
+<p>The Guinness owners were happy, Gosset was probably too. But he realized there must be a
 systematic way to determine how sure we can be about the values in the sample
 compared with the true value. He took a year sabbatical to work with statistician
 Karl Pierson on this problem. He found a relation that we can approximate the
 ‘true’ mean and standard deviation based on the sample mean and sample standard
 deviation as a function of
 the sample size.</p>
-<p>And that is what we today, call the <strong>t-distribution</strong>.</p>
+<p>And that is what we today, call the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution"><strong>t-distribution</strong></a>.</p>
 <div id="read-more" class="section level2">
 <h2>Read more:</h2>
 <ul>
@@ -335,11 +339,13 @@ the sample size.</p>
 <hr />
 <ol>
 <li id="fn1"><p>see what I did there?<a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>If you are fancy you can add other cool ingredients, if you are purist and you keep to the 1516 ‘reinheidsgebod’ you only use barley, water and hops, yeast is necessary but not mentioned in the rules, because it’s existence wasn’t known, maybe the thought it was generatia spontanae or somethiing?<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>If you are fancy you can add other cool ingredients, if you are purist and you keep to the 1516 ‘reinheidsgebod’ you only use barley, water and hops, yeast is necessary but not mentioned in the rules, because it’s existence wasn’t known, maybe the thought it was generatia spontanae or something?<a href="#fnref2" class="footnote-back">↩</a></p></li>
 <li id="fn3"><p>The secret to create alcohol out of literally everything, has been rediscovered again and again!<a href="#fnref3" class="footnote-back">↩</a></p></li>
-<li id="fn4"><p>from the wikipedia article I found the words: <em>wort</em>=the sugary liquid, <em>mashing</em> = mixing malted barley with hot water, <em>liquor</em> = hot water with sugar in it, <em>grist</em> =crushed malt, <em>sparging</em> = washing of grains, <em>lautering</em> = seperation of wort with grain itself<a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>from the Wikipedia article I found the words: <em>wort</em>=the sugary liquid, <em>mashing</em> = mixing malted barley with hot water, <em>liquor</em> = hot water with sugar in it, <em>grist</em> =crushed malt, <em>sparging</em> = washing of grains, <em>lautering</em> = separation of wort with grain itself<a href="#fnref4" class="footnote-back">↩</a></p></li>
 <li id="fn5"><p>Heineken beer may taste like piss to some people but at least it consistently tastes like piss everywhere you drink it, I think I’m allowed to say that about a Dutch product right?<a href="#fnref5" class="footnote-back">↩</a></p></li>
-<li id="fn6"><p>maybe this is a country specific thing, in the UK everyone seems to know
-about odds and betting, but I can’t get my head around it<a href="#fnref6" class="footnote-back">↩</a></p></li>
+<li id="fn6"><p>And coworkers, because boy this must have taken some time, and think about the calculations! all done by hand.<a href="#fnref6" class="footnote-back">↩</a></p></li>
+<li id="fn7"><p>simulated because the samples had already been done so it was more a choose one of the values at random from this piece of paper<a href="#fnref7" class="footnote-back">↩</a></p></li>
+<li id="fn8"><p>maybe this is a country specific thing, in the UK everyone seems to know
+about odds and betting, but I can’t get my head around it<a href="#fnref8" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
