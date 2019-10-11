@@ -1,0 +1,401 @@
+---
+title: 'Gosset part 2: small sample statistics'
+author: Roel M. Hogervorst
+date: '2019-08-11'
+slug: gosset-part-2-small-sample-statistics
+categories:
+  - blog
+  - R
+tags:
+  - gosset
+  - t-distribution
+  - simulation
+  - tidyverse
+subtitle: ''
+share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
+---
+
+
+
+<!-- content  -->
+<!-- 
+ 
+Good tutorials are: 
+- quick. tell what you want to do, how to do it
+- easy: success is important. playtest the tutorial under different circumstances
+- not to easy: Don't get htem throug ht toturoial onluy to runinto a wall later on. 
+
+
+FOCUS WAS ON HOPS, 
+
+FROM ZILIAK: So the crucial question facing scientific brewers
+was: how can experimental science advance economies of scale in brewing? And
+how can inferential statistics help to control and improve product, while at the
+same time, help to reduce average total costs for the firm?
+Take the choice of hops, for example. In 1898, Guinness used 4.72 million
+imperial pounds of the fruitful yellow cone. The traditional method of choosing
+hops based on looks or fragrance wasn’t efficient or reliable on this large scale. But
+was it any more reliable to take small samples out of a larger quantity of hops, test
+them for certain key characteristics, and then draw an inference about the general
+quality of the whole lot?
+
+
+In 1898, Thomas B. Case, Guinness’s first scientific brewer, led a team to
+address this question. Case and his team felt that the key characteristic was the
+degree of soft resins in the hops. Thus, Case analyzed the average percentage of soft
+and hard resins found in samples of 50 grams taken from several seasons of
+American and Kent hops (Case, 1898, p. 47). He compared his samples with those
+of a cooperating scientist named Briant. For example, Case examined 11 samples
+of hops (n ⫽ 11) from Kent in 1897, finding on average 8.1 percent soft resins
+content. Briant examined 14 samples drawn from the same lot, finding 8.4 percent
+soft resins—a difference of 0.3 percentage points. The mean difference between
+their two samples of “American, 1895” was even higher, at 0.7 percent (soft resins)
+and 1.0 percent (hard).
+
+
+Gosset underscored a positive correlation in the normal distribution curve between
+“the square root of the number of observations” and the level of statistical signifi-
+cance. Other things equal, he wrote, “the greater the number of observations of
+which means are taken [the larger the sample size], the smaller the [probable or
+standard] error” (p. 5). “And the curve which represents their frequency of error,”
+he illustrated, “becomes taller and narrower” (p. 7).
+Since its discovery in the early nineteenth century, tables of the normal
+probability curve had been created for large samples; Stigler (1986, 1999) offers a
+useful early history of the normal distribution. The relation between sample size
+and “significance” was rarely explored.
+
+Gosset’s analysis focused on malt extract, which was measured in “degrees
+saccharine” per barrel of 168 lbs. malt. 13 At the time, an extract in the neighbor-
+hood of 133° gave the targeted level of alcohol content for Guinness’s beer. A
+higher extract affected the life of the beer, and also the alcohol content—which in
+turn affected the excise tax paid on alcoholic beverages. In Gosset’s view, ⫾.5 was
+a difference or error in malt extract level which Guinness and its customers could
+swallow. “It might be maintained,” he said, that malt extract “should be [estimated]
+within .5 of the true result with a probability of 10 to 1” (p. 7). Using mean
+differences of extract values with samples drawn from the Main and Experimental
+breweries, he then calculated the odds of observing the stipulated accuracy for
+small and large numbers of observations (p. 7). He found:
+
+QUESTION IS THIS: 
+YOU CANNOT TEST EVERYTHING IN THE BAG, BUT THERE ARE FLUCTUATIONS IN THE SAMPLES
+HOW  MANY SAMPLES MUST YOU TAKE TO COME CLOSE TO THE 'TRUE' AVERAGE AMOUNT OF
+THAT ENTIRE BATCH. 
+
+IT WAS KNOWN THAT A LARGE SAMPLE WOULD FIND THE TRUE MEAN. BUT THAT IS NOT 
+PRACTICAL, WE CAN ONLY TEST SO MANY OF THE BAG, EVERY HOP YOU TEST CAN NO LONGER
+BE USED FOR THE PROCESS. IT IS ALSO RELATIVELY EXPENSIVE TO TEST THE SAMPLE
+SO THE COSTS ARE INCREASING. 
+
+SO HOW MANY SAMPLES MUST YOU TAKE TO BE CERTAIN ENOUGHT THAT THE BAG WAS GOOD?
+
+THE GENIOUS OF THIS GOSSET WAS THAT HE SIMULATED SAMPLING PROCESS BY
+- TAKING A BAG OF WHICH HE HAD TAKEN MANY MANY SAMPLES SO THEY ACTUALLY KNEW
+WHAT THE AVERAGE OF THE BAG WAS. 
+- HE DETERMINED THAT THE IDEAL WAS 133 DEGREES OF SUCROSE OR SOMETHING
+- HE DETERMINED THAT .5 FROM THAT POINT WAS NOT NOTICIBLE BY DRINKERS
+- HE SET A THRESHOLD OF HOW MANY TIMES HE AT LEAST WOULD WANT TO BE RIGHT
+- HE THAN SIMULATED TAKING SAMPLES OUT OF THAT BIG BAG OF NUMBERS
+- AND COUNTING IF THE SAMPLE AVERAGE WAS IN THAT INTERVAL
+[KOPF FINALLY MADE THIS CLEAR TO ME, HE SIMULATED]
+
+Odds in favour of smaller error than .5 [are:]
+2
+3
+4
+5
+82
+observations
+⬙
+⬙
+⬙
+⬙
+4:1
+7:1
+12:1
+19:1
+practically infinite
+Thus, Gosset (p. 8) concluded, “In order to get the accuracy we require [that
+is, 10 to 1 odds with .5 accuracy], we must, therefore, take the mean of [at least]
+four determinations.”
+
+
+ HE WAS NOT SATISFIED, AND SPEND A YEAR TALKING TO OTHER PEOPLE AND WORKING
+ IN LAB OF KARL PEARSON TO LEARN MORE.
+ HIS FINAL OUTPUT WAS A TABLE OF / DISTRIBUTION. 
+
+
+Notice that in Gosset’s view, setting the “degree of probability” to be “treated
+as sufficient” is not to be made “conventionally” or by “some outside authority in
+mathematics.” Instead, the “degree of certainty to be aimed at,” Gosset wrote,
+depends on the opportunity cost of following a result as if true, added to the
+opportunity cost of conducting the experiment itself. Gosset never deviated from
+this central position
+
+-->
+<p>A NICE ONELINER HERE?</p>
+<p>This post is an explainer about the small sample experiment and determining
+the ideal sample size for inference.</p>
+<p>Economic perspectives and business logic</p>
+<div id="brewing-beer-at-scale" class="section level1">
+<h1>Brewing beer at scale</h1>
+<p>One of the problems William S. Gosset worked on was determining the quality
+of Malt. To <a href="https://en.wikipedia.org/wiki/Brewing">brew beer</a> you need 3
+ingredients, yeast, hops and a cereal grain. You start with extracting the starch
+from the grain into water. You then flavoring the resulting sweet liquid with
+hops and fermenting that mixture with yeast.</p>
+<p>Gosset worked on all three ingredients, but in this post I will look into
+the cereal grain.</p>
+<div id="beer-malts-and-beer-technique" class="section level2">
+<h2>Beer, malts and beer technique</h2>
+<p>Now, beer brewing has been done since the 6th century BCE, and all the steps
+have their own specialised names<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> , which are different in all languages. So I will
+be talking about <a href="https://en.wikipedia.org/wiki/Malt">malt</a>, but remember that it is just a source of starch, a
+source of sugars <em>(I’m sorry chemists/ biologist, I have to simplify this a bit)</em>.</p>
+<p>Grain, Barley, transforming into malt, as seen here. <img src="/post/2019-07-12-gosset-part-2-small-sample-statistics_files/Malt_en_grain.JPG" alt="Malt and grain, detail of individual sprouted malt" /></p>
+<p>The source of starch in beer is <a href="https://en.wikipedia.org/wiki/Barley">barley</a>,
+this grain is first dried, cleaned and then wetted. This starts the biological
+process of germination in the grain (it gets ready to start a new barley plant).
+In that process some enzymes are made that will break down starch to smaller
+sugars. Now the grains are ready to start a new plant and, now we sort of kill
+it by forced drying. The end result of half germinated barley is called malt or
+malted barley.</p>
+<p>The amount of sugar in the mixture determines the maximum ammount of alcohol the
+yeast can create in next steps. Higher alcohol content keeps the beer for longer
+periods, but makes the taste different.</p>
+</div>
+<div id="malt-and-sugars" class="section level2">
+<h2>Malt and sugars</h2>
+<p>Guiness Malt in Gosset’s time, came from Irish and English Barley stock.
+Since the sugar content in malt can vary from batch to batch, brewers need to
+check the sugar content. However there are only so many brewers and there is
+checking every batch is not scalable. The Guinness brewery was one of the
+largest in the world and this would not do.</p>
+<p>The sugar content of malt extract was measured by degrees saccharine per barrel
+of 168 poinds malt weight. In earlier experiments the brewers determined that
+an extract around 133 degrees saccharine gave the desired alcohol level.</p>
+<p>Way more saccharine would affect the stability and life of the beer and increase
+the alcohol content of the beer, however that would also increase the tax,
+Guinness had to pay to British goverment. A lower level of alcohol would make
+the beer go bad earlier and crucially, costumers would go to a competiter.</p>
+<p>So you better make sure the malt extract is close to 133 degrees saccharine.
+In Gosset’s view, 0.5 degrees was a difference or error in malt extract level
+which Guinness and its customers could accept.</p>
+<blockquote>
+<p>“It might be maintained,” he said, that malt extract “should be [estimated]
+within .5 of the true result with a probability of 10 to 1”</p>
+</blockquote>
+<p>However how can we be certain that a barrel has a sugar content of 133 degrees?</p>
+<p>They could take samples, and average those, but how many samples would give us
+enough certainty (that is with odds of 10 to 1 that the sample average is
+within 0.5 degree of the real value)?</p>
+</div>
+<div id="simulation" class="section level2">
+<h2>Simulation</h2>
+<div class="figure">
+<img src="/post/2019-07-12-gosset-part-2-small-sample-statistics_files/320px-Grünmalz.jpg" alt="Malt, green, a handful of green malt" />
+<p class="caption">Malt, green, a handful of green malt</p>
+</div>
+<p>Gosset and his co workers went over to simulation. THIS IS WEIRDLY WRITTEN
+They had a lot of samples for one barrel, and Gosset simulated what would
+happen if they drew and averaged multiple samples. And generalized this to
+what would happen if they sampled from the all of the barrels.</p>
+<p>And that is what I will show in R code.</p>
+<p>So we are talking about sampling <img src="/post/2019-08-11-gosset-part-2-small-sample-statistics_files/randy_sampling.gif" alt="Randy Marshal sampling beer and wine (South Park)" /></p>
+<p>GIVEN A NORMAL BAG OF BARLEY/MALT EXTRACT WE WANT TO BE WITHIN .5 OF REAL VALUE
+10 TO 1.</p>
+<p>A/(A + B ) 10/(10+1) = 10/11 0.9090909</p>
+<div id="simulating-drawing-from-a-barrel" class="section level3">
+<h3>Simulating drawing from a barrel</h3>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>First the goal in clearer language.
+We want to know how many samples you have to draw to know what the real degree
+saccharine level of the barrel is. With a 10 to 1 odds of being within 0.5 degree.</p>
+<p>Let’s first transform that odds to probabilities, because I don’t know what
+those mean. A 10 to 1 odds means ten successes and 1 failure, so it is really
+10 out of 11, 10/11=0.909.</p>
+<p>First we create a dataset.<br />
+Say we have a large amount of MALT extract
+We took many many many many samples from one barrel, and so we know
+what the saccharine level of the barrel is.</p>
+<pre class="r"><code>set.seed(7334)
+degrees_sacharine = rnorm(3000,mean = 133, sd = 0.6) # this is really just a guess</code></pre>
+<p>Then I create some functions to take a sample, a function to determine if that
+value is within the range, and finally I combine them.</p>
+<pre class="r"><code>take_sample_average &lt;- function(bag= degrees_sacharine, sample_size){
+  mean(sample(bag, sample_size, replace= TRUE))
+}
+within_range &lt;- function(value){
+  ifelse(value &gt; 132.5 &amp; value &lt; 133.5, TRUE, FALSE)
+}
+is_sample_within_range &lt;- function(sample_size){
+  take_sample_average(bag = degrees_sacharine, sample_size = sample_size) %&gt;% 
+    within_range()
+}
+# for example what if we take 3 samples?
+take_sample_average(bag = degrees_sacharine, 3)</code></pre>
+<pre><code>## [1] 132.8</code></pre>
+<p>For example:
+So now we take 2 samples out of the bag, and get (142.2745, 119.4484)/2 = 142.2745.
+Is this within the range of 132.5 and 133.5? no.</p>
+<p>But how often, on average am I within the real value of the bag?
+We simulate taking 2 to 15 samples from the barrel and averaging per sample.</p>
+<pre class="r"><code>sampling_experiments &lt;-  
+  tibble(
+  N = seq_len(2500)
+) %&gt;% 
+  mutate( # there is probably a more concise way to do this
+    sample_02 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 2)),
+    sample_03 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 3)),
+    sample_04 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 4)),
+    sample_05 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 5)),
+    sample_06 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 6)),
+    sample_07 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 7)),
+    sample_08 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 8)),
+    sample_09 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 9)),
+    sample_10 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 10)),
+    sample_15 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 15)),
+    sample_20 = purrr::map_lgl(N, ~is_sample_within_range(sample_size = 20)),
+    )</code></pre>
+<p>So how many times are the samples within the range?</p>
+<pre class="r"><code>sampling_experiments %&gt;% 
+  summarize_all(.funs = ~sum(.)/n()) %&gt;% # this doesn&#39;t read that well
+  # So I reshape the data, remove the N column and remove the sample_ part
+  gather(key = &quot;sample_size&quot;, value = &quot;prob_in_range&quot;, sample_02:sample_20) %&gt;% 
+  select(-N) %&gt;% 
+  mutate(sample_size = str_remove(sample_size,pattern =  &quot;sample_&quot;)) </code></pre>
+<pre><code>## # A tibble: 11 x 2
+##    sample_size prob_in_range
+##    &lt;chr&gt;               &lt;dbl&gt;
+##  1 02                  0.755
+##  2 03                  0.854
+##  3 04                  0.901
+##  4 05                  0.932
+##  5 06                  0.954
+##  6 07                  0.966
+##  7 08                  0.982
+##  8 09                  0.986
+##  9 10                  0.991
+## 10 15                  0.999
+## 11 20                  0.999</code></pre>
+<p>Gosset found in his experiments that he needed at least 4 samples for a
+estimation with an odds of at least 10 to 1, which is a probability of
+approximately 0.909.</p>
+<p>In our case for our bag of estimations we would say at least 5 samples to
+get these odds or better.</p>
+<p>Armed with this knowledge the Guinness brewery knew it could test the malt extract
+by taking 4 samples out of every batch to get an approximation of the true sugar
+content of a batch that would be correct in 10 out of 11 times.</p>
+<p>That meant that the brewery could use this technique to check the bags of malt
+extract, in stead of a master brewer sampling, and feeling the bags.
+You can scale the number of tests, but not the amount of brewers/ checkers.</p>
+<p>The brewers were happy, Gosset was too. But he realized there must be a system
+there, a way to determine</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/William_Sealy_Gosset">Wikipedia page (en) about Gosset</a></li>
+<li><a href="https://priceonomics.com/the-guinness-brewer-who-revolutionized-statistics/">The Guinness Brewer who revolutionaized Statistics - Dan Kopf</a></li>
+<li>Student’s Collected Papers - Pearson E. S. 1943s</li>
+<li><a href="https://doi.org/10.1257/jep.22.4.199">Retrospectives: Guinnessometrics: The Economic Foundation of “Student’s” t - Stephen T. Ziliak</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Malt#Malt_extract">Fascinating read about Malt extract</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Beer#Brewing">wikipedia article about brewing beer</a></li>
+</ul>
+</div>
+<div id="image-credits" class="section level2">
+<h2>Image credits</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/File:Gr%C3%BCnmalz.jpg">Hand full of sprouted malt, wikipedia commons, photographer Peter Schill</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Malt_en_grain.JPG">detail of malt, author Pierre-alain dorange</a></li>
+</ul>
+<div id="state-of-the-machine" class="section level3">
+<h3>State of the machine</h3>
+<details>
+<p><summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong> </summary></p>
+<pre class="r"><code>sessioninfo::session_info()</code></pre>
+<pre><code>## ─ Session info ──────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.6.1 (2019-07-05)
+##  os       macOS Mojave 10.14.6        
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  ctype    en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2019-10-11                  
+## 
+## ─ Packages ──────────────────────────────────────────────────────────────
+##  package     * version date       lib source        
+##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 3.6.0)
+##  backports     1.1.5   2019-10-02 [1] CRAN (R 3.6.0)
+##  blogdown      0.16    2019-10-01 [1] CRAN (R 3.6.0)
+##  bookdown      0.14    2019-10-01 [1] CRAN (R 3.6.0)
+##  broom         0.5.2   2019-04-07 [1] CRAN (R 3.6.0)
+##  cellranger    1.1.0   2016-07-27 [1] CRAN (R 3.6.0)
+##  cli           1.1.0   2019-03-19 [1] CRAN (R 3.6.0)
+##  colorspace    1.4-1   2019-03-18 [1] CRAN (R 3.6.0)
+##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.6.0)
+##  digest        0.6.21  2019-09-20 [1] CRAN (R 3.6.0)
+##  dplyr       * 0.8.3   2019-07-04 [1] CRAN (R 3.6.0)
+##  ellipsis      0.3.0   2019-09-20 [1] CRAN (R 3.6.0)
+##  evaluate      0.14    2019-05-28 [1] CRAN (R 3.6.0)
+##  fansi         0.4.0   2018-10-05 [1] CRAN (R 3.6.0)
+##  forcats     * 0.4.0   2019-02-17 [1] CRAN (R 3.6.0)
+##  generics      0.0.2   2018-11-29 [1] CRAN (R 3.6.0)
+##  ggplot2     * 3.2.1   2019-08-10 [1] CRAN (R 3.6.0)
+##  glue          1.3.1   2019-03-12 [1] CRAN (R 3.6.0)
+##  gtable        0.3.0   2019-03-25 [1] CRAN (R 3.6.0)
+##  haven         2.1.1   2019-07-04 [1] CRAN (R 3.6.0)
+##  hms           0.5.1   2019-08-23 [1] CRAN (R 3.6.0)
+##  htmltools     0.4.0   2019-10-04 [1] CRAN (R 3.6.0)
+##  httr          1.4.1   2019-08-05 [1] CRAN (R 3.6.0)
+##  jsonlite      1.6     2018-12-07 [1] CRAN (R 3.6.0)
+##  knitr         1.25    2019-09-18 [1] CRAN (R 3.6.0)
+##  lattice       0.20-38 2018-11-04 [1] CRAN (R 3.6.1)
+##  lazyeval      0.2.2   2019-03-15 [1] CRAN (R 3.6.0)
+##  lifecycle     0.1.0   2019-08-01 [1] CRAN (R 3.6.0)
+##  lubridate     1.7.4   2018-04-11 [1] CRAN (R 3.6.0)
+##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.6.0)
+##  modelr        0.1.5   2019-08-08 [1] CRAN (R 3.6.0)
+##  munsell       0.5.0   2018-06-12 [1] CRAN (R 3.6.0)
+##  nlme          3.1-141 2019-08-01 [1] CRAN (R 3.6.0)
+##  pillar        1.4.2   2019-06-29 [1] CRAN (R 3.6.0)
+##  pkgconfig     2.0.3   2019-09-22 [1] CRAN (R 3.6.0)
+##  purrr       * 0.3.2   2019-03-15 [1] CRAN (R 3.6.0)
+##  R6            2.4.0   2019-02-14 [1] CRAN (R 3.6.0)
+##  Rcpp          1.0.2   2019-07-25 [1] CRAN (R 3.6.0)
+##  readr       * 1.3.1   2018-12-21 [1] CRAN (R 3.6.0)
+##  readxl        1.3.1   2019-03-13 [1] CRAN (R 3.6.0)
+##  rlang         0.4.0   2019-06-25 [1] CRAN (R 3.6.0)
+##  rmarkdown     1.16    2019-10-01 [1] CRAN (R 3.6.0)
+##  rstudioapi    0.10    2019-03-19 [1] CRAN (R 3.6.0)
+##  rvest         0.3.4   2019-05-15 [1] CRAN (R 3.6.0)
+##  scales        1.0.0   2018-08-09 [1] CRAN (R 3.6.0)
+##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.6.0)
+##  stringi       1.4.3   2019-03-12 [1] CRAN (R 3.6.0)
+##  stringr     * 1.4.0   2019-02-10 [1] CRAN (R 3.6.0)
+##  tibble      * 2.1.3   2019-06-06 [1] CRAN (R 3.6.0)
+##  tidyr       * 1.0.0   2019-09-11 [1] CRAN (R 3.6.0)
+##  tidyselect    0.2.5   2018-10-11 [1] CRAN (R 3.6.0)
+##  tidyverse   * 1.2.1   2017-11-14 [1] CRAN (R 3.6.0)
+##  utf8          1.1.4   2018-05-24 [1] CRAN (R 3.6.0)
+##  vctrs         0.2.0   2019-07-05 [1] CRAN (R 3.6.0)
+##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.6.0)
+##  xfun          0.10    2019-10-01 [1] CRAN (R 3.6.0)
+##  xml2          1.2.2   2019-08-09 [1] CRAN (R 3.6.0)
+##  yaml          2.2.0   2018-07-25 [1] CRAN (R 3.6.0)
+##  zeallot       0.1.0   2018-01-28 [1] CRAN (R 3.6.0)
+## 
+## [1] /Library/Frameworks/R.framework/Versions/3.6/Resources/library</code></pre>
+</details>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>from the wikipedia article I found the words: <em>wort</em>=the sugary liquid, <em>mashing</em> = mixing malted barley with hot water, <em>liquor</em> = hot water, <em>grist</em> =crushed malt, <em>sparging</em> = washing of grains, <em>lautering</em> = seperation of wort with grain itself<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

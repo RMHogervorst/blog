@@ -35,7 +35,7 @@ say something useful about your data, this post is for you.
 
 I am a big fan of Gosset, look only at my work room:
 
-![Yes that is the wikipedia portret of William Gosset!](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/my_room.jpg) 
+![Yes that is the wikipedia portret of William Gosset!](/2019-10-11-gosset-part-2-small-sample-statistics_files/my_room.jpg) 
 and so I am absolutely fascinated with the work that Gosset did. In fact I think
 he is the [first data scientist](/post/2019-08-17-william-sealy-gosset-one-of-the-first-data-scientists.html).
 
