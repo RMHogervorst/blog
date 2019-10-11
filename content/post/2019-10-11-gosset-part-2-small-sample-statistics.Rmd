@@ -1,7 +1,7 @@
 ---
 title: 'Gosset part 2: small sample statistics'
 author: Roel M. Hogervorst
-date: '2019-10-10'
+date: '2019-10-11'
 slug: gosset-part-2-small-sample-statistics
 categories:
   - blog
@@ -14,7 +14,7 @@ tags:
   - tibble
   - dplyr
 subtitle: 'Scientific brewing at scale'
-share_img: /post/2019-10-10-gosset-part-2-small-sample-statistics_files/cheers-839865_640.jpg
+share_img: /post/2019-10-11-gosset-part-2-small-sample-statistics_files/cheers-839865_640.jpg
 ---
 
 
@@ -24,7 +24,7 @@ Simulation was the key to to achieve world beer dominance.
 
 # 'Scientific' Brewing at scale in the early 1900s
 
-![Beer bottles cheers](/post/2019-10-10-gosset-part-2-small-sample-statistics_files/cheers-839865_640.jpg)
+![Beer bottles cheers](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/cheers-839865_640.jpg)
 
 This post is an explainer about the small sample experiments performed by
 William S. Gosset. This post contains some R code that simulates his simulations^[see what I did there?]
@@ -35,7 +35,7 @@ say something useful about your data, this post is for you.
 
 I am a big fan of Gosset, look only at my work room:
 
-![Yes that is the wikipedia portret of William Gosset!](/post/2019-10-10-gosset-part-2-small-sample-statistics_files/my_room.jpg) 
+![Yes that is the wikipedia portret of William Gosset!](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/my_room.jpg) 
 and so I am absolutely fascinated with the work that Gosset did. In fact I think
 he is the [first data scientist](/post/2019-08-17-william-sealy-gosset-one-of-the-first-data-scientists.html).
 
@@ -64,7 +64,7 @@ In that process some enzymes are made that will break down starch to smaller
 sugars. The grains are now ready to start a new plant and, then we sort of kill that process by forced drying. So we end up with sad half germinated barley. This half germinated barley is called malt or
 malted barley.
 
-*Grain, Barley, transforming into malt, as seen here.*  ![Malt and grain, detail of individual sprouted malt](/post/2019-10-10-gosset-part-2-small-sample-statistics_files/malt_and_grain.jpg)
+*Grain, Barley, transforming into malt, as seen here.*  ![Malt and grain, detail of individual sprouted malt](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/malt_and_grain.jpg)
 
 Remember that we use the barley for its starch, which is converted into sugar. Sugar is converted by yeast into alcohol. Therefore the amount of sugar in the mixture determines the maximum ammount of alcohol the
 yeast can create. Higher alcohol content keeps the beer for longer
@@ -82,7 +82,7 @@ the customers might hate you.
 
 ## Malt and sugars
 
-![Barley in the sun](/post/2019-10-10-gosset-part-2-small-sample-statistics_files/barley.jpg)
+![Barley in the sun](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/barley.jpg)
 Guiness Malt in Gosset's time, came from Irish and English Barley stock.
 Since the sugar content in malt can vary from batch to batch (more or less sun, different amounts of rain etc.), and we determined that you want the exact same taste in all your beer, brewers need to
 check the sugar content of the barley. In this time brewers were checking the sugar
@@ -115,7 +115,7 @@ within 0.5 degree of the real value)? And every sample takes time and destroys a
 
 ## Simulation
 
-![Malt, green, a handful of green malt](/post/2019-10-10-gosset-part-2-small-sample-statistics_files/320px-Grünmalz.jpg)
+![Malt, green, a handful of green malt](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/320px-Grünmalz.jpg)
 So how do we find out how many samples you need to have an accurate estimation
 of your real value of the barrel?
 Gosset and his co workers actually used simulation; 
@@ -131,7 +131,7 @@ what would happen if they sampled from the all of the barrels.
 
 And that is what I will show in R code. 
 
-So we are talking about sampling, but maybe not this kind of sampling... ![Randy Marshal sampling beer and wine (South Park)](/post/2019-10-10-gosset-part-2-small-sample-statistics_files/randy_sampling.gif)
+So we are talking about sampling, but maybe not this kind of sampling... ![Randy Marshal sampling beer and wine (South Park)](/post/2019-10-11-gosset-part-2-small-sample-statistics_files/randy_sampling.gif)
 
 
 ### Simulating drawing from a barrel
