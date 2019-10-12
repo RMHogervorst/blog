@@ -17,6 +17,12 @@ Good tutorials are:
 - easy: success is important. playtest the tutorial under different circumstances
 - not to easy: Don't get htem throug ht toturoial onluy to runinto a wall later on. 
 
+{{< columns >}}
+This is column 1.
+{{< column >}}
+This is column 2.
+{{< endcolumn >}}
+
 -->
 
 

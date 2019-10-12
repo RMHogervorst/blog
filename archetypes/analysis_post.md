@@ -20,7 +20,13 @@ Title: contains the main answer or question: Do things get darker in later episo
 <!--
     start with problem, how to approach it, and what the answers are? (write last) -->
 
-
+<!--
+{{< columns >}}
+This is column 1.
+{{< column >}}
+This is column 2.
+{{< endcolumn >}}
+-->
 
 <!-- why this problem? -->
 
