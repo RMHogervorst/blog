@@ -1,0 +1,79 @@
+---
+title: Refactoring a script
+author: Roel M. Hogervorst
+date: '2019-11-05'
+slug: refactoring-a-script
+categories:
+  - R
+tags:
+  - best-practices
+  - software Engineering
+  - data_science
+  - SeriesBestPractices 
+subtitle: 'Best practices in software engineering for R: Refactoring'
+share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
+---
+
+<!-- content  -->
+WHY ARE WE DOING THIS?
+Refactoring, more than any of the other best practices make you able to keep working
+on your project. deleting code, reshuffling of files it makes for much easier 
+reading. And trust me, you will read your code a lot!
+Of course the machine must execute it as well, but you must modify it. And be confident
+that your changes will work. And that your changes in one part are not messing up another part of the code. 
+
+> Refactoring is a systematic process of improving code without creating new functionality that can transform a mess into clean code and simple design. --https://refactoring.guru/refactoring
+
+>  Dirty code is result of inexperience multiplied by tight deadlines, mismanagement, and nasty shortcuts taken during the development process.  --https://refactoring.guru/refactoring
+
+> Clean code is code that is easy to read, understand and maintain. Clean code makes software development predictable and increases the quality of a resulting product --https://refactoring.guru/refactoring
+
+In this script we will
+
+* move the constants to the top of the file
+* read config from a separate file
+* turn repeat functionality into functions
+
+SET SANE DEFAULTS, ONLY ADD CONFIG OPTIONS WHEN YOU NEED THEM 'YANGNI'
+
+THE BASIC SCRIPT SHOULD BE VERY SIMPLE AND EASY TO READ: READ DATA IN, FEATURE ENGIN,
+MODEL FIT, MODEL PREDICT, WRITE AWAY THE DATA
+
+* ENCAPSULATE COMPLEXITY (GRID SEARCH CROSS VALIDATION CONTAINED INSIDE MODEL)
+* KEEP THE PARTS THAT DON'T INTERACT SEPARATE
+* FOCUS ON MAKING THINGS SIMPLE AND EASY TO UNDERSTAND
+* THINK ABOUT THE NAMES YOU GIVE TO FUNCTIONS
+
+<!-- 
+ 
+Good tutorials are: 
+- quick. tell what you want to do, how to do it
+- easy: success is important. playtest the tutorial under different circumstances
+- not to easy: Don't get htem throug ht toturoial onluy to runinto a wall later on. 
+
+{{< columns >}}
+This is column 1.
+{{< column >}}
+This is column 2.
+{{< endcolumn >}}
+
+-->
+
+1. EVERYTHING IS IN ONE SCRIPT.
+2. DO WE KNOW IF THE MODEL IS PERFORMING BETTER OR WORSE OVER TIME?
+3. DO YOU HEADLESSLY KNOW IF THE PROCESS RAN?
+4. WHAT IF I WANT TO CHANGE THE ALGORITHM?
+
+
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+

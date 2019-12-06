@@ -1,0 +1,212 @@
+---
+title: Starting with a script
+author: Roel M. Hogervorst
+date: '2019-10-30'
+slug: starting-with-a-script
+categories:
+  - R
+  - blog
+tags:
+  - data_science
+  - production
+  - best-practices
+  - software Engineering
+  - data_science
+  - tidymodels
+  - recipes
+  - magrittr
+  - parsnip
+  - rsample
+  - SeriesBestPractices  
+subtitle: '#Rinprod Best practices in software engineering for R: We start with a proof of concept'
+share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
+---
+
+<!-- content  -->
+<!-- 
+ 
+Good tutorials are: 
+- quick. tell what you want to do, how to do it
+- easy: success is important. playtest the tutorial under different circumstances
+- not to easy: Don't get htem throug ht toturoial onluy to runinto a wall later on. 
+
+{{< columns >}}
+This is column 1.
+{{< column >}}
+This is column 2.
+{{< endcolumn >}}
+
+-->
+```{r}
+opts_chunk$set(eval=TRUE)
+```
+
+I WANT TO RUN A SCRIPT ON A MACHINE, WE WILL ASSUME THAT THE R PROCESS WILL START 
+IN THE SAME LOCATION AS THE SCRIPT. (GETWD() WILL SHOW THE SAME PATH AS WHERE THE FILE IS AT). AND ALL TEH FILES ARE THERE AND ALL THE PACKAGES ARE INSTALLED.^[this is quite an assumption so usually we use a seperate install packages script to build everything in a docker container for example. but even thouh iti is important, i dont want tofocus on that right now.]
+
+In [this specific commit on GITHUB ](https://github.com/RMHogervorst/example_best_practices_ml/tree/cd14929327b99a7c379eca896cdf7b471ccfd868)
+the code was as described in this blogpost. 
+I break the code into separate parts and describe them.^[The fact that I break them into different logically separate parts here, gives you a taste of what we do eventually]
+
+I describe the steps below.
+FOLD AWAY EXPLAINER ON HOW TO READ GIT DIFFS SPECIFICALLY ON GITHUB
+
+![THE PATH TO PRODUCTION, ARTIST RENDERING (ERASMUSBRUG DONKER)]()
+
+This is the basic script, A TYPICAL ML JOB IN R, BUT WITH THE NEWEST TOOLS AVAILBABLE.
+REad teh data
+
+Load the packages and read the data
+```{r}
+## Load the packages  ----
+library(mlbench) # for the data
+library(tidymodels) # contains recipes, magrittr, dials, rsample
+
+# load the data -----
+data("Shuttle")
+data_set <- Shuttle
+```
+
+
+# split the data into train and test data ----
+
+This is not a time series so we don't care where the data is split.
+
+```{r}
+
+set.seed(3456) # setting seed here, so we can run this part indepentenly
+train_test_samples <- rsample::initial_split(data_set,prop = 3/4)
+train_data <- training(train_test_samples)
+test_data <- testing(train_test_samples)
+```
+
+
+# These next steps are only the procedure. We do not yet actually compute and  execute on the steps.
+
+I'm using the [{recipes}](https://cran.r-project.org/package=recipes) package to
+create a specification of all the actions I want to execute on the original
+data before it goes into the model. THIS NEEDS MORE WORDS The beauty of this approach is that we 
+garantee no data leakage because all the preprocessing steps are calculated on 
+the training set and use that for the test set. 
+
+The steps all have cooking names. 
+
+* first we create a *recipe*: 'what needs to happen?'
+* then we *prep* that recipe: 'calculate all values on the training set'
+* then we *bake* the train and test data with that prepped recipe
+
+
+```{r}
+rec <- 
+  # basic recipe, Predict Class using all variables
+  recipe(train_data, Class~.) %>% 
+  # - deal with missings
+    step_knnimpute(V1, V2, V3, V7, V9, 
+                   neighbors = 6,
+                   id = "Missing imputation") %>% 
+    step_mutate( 
+      # some manual reworking because I thought these were useful
+      V2sign = V2 <0,
+      V2 = log1p(abs(V2)),
+      V5sign = V5 <0,
+      V5 = log1p(abs(V5)),
+      V6sign = V6 <0,
+      V6 = log1p(abs(V6)),
+      V7sign = V7 <0,
+      V7 = sqrt(abs(V7)),
+      V9sign = V9 < 0,
+      V9 = log1p(abs(V9)),
+      id = "Sign and logging"
+    ) %>% 
+  # - transform YeoJohnson
+    step_YeoJohnson(all_numeric(),id = "transformation of vars") %>% 
+  # - scale and center
+    step_center(all_numeric(), id = "centering vars") %>% 
+    step_scale(all_numeric(), id = "scaling vars")
+```
+
+Learn what the values should be, from the training data
+
+```{r}
+rec_prepped <- prep(rec, training = train_data)
+```
+
+Run feature Engineering on Test and training data
+
+We haven't modified the training data yet, we trained the 
+feature engineering steps, but not executed it on the data.
+We now apply the feature engineering to both training and testset.
+NO LEAKAGE HERE.
+
+```{r}
+train_data_FE <- bake(rec_prepped, train_data)
+test_data_FE <- bake(rec_prepped, test_data)
+
+```
+
+Train model on Feature engineered train data.
+
+I use the [{parsnip}](https://cran.r-project.org/package=parsnip) model specification here. This package allows you to specify a type of model, like random forests, and use different
+packages in R or Spark for the estimation. I'm now using ranger, but randomForest is also possible.
+
+WE COULD DO A GRID SEARCH (OR OTHER SEARCH HERE TOO).
+
+```{r}
+shuttle_ranger <- 
+  rand_forest(trees = 100, mode = "classification") %>%
+  set_engine("ranger") %>% 
+  fit(Class~., train_data_FE)
+```
+
+Now we have a trained model. Since we baked the test set with the same prepped recipe we can now use that feature engineered test data and the trained model to predict new values.
+
+*Of course when we predict in a real life situation we don't know the truth and we cannot know how well we are doing. But because we split the data into test and train we can calculate the performance.*
+
+*SINCE I AM NO LONGER IN PSYCHOLOGY WE USUALLY HAVE ENOUGH DATA TO KEEP SOMETHING BEHIND TO TEST ON.*
+
+```{r}
+prediction <- predict(shuttle_ranger, test_data_FE)
+
+test_data_FE %>% 
+  bind_cols(prediction) %>% # add the prediction column to the test set.
+  metrics(truth = Class, estimate = .pred_class) # return accuracy and kappa
+```
+By default this prediction returns the hightes probability class.
+
+We can also look at the probabilities for every class. 
+```{r}
+# A slight exploration of performance per class
+prediction2 <- predict(shuttle_ranger, test_data_FE,type = "prob")
+
+probs <- 
+  test_data_FE %>% 
+  bind_cols(prediction2)
+
+gain_curve_plot <- 
+  probs %>% 
+  gain_curve(Class, .pred_Rad.Flow:.pred_Bpv.Open) %>%
+  autoplot() + 
+  ggtitle("Gain curve for every class")
+gain_curve_plot
+```
+
+
+```{r}
+roc_curve_plot <- 
+  probs %>% 
+  roc_curve(Class, .pred_Rad.Flow:.pred_Bpv.Open) %>%
+  autoplot()+
+  ggtitle("Roc Curve for every class")
+roc_curve_plot
+```
+
+SOME KIND OF ENDING, CONCLUSION, LINK TO NEXT POST
+NOW AT THE END. WE HAVE A SCRIPT THAT LOADS THE DATA, DOES FEATURE ENGINEERING,
+DOES A PREDICTION, WE EVALUATE THE PERFORMANCE, AND PLOT SOME PERFORMANCE.
+
+THIS SEEMS READY, WHAT ARE WE MISSING?
+
+1. EVERYTHING IS IN ONE SCRIPT.
+2. DO WE KNOW IF THE MODEL IS PERFORMING BETTER OR WORSE OVER TIME?
+3. DO YOU HEADLESSLY KNOW IF THE PROCESS RAN?
+4. WHAT IF I WANT TO CHANGE THE ALGORITHM?
