@@ -68,6 +68,7 @@ running over time. Also such a system is never done, you can make sure that it n
 So how do we get there? This beautiful world where the code works and is a joy to work with?
 We work with best practices. 
 
+![CHAIN IMAGE: GOOD PRACTICES ARE WHAT KEEPS THE PROJECT TOGETHER]()
 
 # The best practices I will be talking about in this series
 There are many guides, books, talks, ...
