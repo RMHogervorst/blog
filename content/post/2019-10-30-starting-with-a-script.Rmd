@@ -3,6 +3,7 @@ title: Starting with a script
 author: Roel M. Hogervorst
 date: '2019-10-30'
 slug: starting-with-a-script
+draft: true
 categories:
   - R
   - blog
@@ -37,9 +38,11 @@ This is column 2.
 {{< endcolumn >}}
 
 -->
+
 ```{r}
-opts_chunk$set(eval=TRUE)
+#opts_chunk$set(eval=TRUE)
 ```
+
 
 I WANT TO RUN A SCRIPT ON A MACHINE, WE WILL ASSUME THAT THE R PROCESS WILL START 
 IN THE SAME LOCATION AS THE SCRIPT. (GETWD() WILL SHOW THE SAME PATH AS WHERE THE FILE IS AT). AND ALL TEH FILES ARE THERE AND ALL THE PACKAGES ARE INSTALLED.^[this is quite an assumption so usually we use a seperate install packages script to build everything in a docker container for example. but even thouh iti is important, i dont want tofocus on that right now.]

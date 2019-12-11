@@ -3,6 +3,7 @@ title: Productionizing refactoring
 author: Roel M. Hogervorst
 date: '2019-10-29'
 slug: productionizing-refactoring
+draft: true
 categories:
   - R
   - blog

@@ -3,6 +3,7 @@ title: Refactoring a script
 author: Roel M. Hogervorst
 date: '2019-11-05'
 slug: refactoring-a-script
+draft: true
 categories:
   - R
 tags:

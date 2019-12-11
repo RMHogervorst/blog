@@ -11,24 +11,10 @@ tags:
   - data_science
   - SeriesBestPractices 
 subtitle: '#Rinprod Best practices in software engineering for R: Overview'
-share_img: 
+share_img: "/post/2019-12-10-general-overview-rinprod_files/server-1235959_1280.jpg"
 ---
 
 <!-- content  -->
-<!-- 
- 
-Good tutorials are: 
-- quick. tell what you want to do, how to do it
-- easy: success is important. playtest the tutorial under different circumstances
-- not to easy: Don't get htem throug ht toturoial onluy to runinto a wall later on. 
-
-{{< columns >}}
-This is column 1.
-{{< column >}}
-This is column 2.
-{{< endcolumn >}}
-
--->
 
 
 *This is an overview post for the entire series of #Rinprod. I've not added this post to the R-bloggers feed because I this is the overview page.*

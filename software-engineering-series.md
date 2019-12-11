@@ -15,26 +15,27 @@ date        what      code done?  outline done?   editing done?   title ?
 
 best practices
 
-* start of script [blogpost 2019-10-30]() [, code](https://github.com/RMHogervorst/example_best_practices_ml/tree/cd14929327b99a7c379eca896cdf7b471ccfd868).
-* Refactoring [blogpost 2019-11-05](), [code after this step](https://github.com/RMHogervorst/example_best_practices_ml/tree/07f4d40c401efaa53713e255fd0caaf1e6554767)
-* Adding logging and monitoring [blogpost 2019-11-12](), [code after this step](https://github.com/RMHogervorst/example_best_practices_ml/tree/91acc95f4cf3ce6258515f0c5d097019a01bbe9a)
-* Adding tests and validation [blogpost 2019-11-19](), [code after this step]()
 
 
 outlines: what is the message I want to give?
 (machine learning approach is most useful if you don't have to touch it
 anymore to make it work. Like most programs, you write it to do repetitive work and
-you are free to work on different things. an improvement, drink coffee, start a brewery
+you are free to work on different things. an improvement, drink coffee, start a brewery or work on 
 a different project)
 
 # best practices in software engineering (for r users)
 What does it mean to bring something to production?
-why should you care
-what best practices are we talking about
-who am I 
 from proof of concept to production
 what is production
+why should you care
+
+
+what best practices are we talking about
+who am I 
+
 example R script 
+
+# separarate link post
 general post with links to other posts
 
 
@@ -45,7 +46,8 @@ raising questions about extensibility and how easy it is to understand.
 # refactoring
 start with a single script 
 (maybe focus on why we do refactoring, possibly speed, def easier to extend, easier to reason about,
-it's for you and your team after 2 weeks of vacation, you don't know it anymore.)
+it's for you and your team after 2 weeks of vacation, you don't know it anymore.
+maybe we can use the iron imperitive: don't waste my time, THAT ALSO INCLUDES YOU IN THE FUTURE. MAKE SURE YOU ARE CAN UNDERSTAND IT WELL LATER. COUPLED WITH TECHNICAL DEPT: QUICK HACKS YOU USED TO MAKE IT WORK, THAT WILL HAVE TO BE CHANGED LATER. THAT IMPETE YOU LATER: COST OF ADDDITIONAL REWORK TO WORK AROUND EARLIER SOLUTION. IT IS DEPT THAT COMPOUNDS, YOU HAVE TO DO THAT WORK EVERY TIME. BY CHOOSING AND EASY SOLUTION NOW WHERE A BETTER MORE DIFFICULT SOLUTION EXISTS BUT WOULD TAKE LONGER)
 move things into functions and place them somewhere else
 abstract steps away so we see things on the same level
 better names

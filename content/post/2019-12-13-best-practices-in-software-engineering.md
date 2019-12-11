@@ -1,8 +1,8 @@
 ---
-title: Best Practices in Machine Learning Software Engineering
+title: From Proof of Concept to Production
 author: Roel M. Hogervorst
-date: '2019-10-30'
-slug: best-practices-in-software-engineering
+date: '2019-12-13'
+slug: best-practices-in-software-engineering-poc-prod
 categories:
   - R
 tags:
@@ -11,34 +11,19 @@ tags:
   - data_science
   - SeriesBestPractices 
 subtitle: '#Rinprod Best practices in software engineering for R: introduction'
-image: ''
+image: '/post/2019-12-13-best-practices-in-software-engineering_files/shawn-lee-vuEiSEegQAk-unsplash.jpg'
 ---
-![IMAGE OF DACHSUND HERE?]()
 
-<!--
-OVERVIEW POST OF SERIES
-THIS POST SHOULD GIVE THE WHY OF THIS SERIRES
+How do you go from proof of concept script to production? 
+We start with a 'simple' script and move it gradually to production.
+In this post I'll introduce what I mean with going to production.
 
-RIGHT NOW THIS POST IS TOO LONG. SEPERATE OUT THE IDEAS AND MAJOR THEMES.
-MAYBE A REASONING POST AND AN EXAMPLE SCRIPT? OR JUST LEAVE THE SCRIPT IN
-'IT STARTED WITH A SCRIPT' NVER THOUHT IT WOULD END LIKE THIS.
+![A nice bespoke machine learning model (actually a watch)](/post/2019-12-13-best-practices-in-software-engineering_files/shawn-lee-vuEiSEegQAk-unsplash.jpg)
 
-themes in this post
-WHY SHOULD YOU CARE, 
-FROM POC TO PRODUCTION, COMBINE WITH SOME PARTS OF PRODUCTION
-
-ABOUT ME
--->
-This is a blogpost series about applying software engineering best practices to
-R, specifically for machine learning / data science. In my work I use these practices 
-and think about them a lot. I think there are some excellent tutorials about these
-best practices but not specific for R. So in this series I would like to explore
-software engineering best practices with you. I will start with a single data science script
-that does everything, apply refactoring, add monitoring and logging and finally add some tests.^[Yes some would advocate for writing tests first, but in practice you start with a proof of concept already build and work on from there.]
-
-First something about me, why you should care, the code I will improve and finally a list of best practices I'm talking about. If you want to immediately [jump to the code go here](#Example script )
 
 ## From proof of concept to 'production'
+
+
 Applying machine learning in companies often starts with a simple proof of concept to 
 figure out the value of a project. Maybe you put a script together on your laptop that improves the conversion of a group of customers. You calculated how much money this will make your company. Cool! Everyone is excited!
 
@@ -48,7 +33,8 @@ But, this is your laptop. Theoretically you could push the button every day,
 in fact I have seen scripts that run every day on 1 person's
 computer, but really, there must be better ways.
 
-![PULL THELEVER KRONK IMAGE]()
+
+![The big deploy-to-production button: Pull the lever, Kronk!](/post/2019-12-13-best-practices-in-software-engineering_files/florian-olivo-ca7tJ48YD64-unsplash.jpg)
 
 A month later you moved your script to an always-on computer, and
 you no longer have to press a button; there is a CRON job that fires up the process. 
@@ -68,7 +54,8 @@ running over time. Also such a system is never done, you can make sure that it n
 So how do we get there? This beautiful world where the code works and is a joy to work with?
 We work with best practices. 
 
-![CHAIN IMAGE: GOOD PRACTICES ARE WHAT KEEPS THE PROJECT TOGETHER]()
+
+![Best practices, like this chain, keep your project together](/post/2019-12-13-best-practices-in-software-engineering_files/jj-ying-PDxYfXVlK2M-unsplash.jpg)
 
 # The best practices I will be talking about in this series
 There are many guides, books, talks, ...
@@ -200,7 +187,10 @@ community. (if they are, please tag me on [twitter!](https://twitter.com/RoelMHo
 I really like to hear from you. What has been your experience putting R in into production? Are there other best practices I should talk about? Do you have lessons learned?
 @ me on twitter, checkout and use the  [hashtag #rinprod](https://twitter.com/hashtag/rinprod?src=hash). Or start a topic on [community.rstudio.org](https://community.rstudio.org) (and you can tag me in there as well).
 
-# Extra resources
+![All the models that you discarded and that never made it to prodcution](/post/2019-12-13-best-practices-in-software-engineering_files/heather-zabriskie-yBzrPGLjMQw-unsplash.jpg)
+
+
+## Extra resources
 
 * Mark Sellors has done a ton of work on R in production [here ](https://github.com/rinprod) is a repo and a [presentation at RstudioConf 2019](https://rinprod.com/).
 * Edwin Thoen is writing a book about [Agile Data Science](https://edwinth.github.io/ADSwR/index.html) that has incorperated a lot of best practices, he talks about testing, versioning, and how agile philosophy applies to Data Science.
@@ -209,3 +199,10 @@ I really like to hear from you. What has been your experience putting R in into 
 * And r 4 data science has a deep understanding of R [online version](https://r4ds.had.co.nz/)
 * This [dev.to post has a nice concise overview of best practices](https://dev.to/luminousmen/what-are-the-best-software-engineering-principles--3p8n)
 * VERSION CONTROL AND R, BEST PRACTICES JENNY BRYAN.
+
+
+## Image sources
+* image of watches Photo by Heather Zabriskie on Unsplash https://unsplash.com/photos/yBzrPGLjMQw 
+* New watch on green background Photo by Shawn Lee on Unsplash https://unsplash.com/photos/vuEiSEegQAk
+* large switch Photo by Florian Olivo on Unsplash https://unsplash.com/photos/ca7tJ48YD64
+* image of chain https://unsplash.com/photos/PDxYfXVlK2M Photo by JJ Ying on Unsplash
