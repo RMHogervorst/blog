@@ -36,6 +36,8 @@ publishDir = "public"
   twitter = "RoelMHogervorst"
   linkedin = "rmhogervorst"
   stackoverflow = "users/5573955/roel-hogervorst"
+  devto = "rmhogervorst"
+  mastodon = "mastodon.technology/@rmhogervorst"
  
 [[menu.main]]
     name = "Blog"
