@@ -19,11 +19,12 @@ publishDir = "public"
   favicon = "img/favicon.ico"
   dateFormat = "January 2, 2006"
   rss = true
-  comments = true
+  comments = false
   readingTime = true
   modifyLink = true
   GithubEdit = "https://github.com/RMHogervorst/blog/tree/master/content/"
   useHLJS = true
+  selfHosted=true
 
 [Author]
   name = "Roel M. Hogervorst"
