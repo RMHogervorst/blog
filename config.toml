@@ -24,7 +24,7 @@ publishDir = "public"
   modifyLink = true
   GithubEdit = "https://github.com/RMHogervorst/blog/tree/master/content/"
   useHLJS = true
-  selfHosted=true
+  selfHosted = false
 
 [Author]
   name = "Roel M. Hogervorst"
