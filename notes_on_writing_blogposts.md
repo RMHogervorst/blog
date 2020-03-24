@@ -1,3 +1,7 @@
+Something about the difference between a manual and tutorial from teaching tech together.  Greg Wilson (ed.): Teaching Tech Together. Lulu.com, 2018, 978-0-9881137-0-1, http://teachtogether.tech.  :
+
+> A [**tutorial**](https://teachtogether.tech/#g:tutorial) helps newcomers to a field build a mental model; a [**manual**](https://teachtogether.tech/#g:manual), on the other hand, helps competent practitioners fill in the gaps in  their knowledge. Tutorials frustrate competent practitioners because  they move too slowly and say things that are obvious (though they are  anything *but* obvious to novices). Equally, manuals frustrate novices because they use jargon and *don’t* explain things. 
+
 General blog tips from writing without bullshit:
 (in general the following sentences are lifted entirely from the book Writing Without Bullshit: Boost Your Career by Saying What You Mean- Josh Bernoff) *everything cursive is my thoughts about it*
 
