@@ -18,7 +18,12 @@ And when I say I taught myself, I really mean I took the [Coursera Course: R pro
 After about a year I wanted to learn more techniques and joined a commercial traineeship program at [Xomnia](https://xomnia.com/services/traineeships/). I came into contact with all the other trainees from differnet backgrounds and took weekly classes. 
 
 
-## Correcting me
+## Contact
 Did I make a mistake? Are you excited about learning? Is there something I should really blog about? Did you find spelling mistakes (very probable, I make them alll the time)? I have an abundance of social links at the bottom of the page to reach me. Some of you even found my academic email account, now that is dedication (also don't do that anymore, because I no longer work in academia) ! There is also a edit this page at the bottom of every webpage where you can make an edit on github. 
+
+and also see <https://keybase.io/rmhogervorst> and
+
+<div itemscope itemtype="https://schema.org/Person"><a itemprop="sameAs" content="https://orcid.org/0000-0001-7509-0328" href="https://orcid.org/0000-0001-7509-0328" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon">https://orcid.org/0000-0001-7509-0328</a></div>
+
 
 If you found [security issues.  See this link to contact me securely](/.well-known/security.txt)  if you so desire.  
