@@ -1,0 +1,118 @@
+---
+title: "Scraping Gdpr Fines"
+author: Roel M. Hogervorst
+date: "2020-04-08"
+slug: scraping-gdpr-fines
+subtitle: "Into the DOM with a flavour of regex"
+categories:
+  - blog
+  - R
+tags: 
+  - rvest
+  - GDPR
+  - privacy
+  - short
+  - scraping
+share_img: /post/2020-04-08-scraping-gdpr-fines_files/gdpr.jpg
+---
+
+<!-- content  -->
+
+The website Privacy Affairs keeps a list of fines related to GDPR.
+I heard * that this might be an interesting dataset for TidyTuesdays. The dataset contains at this
+moment 250 fines given out for GDPR violations and is last updated (according to the website) on 31 March 2020.
+
+> All data is from official government sources, such as official reports of national Data Protection Authorities.
+
+The largest fine  is €50,000,000 on Google Inc. on January 21 , 2019 - in  France, and the smallest is actually 0 euros, but the website says 90. 
+
+# Scraping
+I use the {rvest} package to scrape the website. 
+
+## Before you start
+I first checked the [robots.txt](https://www.privacyaffairs.com/robots.txt) of this website. And it
+did not disallow me to scrape the website.
+
+# The scraping
+I thought this would be easy and done in a minute. But there were some snafus. 
+It works for now, but if the website changes a bit this scraping routine will not work that well anymore. It extracts the script part of the website and extracts the data between '[' and ']'. 
+If anyone has ideas on making this more robust, be sure to let me know over twitter. 
+
+## Details about the scraping part
+First I noticed that the website doesn't show you all of the fines. But when we look at the source of the page it seems they are all there. It should be relatively simple to retrieve the data, the data is
+in the javaScript part (see picture).
+
+![Image of sourcecode of the website](/post/2020-04-08-scraping-gdpr-fines_files/use-the-source.png)
+
+
+But extracting that data is quite some more work:
+
+* First find the < script > tag on the website
+* Find the node that contains the data
+* Realize that there are actually two datasources in here
+
+
+```{r}
+library(rvest)
+```
+
+```
+link<- "https://www.privacyaffairs.com/gdpr-fines/"
+page <- read_html(link)
+
+
+temp <- page %>% html_nodes("script") %>% .[9] %>% 
+  rvest::html_text() 
+```
+
+* cry (joking, don't give up! The #rstats community will help you!)
+* do some advanced string manipulation to extract the two json structures
+* Read the json data in R
+
+```
+ends <- str_locate_all(temp, "\\]")
+starts <- str_locate_all(temp, "\\[")
+table1 <- temp %>% stringi::stri_sub(from = starts[[1]][1,2], to = ends[[1]][1,1]) %>% 
+  str_remove_all("\n") %>% 
+  str_remove_all("\r") %>%
+  jsonlite::fromJSON()
+
+table2 <- temp %>% stringi::stri_sub(from = starts[[1]][2,2], to = ends[[1]][2,1]) %>% 
+  str_remove_all("\n") %>% 
+  str_remove_all("\r") %>%  
+  jsonlite::fromJSON()
+  ```
+  
+  
+* Profit
+  
+  
+  
+I also tried it in pure text before I gave up and returned to html parsing. You can see that in the repo. 
+  
+
+
+(*) I was tricked through twitter #rstats on #tidytuesday 
+
+![Twitter user hrbrmstr tricked me into doing this](/post/2020-04-08-scraping-gdpr-fines_files/twitter_baited.png)
+<https://twitter.com/hrbrmstr/status/1247476867621421061>
+
+
+## Links
+
+- RVEST Documentation  <https://rvest.tidyverse.org/articles/harvesting-the-web.html#css-selectors>
+- The source website for the data set <https://www.privacyaffairs.com/gdpr-fines/>
+- Tidy Tuesday website  <https://github.com/rfordatascience/tidytuesday>
+- Sourcecode for the scraper <https://github.com/RMHogervorst/scrape_gdpr_fines>
+- Picture credit: Photo by Paulius Dragunas on Unsplash <https://unsplash.com/photos/uw_NWjC1mBE>
+
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
