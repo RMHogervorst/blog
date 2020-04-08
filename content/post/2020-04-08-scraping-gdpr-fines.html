@@ -1,0 +1,147 @@
+---
+title: "Scraping Gdpr Fines"
+author: Roel M. Hogervorst
+date: "2020-04-08"
+slug: scraping-gdpr-fines
+subtitle: "Into the DOM with a flavour of regex"
+categories:
+  - blog
+  - R
+tags: 
+  - rvest
+  - GDPR
+  - privacy
+  - short
+  - scraping
+share_img: /post/2020-04-08-scraping-gdpr-fines_files/gdpr.jpg
+---
+
+
+
+<!-- content  -->
+<p>The website Privacy Affairs keeps a list of fines related to GDPR.
+I heard * that this might be an interesting dataset for TidyTuesdays. The dataset contains at this
+moment 250 fines given out for GDPR violations and is last updated (according to the website) on 31 March 2020.</p>
+<blockquote>
+<p>All data is from official government sources, such as official reports of national Data Protection Authorities.</p>
+</blockquote>
+<p>The largest fine is €50,000,000 on Google Inc. on January 21 , 2019 - in France, and the smallest is actually 0 euros, but the website says 90.</p>
+<div id="scraping" class="section level1">
+<h1>Scraping</h1>
+<p>I use the {rvest} package to scrape the website.</p>
+<div id="before-you-start" class="section level2">
+<h2>Before you start</h2>
+<p>I first checked the <a href="https://www.privacyaffairs.com/robots.txt">robots.txt</a> of this website. And it
+did not disallow me to scrape the website.</p>
+</div>
+</div>
+<div id="the-scraping" class="section level1">
+<h1>The scraping</h1>
+<p>I thought this would be easy and done in a minute. But there were some snafus.
+It works for now, but if the website changes a bit this scraping routine will not work that well anymore. It extracts the script part of the website and extracts the data between ‘[’ and ’]’.
+If anyone has ideas on making this more robust, be sure to let me know over twitter.</p>
+<div id="details-about-the-scraping-part" class="section level2">
+<h2>Details about the scraping part</h2>
+<p>First I noticed that the website doesn’t show you all of the fines. But when we look at the source of the page it seems they are all there. It should be relatively simple to retrieve the data, the data is
+in the javaScript part (see picture).</p>
+<div class="figure">
+<img src="/post/2020-04-08-scraping-gdpr-fines_files/use-the-source.png" alt="" />
+<p class="caption">Image of sourcecode of the website</p>
+</div>
+<p>But extracting that data is quite some more work:</p>
+<ul>
+<li>First find the &lt; script &gt; tag on the website</li>
+<li>Find the node that contains the data</li>
+<li>Realize that there are actually two datasources in here</li>
+</ul>
+<pre class="r"><code>library(rvest)</code></pre>
+<pre><code>## Loading required package: xml2</code></pre>
+<pre><code>link&lt;- &quot;https://www.privacyaffairs.com/gdpr-fines/&quot;
+page &lt;- read_html(link)
+
+
+temp &lt;- page %&gt;% html_nodes(&quot;script&quot;) %&gt;% .[9] %&gt;% 
+  rvest::html_text() </code></pre>
+<ul>
+<li>cry (joking, don’t give up! The #rstats community will help you!)</li>
+<li>do some advanced string manipulation to extract the two json structures</li>
+<li>Read the json data in R</li>
+</ul>
+<pre><code>ends &lt;- str_locate_all(temp, &quot;\\]&quot;)
+starts &lt;- str_locate_all(temp, &quot;\\[&quot;)
+table1 &lt;- temp %&gt;% stringi::stri_sub(from = starts[[1]][1,2], to = ends[[1]][1,1]) %&gt;% 
+  str_remove_all(&quot;\n&quot;) %&gt;% 
+  str_remove_all(&quot;\r&quot;) %&gt;%
+  jsonlite::fromJSON()
+
+table2 &lt;- temp %&gt;% stringi::stri_sub(from = starts[[1]][2,2], to = ends[[1]][2,1]) %&gt;% 
+  str_remove_all(&quot;\n&quot;) %&gt;% 
+  str_remove_all(&quot;\r&quot;) %&gt;%  
+  jsonlite::fromJSON()</code></pre>
+<ul>
+<li>Profit</li>
+</ul>
+<p>I also tried it in pure text before I gave up and returned to html parsing. You can see that in the repo.</p>
+<p>(*) I was tricked through twitter #rstats on #tidytuesday</p>
+<p><img src="/post/2020-04-08-scraping-gdpr-fines_files/twitter_baited.png" alt="Twitter user hrbrmstr tricked me into doing this" />
+<a href="https://twitter.com/hrbrmstr/status/1247476867621421061" class="uri">https://twitter.com/hrbrmstr/status/1247476867621421061</a></p>
+</div>
+<div id="links" class="section level2">
+<h2>Links</h2>
+<ul>
+<li>RVEST Documentation <a href="https://rvest.tidyverse.org/articles/harvesting-the-web.html#css-selectors" class="uri">https://rvest.tidyverse.org/articles/harvesting-the-web.html#css-selectors</a></li>
+<li>The source website for the data set <a href="https://www.privacyaffairs.com/gdpr-fines/" class="uri">https://www.privacyaffairs.com/gdpr-fines/</a></li>
+<li>Tidy Tuesday website <a href="https://github.com/rfordatascience/tidytuesday" class="uri">https://github.com/rfordatascience/tidytuesday</a></li>
+<li>Sourcecode for the scraper <a href="https://github.com/RMHogervorst/scrape_gdpr_fines" class="uri">https://github.com/RMHogervorst/scrape_gdpr_fines</a></li>
+<li>Picture credit: Photo by Paulius Dragunas on Unsplash <a href="https://unsplash.com/photos/uw_NWjC1mBE" class="uri">https://unsplash.com/photos/uw_NWjC1mBE</a></li>
+</ul>
+<div id="state-of-the-machine" class="section level3">
+<h3>State of the machine</h3>
+<details>
+<p><summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong> </summary></p>
+<pre class="r"><code>sessioninfo::session_info()</code></pre>
+<pre><code>## ─ Session info ───────────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.6.3 (2020-02-29)
+##  os       macOS Mojave 10.14.6        
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  ctype    en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2020-04-08                  
+## 
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package     * version date       lib source        
+##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 3.6.0)
+##  blogdown      0.18    2020-03-04 [1] CRAN (R 3.6.1)
+##  bookdown      0.18    2020-03-05 [1] CRAN (R 3.6.1)
+##  cli           2.0.2   2020-02-28 [1] CRAN (R 3.6.0)
+##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.6.0)
+##  digest        0.6.25  2020-02-23 [1] CRAN (R 3.6.0)
+##  evaluate      0.14    2019-05-28 [1] CRAN (R 3.6.0)
+##  fansi         0.4.1   2020-01-08 [1] CRAN (R 3.6.0)
+##  glue          1.3.2   2020-03-12 [1] CRAN (R 3.6.0)
+##  htmltools     0.4.0   2019-10-04 [1] CRAN (R 3.6.0)
+##  httr          1.4.1   2019-08-05 [1] CRAN (R 3.6.0)
+##  knitr         1.28    2020-02-06 [1] CRAN (R 3.6.0)
+##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.6.0)
+##  R6            2.4.1   2019-11-12 [1] CRAN (R 3.6.0)
+##  Rcpp          1.0.4   2020-03-17 [1] CRAN (R 3.6.1)
+##  rlang         0.4.5   2020-03-01 [1] CRAN (R 3.6.0)
+##  rmarkdown     2.1     2020-01-20 [1] CRAN (R 3.6.0)
+##  rvest       * 0.3.5   2019-11-08 [1] CRAN (R 3.6.0)
+##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.6.0)
+##  stringi       1.4.6   2020-02-17 [1] CRAN (R 3.6.0)
+##  stringr       1.4.0   2019-02-10 [1] CRAN (R 3.6.0)
+##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.6.0)
+##  xfun          0.12    2020-01-13 [1] CRAN (R 3.6.0)
+##  xml2        * 1.2.2   2019-08-09 [1] CRAN (R 3.6.0)
+##  yaml          2.2.1   2020-02-01 [1] CRAN (R 3.6.0)
+## 
+## [1] /Library/Frameworks/R.framework/Versions/3.6/Resources/library</code></pre>
+</details>
+</div>
+</div>
+</div>
