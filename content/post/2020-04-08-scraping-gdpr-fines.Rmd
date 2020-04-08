@@ -19,12 +19,14 @@ share_img: /post/2020-04-08-scraping-gdpr-fines_files/gdpr.jpg
 <!-- content  -->
 
 The website Privacy Affairs keeps a list of fines related to GDPR.
-I heard * that this might be an interesting dataset for TidyTuesdays. The dataset contains at this
+I heard * that this might be an interesting dataset for TidyTuesdays and so I scraped it. The dataset contains at this
 moment 250 fines given out for GDPR violations and is last updated (according to the website) on 31 March 2020.
 
 > All data is from official government sources, such as official reports of national Data Protection Authorities.
 
 The largest fine  is €50,000,000 on Google Inc. on January 21 , 2019 - in  France, and the smallest is actually 0 euros, but the website says 90. 
+
+![cover image](/post/2020-04-08-scraping-gdpr-fines_files/gdpr.jpg)
 
 # Scraping
 I use the {rvest} package to scrape the website. 
