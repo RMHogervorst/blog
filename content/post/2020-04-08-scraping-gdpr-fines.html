@@ -20,12 +20,16 @@ share_img: /post/2020-04-08-scraping-gdpr-fines_files/gdpr.jpg
 
 <!-- content  -->
 <p>The website Privacy Affairs keeps a list of fines related to GDPR.
-I heard * that this might be an interesting dataset for TidyTuesdays. The dataset contains at this
+I heard * that this might be an interesting dataset for TidyTuesdays and so I scraped it. The dataset contains at this
 moment 250 fines given out for GDPR violations and is last updated (according to the website) on 31 March 2020.</p>
 <blockquote>
 <p>All data is from official government sources, such as official reports of national Data Protection Authorities.</p>
 </blockquote>
 <p>The largest fine is €50,000,000 on Google Inc. on January 21 , 2019 - in France, and the smallest is actually 0 euros, but the website says 90.</p>
+<div class="figure">
+<img src="/post/2020-04-08-scraping-gdpr-fines_files/gdpr.jpg" alt="" />
+<p class="caption">cover image</p>
+</div>
 <div id="scraping" class="section level1">
 <h1>Scraping</h1>
 <p>I use the {rvest} package to scrape the website.</p>
@@ -44,10 +48,8 @@ If anyone has ideas on making this more robust, be sure to let me know over twit
 <h2>Details about the scraping part</h2>
 <p>First I noticed that the website doesn’t show you all of the fines. But when we look at the source of the page it seems they are all there. It should be relatively simple to retrieve the data, the data is
 in the javaScript part (see picture).</p>
-<div class="figure">
-<img src="/post/2020-04-08-scraping-gdpr-fines_files/use-the-source.png" alt="" />
-<p class="caption">Image of sourcecode of the website</p>
-</div>
+<p><img src="/post/2020-04-08-scraping-gdpr-fines_files/use-the-source.png" alt="Image of sourcecode of the website" />
+!!!! I received an update from two twitter peeps on how to simplify the extraction, using rvest and V8. See the github link <a href="https://github.com/RMHogervorst/scrape_gdpr_fines" class="uri">https://github.com/RMHogervorst/scrape_gdpr_fines</a>. !!!</p>
 <p>But extracting that data is quite some more work:</p>
 <ul>
 <li>First find the &lt; script &gt; tag on the website</li>
@@ -110,7 +112,7 @@ table2 &lt;- temp %&gt;% stringi::stri_sub(from = starts[[1]][2,2], to = ends[[1
 ##  collate  en_US.UTF-8                 
 ##  ctype    en_US.UTF-8                 
 ##  tz       Europe/Amsterdam            
-##  date     2020-04-08                  
+##  date     2020-04-09                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package     * version date       lib source        

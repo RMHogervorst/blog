@@ -45,7 +45,7 @@ First I noticed that the website doesn't show you all of the fines. But when we 
 in the javaScript part (see picture).
 
 ![Image of sourcecode of the website](/post/2020-04-08-scraping-gdpr-fines_files/use-the-source.png)
-
+!!!! I received an update from two twitter peeps on how to simplify the extraction, using rvest and V8. See the github link <https://github.com/RMHogervorst/scrape_gdpr_fines>. !!!
 
 But extracting that data is quite some more work:
 
