@@ -1,0 +1,274 @@
+---
+title: Munging and reordering Polarsteps data
+author: Roel M. Hogervorst
+date: '2020-04-23'
+slug: munging-and-reordering-polarsteps-data
+categories:
+  - R
+tags:
+  - jsonlite
+  - dplyr
+  - purrr
+  - intermediate
+  - rectangling
+subtitle: 'Turning nested lists into a data.frame with purrr'
+share_img: '/post/2020-04-21-munging-and-reordering-polarsteps-data_files/beach_smaller.jpg'
+---
+
+<!-- content  -->
+This post is about how to extract data from a json, turn it into a tibble and do some work with the result. I'm working with a download of personal data from polarsteps. 
+
+![A picture of Tokomaru Wharf (New Zealand)](/post/2020-04-23-munging-and-reordering-polarsteps-data_files/beach_smaller.jpg){width=80%}
+
+I was a month in New Zealand, birthplace of R and home to Hobbits. I logged my travel using the Polarsteps application. The app allows you to upload pictures and write stories about your travels. It also keeps track of your location^[It tracks you better than a Stasi agent in East Germany. Which was a bit freaky. It tracks even when the app is not online.].
+The polarsteps company makes money by selling you a automagically created a photo album of your travels. I did not really like that photo album, so I want to do something with the texts themselves. 
+There are several options: I could scrape the webpages that contain my travels. Or I could download my data and work with that. 
+Polarsteps explains that the data you create remains yours^[I mean, I did create it so it should be mine! But Polarsteps agrees with me.] and you can download a copy. Which is what I did.
+
+Now my approach is a bit roundabout and probably not the most effective but I thought it would
+demonstrate how to work with lists. 
+I first extract the 'steps' (individual posts) data and turn that all into a rectangular format
+finally I extract those elements again and turn that into a document again (other post). I could have gone a more direct route. 
+
+# Loading the data
+
+*First enable the tools:*
+```{r}
+library(tidyverse)
+library(jsonlite)
+```
+
+
+The data comes in a zip which contains two folders trip and user data.
+I'm interested in the trip data.
+
+```
+user_data
+├── trip
+│   └── New\ Zealand_3129570
+└── user
+    └── user.json
+```
+
+The trip data contains two json files and folders for photos and videos.
+
+```
+New\ Zealand_3129570
+├── locations.json
+├── photos
+├── trip.json
+└── videos
+```
+
+The locations.json contains only gps coordinates and names linking back to the trip. but the 
+trip also contains these coordinates so for me this locations.json file is less relevent.
+I extracted both of these json files but I will only work with the trip.json. 
+
+
+```{r, eval=FALSE}
+trip <- jsonlite::read_json("trip.json")
+```
+
+
+When you receive your file it is in a json format. Which is a bunch of lists inside lists.
+We can work with lists in R, but usually we want to work with rectangular data, such as data.frames.
+because that is just so much more easy with the tidyverse tools.
+
+
+```{r, eval=FALSE}
+names(trip)
+```
+
+```
+ [1] "featured"                        "feature_date"                    "likes"    
+ [4] "id"                              "fb_publish_status"               "step_count"                 
+ [7] "total_km"                        "featured_priority_for_new_users" "feature_text"               
+[10] "open_graph_id"                   "start_date"                      "type"                     
+[13] "uuid"                            "user_id"                         "cover_photo_path"         
+[16] "slug"                            "all_steps"                       "views"        
+[19] "end_date"                        "cover_photo"                     "visibility"   
+[22] "planned_steps_visible"           "cover_photo_thumb_path"          "language"   
+[25] "name"                            "is_deleted"                      "timezone_id"
+[28] "summary" 
+```
+
+The top of the trip file contains an overview of the trip: how many posts are there, what is the name etc.
+However I'm more focused on the details in every 'step'. If you explore the all_steps, it contains all of the individual posts. Every post is another list. I'm turning these list into a data.frame.
+
+I'm approaching this in the following way: 
+
+* extract one example, 
+* create helper functions that work on that one example, 
+* apply the helper functions with the purrr package on the entire list of all_steps.
+
+I think I got this approach from Jenny Bryan (see bottom for references).
+
+## Extract one example
+
+```{r, eval=FALSE}
+all_steps <- trip$all_steps
+# try one,
+example <- all_steps[[1]]
+```
+
+So what can we find in this one example list?
+
+```{r, eval=FALSE}
+glimpse(example)
+```
+
+For all the steps we have the following information *(I have redacted this a bit, the google crawler is mighty and everything on the internet lives forever and I don't want to share everything with my readers)*:
+
+```
+List of 23
+ $ weather_temperature : num 11
+ $ likes               : int 0
+ $ supertype           : chr "normal"
+ $ id                  : int 24041483
+ $ fb_publish_status   : NULL
+ $ creation_time       : num 1.58e+09
+ $ main_media_item_path: NULL
+ $ location            :List of 9
+  ..$ detail      : chr "Netherlands"
+  ..$ name        : chr "REDACTED"
+  ..$ uuid        : chr "REDACTED"
+  ..$ venue       : NULL
+  ..$ lat         : num 99999
+  ..$ lon         : num 99999
+  ..$ full_detail : chr "Netherlands"
+  ..$ id          : int 999999999
+  ..$ country_code: chr "NL"
+ $ open_graph_id       : NULL
+ $ type                : NULL
+ $ uuid                : chr "REDACTED"
+ $ comment_count       : int 0
+ $ location_id         : int 99999999
+ $ slug                : chr "REDACTED"
+ $ views               : int 0
+ $ description         : chr "Roel: We zijn er klaar voor hoor, alles ligt bij de koffers (hopen dat het past \U0001f605) onze ochtendkoffie "| __truncated__
+ $ start_time          : num 1.58e+09
+ $ trip_id             : int 3129570
+ $ end_time            : NULL
+ $ weather_condition   : chr "rain"
+ $ name                : chr "Laatste voorbereidingen"
+ $ is_deleted          : logi FALSE
+ $ timezone_id         : chr "Europe/Amsterdam"
+```
+
+Of interest here: 
+
+* I wanted the texts and they live in 'description'.
+* The title of the post is in 'name'
+* The polarsteps application is deeply integrated with facebook (scary!)
+* time is in unix timestamps
+* Temperature is in degrees Celsius (the international norm)
+* The description is in utf-8 but my printing here is not and does not show this emoji correctly.
+
+## Create extractor functions
+
+Most things I care about in this file are one level deep. I can create a general function that extracts them, based on the name of the field: start_time, weather_temperature, description, etc.
+
+But I quickly realised I wanted to do something special with the location and time so they get their own functions.
+
+
+```{r, eval=FALSE}
+#' General extractor function
+#'
+#' Give it the name of a field and it extracts that.
+#' Also deals with non existing or empty fields (can happen in lists)
+#' by replacing that with empty character field. 
+#' Alternative is to use purrr::safely
+extract_field <- function(item, field){
+    result = item[[field]]
+    if(is.null(result)){result = ""}
+    result
+}
+#' Extractor for location
+#'
+#' Extracts location list and pastes together the name of the location, country code and 
+#' latitude and longitude. 
+extract_location_string <- function(item){
+    location = item[["location"]]
+    paste0(
+        "In ",location[["name"]], " ",location[["full_detail"]], " (",location[["country_code"]], ") ",
+        "[",location[["lat"]],",",location[["lon"]],"]"
+        )
+}
+#' Time extractor
+#' 
+#' Turns unix timestamp into real time, and uses the correct timezone.
+#' this might be a bit of an overkill because I'm immediately turning this
+#' into text again.
+extract_time = function(item){
+    timezone = item[["timezone_id"]]
+    start_time = item[["start_time"]] %>% anytime::anytime(asUTC = FALSE,tz = timezone) 
+    paste(start_time, collapse = ", ")
+}
+```
+
+
+## Apply the extractors on the example
+
+```{r, eval=FALSE}
+extract_field(example, "name")
+extract_location_string(example)
+extract_time(example)
+```
+
+
+```
+"Laatste voorbereidingen"
+"In Leiden Netherlands (NL) [52.1720626,4.5076576]"
+"2020-02-01 09:23:07"
+```
+
+## Apply all extractors on all steps in the trip
+First create an empty data.frame and add new columns for the fields i'm interested in. 
+
+```{r, eval=FALSE}
+base <- tibble(
+    stepnr = seq.int(from = 1, to = length(all_steps), by=1)
+)
+
+tripdetails <-
+    base %>%
+    mutate(
+        title = purrr::map_chr(all_steps, ~extract_field(.x, "name")),
+        description = purrr::map_chr(all_steps, ~extract_field(.x, "description")),
+        slug = purrr::map_chr(all_steps, ~extract_field(.x, "slug")),
+        temperature = purrr::map_dbl(all_steps, ~extract_field(.x, "weather_temperature")),
+        temperature = round(temperature, 2),
+        weather_condition = purrr::map_chr(all_steps, ~extract_field(.x, "weather_condition")),
+        location = purrr::map_chr(all_steps, extract_location_string),
+        time = purrr::map_chr(all_steps, extract_time)
+    )
+```
+
+
+
+![End result](/post/2020-04-23-munging-and-reordering-polarsteps-data_files/tibble_form.png)
+
+# Conclusion
+I wanted to print the descriptions etc into a word file or something for printing but
+that can be found in the next post.
+
+
+
+## References
+
+- [Polarsteps website](https://www.polarsteps.com)
+- [Specific polarsteps page on your data and how to obtain it. ](https://support.polarsteps.com/article/124-how-can-i-export-a-copy-of-my-data)
+- [Excellent tutorial for working with lists and purrrr](https://jennybc.github.io/purrr-tutorial/)
+
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
