@@ -1,0 +1,316 @@
+---
+title: Munging and reordering Polarsteps data
+author: Roel M. Hogervorst
+date: '2020-04-23'
+slug: munging-and-reordering-polarsteps-data
+categories:
+  - R
+tags:
+  - jsonlite
+  - dplyr
+  - purrr
+  - intermediate
+  - rectangling
+subtitle: 'Turning nested lists into a data.frame with purrr'
+share_img: '/post/2020-04-21-munging-and-reordering-polarsteps-data_files/beach_smaller.jpg'
+---
+
+
+
+<!-- content  -->
+<p>This post is about how to extract data from a json, turn it into a tibble and do some work with the result. I’m working with a download of personal data from polarsteps.</p>
+<div class="figure">
+<img src="/post/2020-04-23-munging-and-reordering-polarsteps-data_files/beach_smaller.jpg" style="width:80.0%" alt="" />
+<p class="caption">A picture of Tokomaru Wharf (New Zealand)</p>
+</div>
+<p>I was a month in New Zealand, birthplace of R and home to Hobbits. I logged my travel using the Polarsteps application. The app allows you to upload pictures and write stories about your travels. It also keeps track of your location<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.
+The polarsteps company makes money by selling you a automagically created a photo album of your travels. I did not really like that photo album, so I want to do something with the texts themselves.
+There are several options: I could scrape the webpages that contain my travels. Or I could download my data and work with that.
+Polarsteps explains that the data you create remains yours<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> and you can download a copy. Which is what I did.</p>
+<p>Now my approach is a bit roundabout and probably not the most effective but I thought it would
+demonstrate how to work with lists.
+I first extract the ‘steps’ (individual posts) data and turn that all into a rectangular format
+finally I extract those elements again and turn that into a document again (other post). I could have gone a more direct route.</p>
+<div id="loading-the-data" class="section level1">
+<h1>Loading the data</h1>
+<p><em>First enable the tools:</em></p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.0     ✓ purrr   0.3.3
+## ✓ tibble  3.0.0     ✓ dplyr   0.8.5
+## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(jsonlite)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;jsonlite&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     flatten</code></pre>
+<p>The data comes in a zip which contains two folders trip and user data.
+I’m interested in the trip data.</p>
+<pre><code>user_data
+├── trip
+│   └── New\ Zealand_3129570
+└── user
+    └── user.json</code></pre>
+<p>The trip data contains two json files and folders for photos and videos.</p>
+<pre><code>New\ Zealand_3129570
+├── locations.json
+├── photos
+├── trip.json
+└── videos</code></pre>
+<p>The locations.json contains only gps coordinates and names linking back to the trip. but the
+trip also contains these coordinates so for me this locations.json file is less relevent.
+I extracted both of these json files but I will only work with the trip.json.</p>
+<pre class="r"><code>trip &lt;- jsonlite::read_json(&quot;trip.json&quot;)</code></pre>
+<p>When you receive your file it is in a json format. Which is a bunch of lists inside lists.
+We can work with lists in R, but usually we want to work with rectangular data, such as data.frames.
+because that is just so much more easy with the tidyverse tools.</p>
+<pre class="r"><code>names(trip)</code></pre>
+<pre><code> [1] &quot;featured&quot;                        &quot;feature_date&quot;                    &quot;likes&quot;    
+ [4] &quot;id&quot;                              &quot;fb_publish_status&quot;               &quot;step_count&quot;                 
+ [7] &quot;total_km&quot;                        &quot;featured_priority_for_new_users&quot; &quot;feature_text&quot;               
+[10] &quot;open_graph_id&quot;                   &quot;start_date&quot;                      &quot;type&quot;                     
+[13] &quot;uuid&quot;                            &quot;user_id&quot;                         &quot;cover_photo_path&quot;         
+[16] &quot;slug&quot;                            &quot;all_steps&quot;                       &quot;views&quot;        
+[19] &quot;end_date&quot;                        &quot;cover_photo&quot;                     &quot;visibility&quot;   
+[22] &quot;planned_steps_visible&quot;           &quot;cover_photo_thumb_path&quot;          &quot;language&quot;   
+[25] &quot;name&quot;                            &quot;is_deleted&quot;                      &quot;timezone_id&quot;
+[28] &quot;summary&quot; </code></pre>
+<p>The top of the trip file contains an overview of the trip: how many posts are there, what is the name etc.
+However I’m more focused on the details in every ‘step’. If you explore the all_steps, it contains all of the individual posts. Every post is another list. I’m turning these list into a data.frame.</p>
+<p>I’m approaching this in the following way:</p>
+<ul>
+<li>extract one example,</li>
+<li>create helper functions that work on that one example,</li>
+<li>apply the helper functions with the purrr package on the entire list of all_steps.</li>
+</ul>
+<p>I think I got this approach from Jenny Bryan (see bottom for references).</p>
+<div id="extract-one-example" class="section level2">
+<h2>Extract one example</h2>
+<pre class="r"><code>all_steps &lt;- trip$all_steps
+# try one,
+example &lt;- all_steps[[1]]</code></pre>
+<p>So what can we find in this one example list?</p>
+<pre class="r"><code>glimpse(example)</code></pre>
+<p>For all the steps we have the following information <em>(I have redacted this a bit, the google crawler is mighty and everything on the internet lives forever and I don’t want to share everything with my readers)</em>:</p>
+<pre><code>List of 23
+ $ weather_temperature : num 11
+ $ likes               : int 0
+ $ supertype           : chr &quot;normal&quot;
+ $ id                  : int 24041483
+ $ fb_publish_status   : NULL
+ $ creation_time       : num 1.58e+09
+ $ main_media_item_path: NULL
+ $ location            :List of 9
+  ..$ detail      : chr &quot;Netherlands&quot;
+  ..$ name        : chr &quot;REDACTED&quot;
+  ..$ uuid        : chr &quot;REDACTED&quot;
+  ..$ venue       : NULL
+  ..$ lat         : num 99999
+  ..$ lon         : num 99999
+  ..$ full_detail : chr &quot;Netherlands&quot;
+  ..$ id          : int 999999999
+  ..$ country_code: chr &quot;NL&quot;
+ $ open_graph_id       : NULL
+ $ type                : NULL
+ $ uuid                : chr &quot;REDACTED&quot;
+ $ comment_count       : int 0
+ $ location_id         : int 99999999
+ $ slug                : chr &quot;REDACTED&quot;
+ $ views               : int 0
+ $ description         : chr &quot;Roel: We zijn er klaar voor hoor, alles ligt bij de koffers (hopen dat het past \U0001f605) onze ochtendkoffie &quot;| __truncated__
+ $ start_time          : num 1.58e+09
+ $ trip_id             : int 3129570
+ $ end_time            : NULL
+ $ weather_condition   : chr &quot;rain&quot;
+ $ name                : chr &quot;Laatste voorbereidingen&quot;
+ $ is_deleted          : logi FALSE
+ $ timezone_id         : chr &quot;Europe/Amsterdam&quot;</code></pre>
+<p>Of interest here:</p>
+<ul>
+<li>I wanted the texts and they live in ‘description’.</li>
+<li>The title of the post is in ‘name’</li>
+<li>The polarsteps application is deeply integrated with facebook (scary!)</li>
+<li>time is in unix timestamps</li>
+<li>Temperature is in degrees Celsius (the international norm)</li>
+<li>The description is in utf-8 but my printing here is not and does not show this emoji correctly.</li>
+</ul>
+</div>
+<div id="create-extractor-functions" class="section level2">
+<h2>Create extractor functions</h2>
+<p>Most things I care about in this file are one level deep. I can create a general function that extracts them, based on the name of the field: start_time, weather_temperature, description, etc.</p>
+<p>But I quickly realised I wanted to do something special with the location and time so they get their own functions.</p>
+<pre class="r"><code>#&#39; General extractor function
+#&#39;
+#&#39; Give it the name of a field and it extracts that.
+#&#39; Also deals with non existing or empty fields (can happen in lists)
+#&#39; by replacing that with empty character field. 
+#&#39; Alternative is to use purrr::safely
+extract_field &lt;- function(item, field){
+    result = item[[field]]
+    if(is.null(result)){result = &quot;&quot;}
+    result
+}
+#&#39; Extractor for location
+#&#39;
+#&#39; Extracts location list and pastes together the name of the location, country code and 
+#&#39; latitude and longitude. 
+extract_location_string &lt;- function(item){
+    location = item[[&quot;location&quot;]]
+    paste0(
+        &quot;In &quot;,location[[&quot;name&quot;]], &quot; &quot;,location[[&quot;full_detail&quot;]], &quot; (&quot;,location[[&quot;country_code&quot;]], &quot;) &quot;,
+        &quot;[&quot;,location[[&quot;lat&quot;]],&quot;,&quot;,location[[&quot;lon&quot;]],&quot;]&quot;
+        )
+}
+#&#39; Time extractor
+#&#39; 
+#&#39; Turns unix timestamp into real time, and uses the correct timezone.
+#&#39; this might be a bit of an overkill because I&#39;m immediately turning this
+#&#39; into text again.
+extract_time = function(item){
+    timezone = item[[&quot;timezone_id&quot;]]
+    start_time = item[[&quot;start_time&quot;]] %&gt;% anytime::anytime(asUTC = FALSE,tz = timezone) 
+    paste(start_time, collapse = &quot;, &quot;)
+}</code></pre>
+</div>
+<div id="apply-the-extractors-on-the-example" class="section level2">
+<h2>Apply the extractors on the example</h2>
+<pre class="r"><code>extract_field(example, &quot;name&quot;)
+extract_location_string(example)
+extract_time(example)</code></pre>
+<pre><code>&quot;Laatste voorbereidingen&quot;
+&quot;In Leiden Netherlands (NL) [52.1720626,4.5076576]&quot;
+&quot;2020-02-01 09:23:07&quot;</code></pre>
+</div>
+<div id="apply-all-extractors-on-all-steps-in-the-trip" class="section level2">
+<h2>Apply all extractors on all steps in the trip</h2>
+<p>First create an empty data.frame and add new columns for the fields i’m interested in.</p>
+<pre class="r"><code>base &lt;- tibble(
+    stepnr = seq.int(from = 1, to = length(all_steps), by=1)
+)
+
+tripdetails &lt;-
+    base %&gt;%
+    mutate(
+        title = purrr::map_chr(all_steps, ~extract_field(.x, &quot;name&quot;)),
+        description = purrr::map_chr(all_steps, ~extract_field(.x, &quot;description&quot;)),
+        slug = purrr::map_chr(all_steps, ~extract_field(.x, &quot;slug&quot;)),
+        temperature = purrr::map_dbl(all_steps, ~extract_field(.x, &quot;weather_temperature&quot;)),
+        temperature = round(temperature, 2),
+        weather_condition = purrr::map_chr(all_steps, ~extract_field(.x, &quot;weather_condition&quot;)),
+        location = purrr::map_chr(all_steps, extract_location_string),
+        time = purrr::map_chr(all_steps, extract_time)
+    )</code></pre>
+<div class="figure">
+<img src="/post/2020-04-23-munging-and-reordering-polarsteps-data_files/tibble_form.png" alt="" />
+<p class="caption">End result</p>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>I wanted to print the descriptions etc into a word file or something for printing but
+that can be found in the next post.</p>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><a href="https://www.polarsteps.com">Polarsteps website</a></li>
+<li><a href="https://support.polarsteps.com/article/124-how-can-i-export-a-copy-of-my-data">Specific polarsteps page on your data and how to obtain it.</a></li>
+<li><a href="https://jennybc.github.io/purrr-tutorial/">Excellent tutorial for working with lists and purrrr</a></li>
+</ul>
+<div id="state-of-the-machine" class="section level3">
+<h3>State of the machine</h3>
+<details>
+<p><summary> At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong> </summary></p>
+<pre class="r"><code>sessioninfo::session_info()</code></pre>
+<pre><code>## ─ Session info ───────────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.6.3 (2020-02-29)
+##  os       macOS Mojave 10.14.6        
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  ctype    en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2020-04-22                  
+## 
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package     * version date       lib source        
+##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 3.6.0)
+##  backports     1.1.5   2019-10-02 [1] CRAN (R 3.6.0)
+##  blogdown      0.18    2020-03-04 [1] CRAN (R 3.6.1)
+##  bookdown      0.18    2020-03-05 [1] CRAN (R 3.6.1)
+##  broom         0.5.5   2020-02-29 [1] CRAN (R 3.6.0)
+##  cellranger    1.1.0   2016-07-27 [1] CRAN (R 3.6.0)
+##  cli           2.0.2   2020-02-28 [1] CRAN (R 3.6.0)
+##  colorspace    1.4-1   2019-03-18 [1] CRAN (R 3.6.0)
+##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.6.0)
+##  DBI           1.1.0   2019-12-15 [1] CRAN (R 3.6.0)
+##  dbplyr        1.4.2   2019-06-17 [1] CRAN (R 3.6.0)
+##  digest        0.6.25  2020-02-23 [1] CRAN (R 3.6.0)
+##  dplyr       * 0.8.5   2020-03-07 [1] CRAN (R 3.6.0)
+##  ellipsis      0.3.0   2019-09-20 [1] CRAN (R 3.6.0)
+##  evaluate      0.14    2019-05-28 [1] CRAN (R 3.6.0)
+##  fansi         0.4.1   2020-01-08 [1] CRAN (R 3.6.0)
+##  forcats     * 0.5.0   2020-03-01 [1] CRAN (R 3.6.0)
+##  fs            1.3.2   2020-03-05 [1] CRAN (R 3.6.0)
+##  generics      0.0.2   2018-11-29 [1] CRAN (R 3.6.0)
+##  ggplot2     * 3.3.0   2020-03-05 [1] CRAN (R 3.6.0)
+##  glue          1.3.2   2020-03-12 [1] CRAN (R 3.6.0)
+##  gtable        0.3.0   2019-03-25 [1] CRAN (R 3.6.0)
+##  haven         2.2.0   2019-11-08 [1] CRAN (R 3.6.0)
+##  hms           0.5.3   2020-01-08 [1] CRAN (R 3.6.0)
+##  htmltools     0.4.0   2019-10-04 [1] CRAN (R 3.6.0)
+##  httr          1.4.1   2019-08-05 [1] CRAN (R 3.6.0)
+##  jsonlite    * 1.6.1   2020-02-02 [1] CRAN (R 3.6.0)
+##  knitr         1.28    2020-02-06 [1] CRAN (R 3.6.0)
+##  lattice       0.20-38 2018-11-04 [1] CRAN (R 3.6.3)
+##  lifecycle     0.2.0   2020-03-06 [1] CRAN (R 3.6.0)
+##  lubridate     1.7.4   2018-04-11 [1] CRAN (R 3.6.0)
+##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.6.0)
+##  modelr        0.1.6   2020-02-22 [1] CRAN (R 3.6.0)
+##  munsell       0.5.0   2018-06-12 [1] CRAN (R 3.6.0)
+##  nlme          3.1-144 2020-02-06 [1] CRAN (R 3.6.3)
+##  pillar        1.4.3   2019-12-20 [1] CRAN (R 3.6.0)
+##  pkgconfig     2.0.3   2019-09-22 [1] CRAN (R 3.6.0)
+##  purrr       * 0.3.3   2019-10-18 [1] CRAN (R 3.6.0)
+##  R6            2.4.1   2019-11-12 [1] CRAN (R 3.6.0)
+##  Rcpp          1.0.4   2020-03-17 [1] CRAN (R 3.6.1)
+##  readr       * 1.3.1   2018-12-21 [1] CRAN (R 3.6.0)
+##  readxl        1.3.1   2019-03-13 [1] CRAN (R 3.6.0)
+##  reprex        0.3.0   2019-05-16 [1] CRAN (R 3.6.0)
+##  rlang         0.4.5   2020-03-01 [1] CRAN (R 3.6.0)
+##  rmarkdown     2.1     2020-01-20 [1] CRAN (R 3.6.0)
+##  rstudioapi    0.11    2020-02-07 [1] CRAN (R 3.6.0)
+##  rvest         0.3.5   2019-11-08 [1] CRAN (R 3.6.0)
+##  scales        1.1.0   2019-11-18 [1] CRAN (R 3.6.0)
+##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.6.0)
+##  stringi       1.4.6   2020-02-17 [1] CRAN (R 3.6.0)
+##  stringr     * 1.4.0   2019-02-10 [1] CRAN (R 3.6.0)
+##  tibble      * 3.0.0   2020-03-30 [1] CRAN (R 3.6.2)
+##  tidyr       * 1.0.2   2020-01-24 [1] CRAN (R 3.6.0)
+##  tidyselect    1.0.0   2020-01-27 [1] CRAN (R 3.6.0)
+##  tidyverse   * 1.3.0   2019-11-21 [1] CRAN (R 3.6.0)
+##  vctrs         0.2.4   2020-03-10 [1] CRAN (R 3.6.0)
+##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.6.0)
+##  xfun          0.12    2020-01-13 [1] CRAN (R 3.6.0)
+##  xml2          1.2.2   2019-08-09 [1] CRAN (R 3.6.0)
+##  yaml          2.2.1   2020-02-01 [1] CRAN (R 3.6.0)
+## 
+## [1] /Library/Frameworks/R.framework/Versions/3.6/Resources/library</code></pre>
+</details>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>It tracks you better than a Stasi agent in East Germany. Which was a bit freaky. It tracks even when the app is not online.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>I mean, I did create it so it should be mine! But Polarsteps agrees with me.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
