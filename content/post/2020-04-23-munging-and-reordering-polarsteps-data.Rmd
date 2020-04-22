@@ -18,12 +18,14 @@ share_img: '/post/2020-04-21-munging-and-reordering-polarsteps-data_files/beach_
 <!-- content  -->
 This post is about how to extract data from a json, turn it into a tibble and do some work with the result. I'm working with a download of personal data from polarsteps. 
 
+
 ![A picture of Tokomaru Wharf (New Zealand)](/post/2020-04-23-munging-and-reordering-polarsteps-data_files/beach_smaller.jpg){width=80%}
 
 I was a month in New Zealand, birthplace of R and home to Hobbits. I logged my travel using the Polarsteps application. The app allows you to upload pictures and write stories about your travels. It also keeps track of your location^[It tracks you better than a Stasi agent in East Germany. Which was a bit freaky. It tracks even when the app is not online.].
 The polarsteps company makes money by selling you a automagically created a photo album of your travels. I did not really like that photo album, so I want to do something with the texts themselves. 
 There are several options: I could scrape the webpages that contain my travels. Or I could download my data and work with that. 
 Polarsteps explains that the data you create remains yours^[I mean, I did create it so it should be mine! But Polarsteps agrees with me.] and you can download a copy. Which is what I did.
+
 
 Now my approach is a bit roundabout and probably not the most effective but I thought it would
 demonstrate how to work with lists. 
@@ -39,6 +41,7 @@ library(jsonlite)
 ```
 
 
+
 The data comes in a zip which contains two folders trip and user data.
 I'm interested in the trip data.
 
@@ -49,6 +52,7 @@ user_data
 └── user
     └── user.json
 ```
+
 
 The trip data contains two json files and folders for photos and videos.
 
