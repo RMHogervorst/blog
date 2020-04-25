@@ -7,7 +7,7 @@ pygmentsUseClasses = false
 pygmentsStyle = "trac"
 pygmentsUseClassic = true
 enableEmoji = true
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "index\\.html"]
 publishDir = "public"
   
 [permalinks]

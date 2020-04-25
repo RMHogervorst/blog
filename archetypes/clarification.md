@@ -2,9 +2,11 @@
 title: "{{ replace .TranslationBaseName "-" " " | title }}"
 author: Roel M. Hogervorst
 date: {{ .Date }}
-categories:
-  - blog
-subtitle: ""
+# categories are blog / and or R. posts under R will be syndicated by r-bloggers and rweekly
+categories: []
+# Add all packages you are using as a tag
+tags:
+subtitle: ''
 share_img: 'https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif'
 # 'output' is necessary to obtain index.md
 # Do not commit index.html
@@ -13,18 +15,9 @@ output:
     keep_md: true
 ---
 
-<!-- tags choose:
-beginner, intermediate or advanced
-*beginner:*
-*for, loops, brackets, vectors, data structures, subsetting, functions, qplot, ggplot2, dplyr, spps-to-r, haven, tidyr, tidyverse*
-
-*intermediate:* 
-*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
-
-*advanced:*
-*S4 classes, extensions , shiny, Object Oriented Programming, Non standard Evaluation, code performance, profiling, Rcpp, optimize-your-code*
--->
+<!-- tags  at least intermediate, clarification, explainer and all packages used.  -->
 <!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
+
 
 <!-- useful settings for rmarkdown-->
 
@@ -70,20 +63,31 @@ knitr::knit_hooks$set(
   }
 )
 ```
+<!-- content -->
 
-<!-- content  -->
 <!-- 
+After reading this post, new r-users from another language will realize how they can do the thing they already know how to do in another language in R, so they will now use R for it
 
-{{< columns >}}
-This is column 1.
-{{< column >}}
-This is column 2.
-{{< endcolumn >}}
+I believe readers of posts like these are intermediates (their mental model of the language and package is more in line with how other languages work). 
+intermediate (regular user, have a mental model, but it is not very sophisticated) 
+I wrote for intermediates with the following tags:
+*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
+
+explanation of how to do something in this language when you come from a different one
+After reading this post, you will be able to do this thing you did in this language, but now in R
+
+Frequently go back (bookmark) to this post as a reference to find out how you do a thing, and eventually use R alone because it is easier
+
+Make a great image to add to the share link on top.
+
 
 -->
 
 
 
+
+### References
+- Find more explainers by me in [this overview page](https://blog.rmhogervorst.nl//tags/clarification/)
 
 ### Reproducibility
 <details>
@@ -94,5 +98,3 @@ sessioninfo::session_info()
 ```
 
 </details>
-
-
