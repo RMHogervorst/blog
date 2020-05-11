@@ -1,0 +1,145 @@
+---
+title: New Package, Pinboardr
+author: Roel M. Hogervorst
+date: '2020-05-11'
+slug: new-package-pinboardr
+categories:
+  - R
+tags:
+  - package
+  - bookmarks
+  - beginner
+  - pinboardr
+subtitle: ''
+share_img: 'header_image.png'
+output:
+  html_document:
+    keep_md: yes
+---
+
+<!-- useful settings for rmarkdown-->
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(fig.path = "", comment = "")
+
+# knitr hook to make images output use Hugo options
+knitr::knit_hooks$set(
+  plot = function(x, options) {
+    hugoopts <- options$hugoopts
+    paste0(
+      "{{<figure src=",
+      '"', x, '" ',
+      if (!is.null(hugoopts)) {
+        glue::glue_collapse(
+          glue::glue('{names(hugoopts)}="{hugoopts}"'),
+          sep = " "
+        )
+      },
+      ">}}\n"
+    )
+  }
+)
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+<!-- content  -->
+
+I've created a new package to interact with [pinboard](https://pinboard.in) *not to be confused with pinterest*. I noticed there wasn't a package yet and the API is fairly clear. 
+So come and check it out {pinboardr} at <https://github.com/RMHogervorst/pinboardr>
+
+I did see a new package to interact with pocket: [pocketapi](https://github.com/CorrelAid/pocketapi).
+Since pocket is also a kind of bookmark manager I thought there was a need for these kinds of
+packages. I will leave this package on github for a while, to figure out if I need to
+make changes and in a month or so I will push it to CRAN. Everyone who uses pinboard and R is
+invited to 'kick the tyres' as they say. Let me know if the docs are clear, if it is usable
+and useful for you.
+
+### What is pinboard? 
+Pinboard is a bookmark website. In stead of bookmarking on your own computer in the browser you
+can use pinboard. The service is very minimalistic and privacy focused. I use it all the time
+to put articles on my reading list, to archive tweets and to collect material for my secondary blog
+and for this blog.
+
+## Basic functionality
+I added a more extensive readme, and all the functions are documented too. But in this
+short blogpost I wanted to show some examples.
+
+With {pinboardr} you can see what you and other people used as tags for a page:
+
+```{r}
+library(pinboardr)
+caption <- "package {pinboardr}"
+pb_posts_suggest(url="https://blog.rmhogervorst.nl/blog/2020/04/08/scraping-gdpr-fines/")
+pb_posts_suggest("http://neverssl.com")
+```
+
+
+Get recent bookmarks with a specific type
+
+```{r,message=FALSE}
+library(tidyverse)
+```
+
+```{r}
+recent <- pb_posts_recent(tags = "r",count=4)
+names(recent)
+recent %>% select(title, tags)
+```
+
+Find out when you bookmarked things. 
+(I think many bookmarks have the same date because I imported and exported from one tool to another)
+
+```{r}
+dates <- pb_posts_dates()
+dates %>% 
+  mutate(dates= as.POSIXct(date)) %>% 
+  ggplot(aes(dates, count)) +
+  geom_col()+
+  labs(title="bookmarks per date", caption=caption)
+```
+
+Can you guess when I was on the other side of the world with very spotty internet?
+
+
+```{r}
+dates %>% 
+  mutate(dates= as.POSIXct(date)) %>% 
+  filter(dates > "2019-08-01") %>% 
+  ggplot(aes(dates, count)) +
+  geom_col()+
+  labs(title="bookmarks per date", subtitle = "zoomed in", caption=caption)
+```
+
+So, see if you like it and check it out at [github](https://github.com/RMHogervorst/pinboardr)
+
+### Reproducibility
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
