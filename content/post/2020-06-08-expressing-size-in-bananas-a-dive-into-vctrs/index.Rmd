@@ -1,0 +1,187 @@
+---
+title: Expressing size in bananas a dive into {vctrs}
+author: Roel M. Hogervorst
+date: '2020-06-08'
+categories:
+  - blog
+  - R
+tags:
+  - banana
+  - package
+  - intermediate
+  - units
+  - vctrs
+  - S3
+slug: expressing-size-in-bananas-a-dive-into-vctrs
+subtitle: 'Yes I made a stupid package to express lengths in bananas'
+output:
+  html_document:
+    keep_md: yes
+---
+
+<!-- useful settings for rmarkdown-->
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(fig.path = "", comment = "")
+
+# knitr hook to make images output use Hugo options
+knitr::knit_hooks$set(
+  plot = function(x, options) {
+    hugoopts <- options$hugoopts
+    paste0(
+      "{{<figure src=",
+      '"', x, '" ',
+      if (!is.null(hugoopts)) {
+        glue::glue_collapse(
+          glue::glue('{names(hugoopts)}="{hugoopts}"'),
+          sep = " "
+        )
+      },
+      ">}}\n"
+    )
+  }
+)
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+<!-- content --> 
+Recently I've become interested in relative sizes of things. Maybe I'm paying more attention
+to my surroundings since I'm locked at home for so long. Maybe my inner child is finally
+breaking free. Whatever the reason, I channeled all of that into two packages: 
+- [everydaysizes](https://github.com/RMHogervorst/everydaysizes) A rather unfinished collection of dimensions of everyday objects.
+- [banana](https://github.com/RMHogervorst/banana) A package that displays dimensions as ... bananas.
+
+I've collected a bunch of sizes and turned them into 'units'. The units package in R can automatically convert units to other units. It's amazing, it can do mph to m/s and many other things. But in this
+case I'm using length units: inches, centimeter and meters. 
+
+
+```{r}
+library(tidyverse)
+library(units)
+# Banana for banana vectors, and everydaysizes for the collection of metrics.
+library(banana)  # https://github.com/RMHogervorst/banana
+library(everydaysizes) # https://github.com/RMHogervorst/everydaysizes
+```
+
+I'm selecting two interesting sizes from the everydaysizes package: The Eiffel Tower (Tour de Eiffel in local language) and a tree I visited in New Zealand: 'the Father of the forest' (or E Matua Ngahere in the local language). 
+
+
+```{r}
+how_big <- 
+  everydaysizes::things %>% 
+  slice(1,7)
+how_big %>% select(what, height)
+```
+
+So now we know how high the Eiffel Tower in Paris and the 'Father of the Forest' tree are in meters.
+
+Since this is size is represented in 'units' it is rather trivial to turn them into imperial metrics too:
+
+```{r}
+how_big %>% 
+  mutate(feet = set_units(height, "ft")) %>% 
+  select(what, height, feet)
+```
+However, this doesn't really mean anything to me. How about in bananas?
+
+```{r}
+how_big %>% 
+  mutate(feet = set_units(height, "ft")) %>% 
+  mutate(bananas = as_banana(height)) %>% 
+  select(what, height, feet, bananas)
+```
+Yes I made a stupid package to express things in bananas. Not one size though, it tries to match
+it to small or large bananas and it rounds it up to nearest banana. 
+
+What about the height and length of an Alpaca?
+
+```{r}
+Alpaca <- 
+  everyday_items %>% 
+  slice(6) %>% 
+  select(what, height, width)
+Alpaca
+```
+
+```{r}
+Alpaca_banana <- 
+  Alpaca %>% 
+  mutate(
+    banana_h = as_banana(height),
+    banana_w = as_banana(width)
+    )
+Alpaca_banana
+```
+
+That is right. An alpaca is approximately 4 large bananas high up to the shoulder and 7 small bananas long. 
+
+
+### A small dive into banana properties
+I'm using *(probably the word here is 'abusing')* the vctrs package to create a new class of s3-vector. In the package I tell work out how transformations from numeric, and units and integers go to bananas and back. I made a mistake somewhere because I can multiply a number with a banana, but not a banana with a numeric. Anyways the {vctrs} package is super fun and a joy to work with! What I did was, I define a different print method for the banana vector. And so inside data.frames and the `str()` function, it uses this print method.
+
+```{r}
+bananavec <- Alpaca_banana$banana_w[[1]]
+class(bananavec)
+str(bananavec)
+```
+
+But since bananas is a relative metric and always in integers some behavior is a bit ... 'strange':
+
+```{r}
+bananavec2 <- c(1, 1.1, 1.3, 1.5) * bananavec
+bananavec2
+```
+
+```{r}
+data.frame(bananavec2, increase = c(1, 1.1, 1.3, 1.5))
+```
+
+So we start with 7 small bananas, and an increase of 10% leads to 6 large bananas!
+
+This is because bananavectors are numeric underneath:
+
+```{r}
+as.numeric(bananavec2)
+```
+
+Or actually in centimeters:
+
+```{r}
+banana::to_units(bananavec2)
+```
+
+That is all for today. I might spend some time on the inner workings of banana later. 
+
+
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
