@@ -1,0 +1,216 @@
+---
+title: How Does Catboost Deal with Factors in loading?
+author: Roel M. Hogervorst
+date: '2020-07-22'
+slug: how-does-catboost-deal-with-factors
+categories:
+  - blog
+tags:
+  - catboost
+  - explainer
+  - clarification
+  - intermediate
+subtitle: 'What are you doing catboost?'
+share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+output:
+  html_document:
+    keep_md: yes
+---
+
+
+<!-- useful settings for rmarkdown-->
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(fig.path = "", comment = "")
+
+# knitr hook to make images output use Hugo options
+knitr::knit_hooks$set(
+  plot = function(x, options) {
+    hugoopts <- options$hugoopts
+    paste0(
+      "{{<figure src=",
+      '"', x, '" ',
+      if (!is.null(hugoopts)) {
+        glue::glue_collapse(
+          glue::glue('{names(hugoopts)}="{hugoopts}"'),
+          sep = " "
+        )
+      },
+      ">}}\n"
+    )
+  }
+)
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+<!-- content -->
+Some people at [curso-r](https://github.com/curso-r), are working on an amazing extension of
+parsnip and allow you to use tidymodels packages like {parsnip} and {recipes} with
+the modern beasts of machine learning: lightgbm and catboost. 
+the package is called [treesnip](https://github.com/curso-r/treesnip) and is still
+in development. 
+
+Both lightgbm and catboost can work with categorical features but how do you
+pass those to the machinery? Both lightgbm and catboost use special data 
+structures. 
+I  was reading through the catboost documentation and 
+it just wasn't very clear to me. So here is a small investigation.
+
+```{r}
+library(catboost) # follow instructions here:
+# https://catboost.ai/docs/installation/r-installation-binary-installation.html#r-installation-binary-installation
+```
+
+I took this example from one of the open [issues on github](https://github.com/catboost/catboost/issues/1246).
+
+
+Create 3 datasets.
+
+```{r}
+n <- 1000
+set.seed(1)
+X <- data.frame(
+  catvar = sample(LETTERS[1:20], n, TRUE),
+  matrix(rnorm(10 * n), ncol = 10), stringsAsFactors = FALSE)
+
+y <- rnorm(n, rowSums(X[, 3:6] - abs(X[, 2] - 5)))
+
+X3 <- X2 <- X
+# dataframe with factor
+X2$catvar <- factor(X$catvar)
+# data frame where we set the factor to integer. (-1 because factors are from 1 up)
+X3$catvar <- as.integer(X2$catvar)-1
+head(X3[,1:3], 3)
+```
+
+CATBOOST only allows numeric and factor variables.
+So a dataset with character column is not allowed:
+```{r, eval=FALSE}
+pool_char <- catboost.load_pool(X, y, cat_features = 0)
+```
+
+```
+Error in catboost.from_data_frame(data, label, pairs, weight, group_id,  : 
+  Unsupported column type: character
+```
+
+Create 3 catboost datasets.
+```{r}
+# first column is a factor ... but 0 based.
+pool_factor <- catboost.load_pool(X2, y, cat_features = 0)
+pool_factor_without_mentioning <- catboost.load_pool(X2, y)
+pool_factor_made_int <- catboost.load_pool(X3, y, cat_features = 0)
+pool_factor
+```
+
+I am unable to inspect the dataframe if there are factors in there.
+
+```{r, eval=FALSE}
+head(pool_factor)
+```
+
+```
+Error in head.catboost.Pool(pool_factor) : 
+  catboost/R-package/src/catboostr.cpp:382: Cannot slice non-numeric features data
+```
+Without factors it DOES work for some reason.
+```{r}
+head(pool_factor_made_int, 3)
+```
+
+
+But there is another way to see what happens: train a model and put different
+data in the prediction.
+
+```{r}
+params <- list(iterations = 100, random_seed = 10, logging_level="Silent")
+fit_factor <- catboost.train(pool_factor, params = params)
+fit_factor_without_mentioning <- catboost.train(pool_factor_without_mentioning, params = params)
+fit_factor_made_int <- catboost.train(pool_factor_made_int, params = params)
+```
+
+
+Predict on different data.
+
+```{r, eval=FALSE}
+catboost.predict(fit_factor, pool_factor)[1]  # -12.47
+catboost.predict(fit_factor, pool_factor_without_mentioning)[1] # -12.47
+catboost.predict(fit_factor, pool_factor_made_int)[1] # ERROR
+# Error in catboost.predict(fit_factor, pool_factor_made_int) : 
+#  catboost/libs/data/model_dataset_compatibility.cpp:51: Feature catvar is Categorical in 
+#  model but marked different in the dataset
+```
+
+2 first datasets are both working.
+So that means the datasets in both cases use the factor column as a factor.
+You do not need to provide the column numbers that are factors as long as you
+provide the data as factors.
+
+Let's predict with trained model based on second dataset.
+You don't need to provide the factor column indices:
+
+```{r, eval=FALSE}
+catboost.predict(fit_factor_without_mentioning, pool_factor)[1]  # -12.47
+catboost.predict(fit_factor_without_mentioning, pool_factor_without_mentioning)[1] # -12.47
+catboost.predict(fit_factor_without_mentioning, pool_factor_made_int)[1] # error
+### identical as above
+```
+
+
+
+So what if we use the model without factors, but the categorical column index is
+provided?
+
+```{r, eval=FALSE}
+catboost.predict(fit_factor_made_int, pool_factor)[1]  # ERROR
+# Error in catboost.predict(fit_factor_made_int, pool_factor) : 
+#   catboost/libs/data/model_dataset_compatibility.cpp:51: Feature catvar is Float in model but marked different in the dataset
+catboost.predict(fit_factor_made_int, pool_factor_without_mentioning)[1] # ERROR
+# like above
+catboost.predict(fit_factor_made_int, pool_factor_made_int)[1] # 12.48
+```
+
+In other words the data in prediction needs to look the same (numeric and factor
+types) as the training data. You do not need to provide the categorical features
+if you supply them as factors.
+
+The two models are identical
+
+```
+fit_factor$feature_importances == fit_factor_without_mentioning$feature_importances
+```
+results in identical feature importance.
+
+
+
+### References
+- Find more explainers by me in [this overview page](https://blog.rmhogervorst.nl//tags/clarification/)
+
+### Reproducibility
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
