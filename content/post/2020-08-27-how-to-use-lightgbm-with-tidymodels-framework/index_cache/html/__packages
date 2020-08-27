@@ -1,0 +1,17 @@
+base
+AmesHousing
+janitor
+dplyr
+ggplot2
+rsample
+recipes
+parsnip
+tune
+scales
+dials
+workflows
+yardstick
+treesnip
+foreach
+iterators
+doParallel

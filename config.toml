@@ -9,6 +9,9 @@ pygmentsUseClassic = true
 enableEmoji = true
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "index\\.html"]
 publishDir = "public"
+
+[markup.goldmark.renderer]
+unsafe= true
   
 [permalinks]
     post = "/blog/:year/:month/:day/:slug/"
