@@ -1,0 +1,193 @@
+---
+title: 'Running an R Script on a Schedule: Gh-Actions'
+author: Roel M. Hogervorst
+date: '2020-09-22'
+slug:  running-an-r-script-on-a-schedule-gh-actions
+categories:
+  - R
+tags:
+  - scheduling
+  - gh-actions
+  - rtweet
+  - glue
+  - tutorial
+  - ggplot2
+  - intermediate
+  - renv
+subtitle: 'Tweeting from github actions'
+share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+output:
+  html_document:
+    keep_md: yes
+---
+
+<!-- tags choose:
+beginner, intermediate or advanced
+*beginner:*
+*for, loops, brackets, vectors, data structures, subsetting, functions, qplot, ggplot2, dplyr, spps-to-r, haven, tidyr, tidyverse*
+
+*intermediate:* 
+*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
+
+*advanced:*
+*S4 classes, extensions , shiny, Object Oriented Programming, Non standard Evaluation, code performance, profiling, Rcpp, optimize-your-code*
+-->
+<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
+
+<!-- useful settings for rmarkdown-->
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(fig.path = "", comment = "")
+
+# knitr hook to make images output use Hugo options
+knitr::knit_hooks$set(
+  plot = function(x, options) {
+    hugoopts <- options$hugoopts
+    paste0(
+      "{{<figure src=",
+      '"', x, '" ',
+      if (!is.null(hugoopts)) {
+        glue::glue_collapse(
+          glue::glue('{names(hugoopts)}="{hugoopts}"'),
+          sep = " "
+        )
+      },
+      ">}}\n"
+    )
+  }
+)
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+<!-- content  -->
+
+In this tutorial I have an R script that runs every day on github actions. It creates a curve in ggplot2 and posts that picture to twitter. 
+
+
+**The use case is this: You have a script and it needs to run on a schedule (for instance every day).**
+
+### Other ways to schedule a script
+*I will create a new post for many of the other ways on which you can run an R script on schedule. But in this case I will run the script on github actions. Github actions is completely scriptable and works quite well. I found it quite difficult to make it work in one go.* 
+
+
+## Github actions details
+Github actions is a new product from github, they
+
+
+![Getting your code from your laptop to a server](laptopinsky.png)
+
+```
+(We want the code to run on computer in the cloud)
+You save your script locally in a git repository
+You push everything to heroku (a cloud provider, think a laptop in the sky)
+# installation
+heroku installs R and the relevant packages and the script
+heroku saves this state and stops
+# running something
+you can give heroku a command and it will start up and run the script
+this starting up can be done on a timer
+```
+
+I first explain what you need, what my rscript does, and how to deal with credentials. If you are not interested go immediately to [steps](#steps).
+
+# What you need:
+
+- have a github account
+- a folder with a script that does what you want to do
+- renv set up for this project
+
+## Example of a script
+
+I have an [R script](https://github.com/RMHogervorst/invertedushape/blob/main/run_job.R) that:
+
+- creates a u-shape curve dataset 
+- adds random names to the x and y axes
+- creates ggplot2 image
+- posts the tweet as a [twitter account](https://twitter.com/invertedushape1)
+
+With this as result:
+
+![](screenshot2.png)
+
+Of course you could create something that is actually useful, like downloading data, cleaning it and pushing it into a database. But this example is relatively small and you can actually see the results online.
+
+### Small diversion: credentials/ secrets
+
+For many applications you need credentials and you don't want to put the
+credentials in the script, if you share the script with someone, they also have the credentials. If you put it on github, the world has your secrets (I just did this). 
+
+So how can you do it? R can read environmental variables
+and in heroku you can input the environmental variables that will
+be passed to the runner when it runs (there are better, more professional tools to do the same thing but this is good enough for me). So you create an environmental variable called `apikey` with a value like `aVerY5eCretKEy`. In your script you use `Sys.getenv("apikey")` and the script will retrieve the apikey: `aVerY5eCretKEy` and use that.
+
+How do you add them to your local environment?
+
+- Create a .Renviron file in your local project
+- add a new line to your .gitignore file: .Renviron
+- Now this file with secrets will be ignored by git and you 
+can never accidentely add it to a repo.
+- the .Renviron file is a simple text file where you can add 'secrets' like: `apikey="aVerY5eCretKEy"` on a new line.
+
+How do you add them to github?
+
+- go to settings/secret in your repo and add them
+
+![](secrets.png)
+
+they will be retrieved from the stores with something like `${{ secrets.APIKEY}}`
+
+# Steps
+
+So what do you need to make this work?
+
+## Steps in order
+
+```
+Check if your script runs on your computer
+Set up renv
+
+```
+
+## Steps with explanation
+
+- run your R script locally to make sure it works `source("script.R")`
+- (optional, but recommended) check if you have set up renv for this project. `renv::status()`. When you are satisfied with the script, use `renv::snapshot()` to fix the versions of your required packages. This creates an 'renv.lock' file that contains the package versions you used.
+
+# Conclusion
+And now it runs every day.
+
+### References
+- Find more tutorials by me in [this tutorial overview page](https://blog.rmhogervorst.nl/tags/tutorial/)
+- the [github workflow file](https://github.com/RMHogervorst/invertedushape/blob/main/.github/workflows/main.yml)
+
+### Reproducibility
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
