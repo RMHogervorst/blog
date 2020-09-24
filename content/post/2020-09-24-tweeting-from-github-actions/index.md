@@ -15,7 +15,7 @@ tags:
   - tutorial
 slug: running-an-r-script-on-a-schedule-gh-actions
 subtitle: Tweeting from github actions
-share_img: 'post/2020-09-24-tweeting-from-github-actionsscreenshot2.png'
+share_img: 'blog/2020/09/24/running-an-r-script-on-a-schedule-gh-actions/screenshot2.png'
 output:
   html_document:
     keep_md: yes

@@ -15,7 +15,7 @@ tags:
   - intermediate
   - scheduling
 subtitle: 'Tweeting from gitlab actions'
-share_img: 'post/2020-09-24-tweeting-from-github-actionsscreenshot2.png'
+share_img: 'blog/2020/09/24/running-an-r-script-on-a-schedule-gh-actions/screenshot2.png'
 output:
   html_document:
     keep_md: yes
@@ -129,6 +129,7 @@ Set up renv and snapshot
 (optional) try a cache of your renv libraries for faster 
 install the correct packages on the runner
 execute the script
+set up a schedule
 ```
 
 ## Steps with explanation
@@ -183,6 +184,14 @@ there.
 And finally it executes the script (making use of the variables I defined in 
 settings, and this exact same script works on my local computer too).
 
+
+### Scheduling
+you can schedule a gitlab runner very easily by going to
+'CI/CD'/schedules:
+
+![](schedule.png)
+
+You could even make it depend on your timezone!
 
 # Conclusion
 
