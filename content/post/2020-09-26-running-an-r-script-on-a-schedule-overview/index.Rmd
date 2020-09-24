@@ -1,0 +1,120 @@
+---
+title: 'Running an R Script on a Schedule: Overview'
+author: Roel M. Hogervorst
+date: '2020-09-26'
+slug: running-an-r-script-on-a-schedule-overview
+categories:
+  - R
+tags:
+  - scheduling
+  - rscript
+  - intermediate
+  - renv
+subtitle: ''
+share_img: 'img/rinprod/horloge_klein2.png'
+output:
+  html_document:
+    keep_md: yes
+---
+
+
+<!-- useful settings for rmarkdown-->
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(fig.path = "", comment = "")
+
+# knitr hook to make images output use Hugo options
+knitr::knit_hooks$set(
+  plot = function(x, options) {
+    hugoopts <- options$hugoopts
+    paste0(
+      "{{<figure src=",
+      '"', x, '" ',
+      if (!is.null(hugoopts)) {
+        glue::glue_collapse(
+          glue::glue('{names(hugoopts)}="{hugoopts}"'),
+          sep = " "
+        )
+      },
+      ">}}\n"
+    )
+  }
+)
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+<!-- content  -->
+There are lots of rstats tutorials about creating beautiful plots, setting up shiny applications and even a few on setting up plumber APIs (but we could use more). However a lot of work consists of running a script without any interaction. 
+
+This is an overview page for the tutorials I've created so far. This overview is for you if you want to know how to run your batch script (do one thing without supervision) automatically.
+
+![](server.jpg)
+
+
+This is a blogpost I will update, and I also created an overview page with many ways you can run your Rscript on a schedule. Complete with considerations like: can my coworker continue working on this if I suddenly leave the company, questions about security, costs and ease of setup. 
+Find that [massive doc here](https://github.com/RMHogervorst/scheduling_r_scripts), and please contribute if you'd like.
+
+I've written about [scheduling a script](https://blog.rmhogervorst.nl/tags/scheduling/) on:
+
+- [heroku](https://blog.rmhogervorst.nl/blog/2020/09/21/running-an-r-script-on-a-schedule-heroku/)
+- [github](https://blog.rmhogervorst.nl/blog/2020/09/24/running-an-r-script-on-a-schedule-gh-actions/)
+- [gitlab](https://blog.rmhogervorst.nl/blog/2020/09/24/running-an-r-script-on-a-schedule-gitlab/)
+
+Then we move over to docker containers and using registries:
+
+-  [docker containers on gitlab](https://blog.rmhogervorst.nl/blog/2020/09/25/running-an-r-script-on-a-schedule-docker-containers)
+
+
+In the future:
+
+- docker containers on github
+
+- docker containers on GCP (google cloud project)
+
+- docker containers on AWS (amazon)
+
+- docker containers on Azure
+
+We can also talk about setting up automatic scripts on your 
+computer, or remote servers.
+
+
+
+# links
+
+- I'm keeping a living document of scheduling options on [this github repo](https://github.com/RMHogervorst/scheduling_r_scripts)
+- I tweeted an [enormous thread with options here](https://mobile.twitter.com/RoelMHogervorst/status/1308787069678952448)
+- Find all posts about scheduling an R script [here](https://blog.rmhogervorst.nl/tags/scheduling/)
+
+
+### Reproducibility
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
