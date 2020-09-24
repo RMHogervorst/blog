@@ -1,21 +1,21 @@
 ---
 title: 'Running an R Script on a Schedule: Gh-Actions'
 author: Roel M. Hogervorst
-date: '2020-09-22'
-slug:  running-an-r-script-on-a-schedule-gh-actions
+date: '2020-09-24'
 categories:
   - R
 tags:
-  - scheduling
-  - gh-actions
-  - rtweet
-  - glue
-  - tutorial
   - ggplot2
+  - gh-actions
+  - glue
   - intermediate
   - renv
-subtitle: 'Tweeting from github actions'
-share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+  - rtweet
+  - scheduling
+  - tutorial
+slug: running-an-r-script-on-a-schedule-gh-actions
+subtitle: Tweeting from github actions
+share_img: 'post/2020-09-24-tweeting-from-github-actionsscreenshot2.png'
 output:
   html_document:
     keep_md: yes
@@ -91,7 +91,19 @@ In this tutorial I have an R script that runs every day on github actions. It cr
 
 
 ## Github actions details
-Github actions is a new product from github, they
+Github actions is a new product from github, you get 2000 minutes per account/month.
+You create github actions by writing down the steps in a yaml file in a specific
+place in your repo: `.github/workflows/*`. Yaml files are sensitive to indentation
+so try a yaml validator before you push the data to github. 
+
+So what are we going to do?
+
+- pass secrets safely
+- tell github to take our last version of the repo
+- use r-lib/actions/setup-r (a functioning ubuntu container with R installed)
+- install some c/c++ dependencies
+- install all packages I need
+- run Rscript
 
 
 ![Getting your code from your laptop to a server](laptopinsky.png)
@@ -99,13 +111,15 @@ Github actions is a new product from github, they
 ```
 (We want the code to run on computer in the cloud)
 You save your script locally in a git repository
-You push everything to heroku (a cloud provider, think a laptop in the sky)
+You push everything to github
 # installation
-heroku installs R and the relevant packages and the script
-heroku saves this state and stops
+the github action 
+- has R installed
+- installs the system dependencies
+- and installs the correct packages
 # running something
-you can give heroku a command and it will start up and run the script
-this starting up can be done on a timer
+github actions runs the script
+we can schedule this action
 ```
 
 I first explain what you need, what my rscript does, and how to deal with credentials. If you are not interested go immediately to [steps](#steps).
@@ -137,7 +151,7 @@ For many applications you need credentials and you don't want to put the
 credentials in the script, if you share the script with someone, they also have the credentials. If you put it on github, the world has your secrets (I just did this). 
 
 So how can you do it? R can read environmental variables
-and in heroku you can input the environmental variables that will
+and in github you can input the environmental variables that will
 be passed to the runner when it runs (there are better, more professional tools to do the same thing but this is good enough for me). So you create an environmental variable called `apikey` with a value like `aVerY5eCretKEy`. In your script you use `Sys.getenv("apikey")` and the script will retrieve the apikey: `aVerY5eCretKEy` and use that.
 
 How do you add them to your local environment?
@@ -164,14 +178,47 @@ So what do you need to make this work?
 
 ```
 Check if your script runs on your computer
-Set up renv
-
+Set up renv and snapshot
+(optional) try a cache of your renv libraries for faster 
+install the correct packages on the runner
+execute the script
 ```
 
 ## Steps with explanation
 
 - run your R script locally to make sure it works `source("script.R")`
-- (optional, but recommended) check if you have set up renv for this project. `renv::status()`. When you are satisfied with the script, use `renv::snapshot()` to fix the versions of your required packages. This creates an 'renv.lock' file that contains the package versions you used.
+- check if you have set up renv for this project. `renv::status()`. When you are satisfied with the script, use `renv::snapshot()` to fix the versions of your required packages. This creates an 'renv.lock' file that contains the package versions you used.
+- copy and modify the actions from [r-lib](https://github.com/r-lib/actions/tree/master/setup-r)
+- (optional) use a cache step from the [renv vignette about CI](https://rstudio.github.io/renv/articles/ci.html#github-actions-1)
+
+```
+env:
+  RENV_PATHS_ROOT: ~/.local/share/renv
+
+steps:
+
+- name: Cache packages
+  uses: actions/cache@v1
+  with:
+    path: ${{ env.RENV_PATHS_ROOT }}
+    key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-renv-
+
+- name: Restore packages
+  shell: Rscript {0}
+  run: |
+    if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+    renv::restore()
+```
+
+- use renv::restore() to install the correct packages based on the renv.lock file
+
+`- run: R -e 'renv::restore()'`
+
+- run the script
+
+`- run: Rscript run_job.R`
 
 # Conclusion
 And now it runs every day.
@@ -179,6 +226,8 @@ And now it runs every day.
 ### References
 - Find more tutorials by me in [this tutorial overview page](https://blog.rmhogervorst.nl/tags/tutorial/)
 - the [github workflow file](https://github.com/RMHogervorst/invertedushape/blob/main/.github/workflows/main.yml)
+- [examples of R-specific github actions can be found here](https://github.com/r-lib/actions)
+- there is a [book](https://ropenscilabs.github.io/actions_sandbox/) of github actions for R online.
 
 ### Reproducibility
 <details>

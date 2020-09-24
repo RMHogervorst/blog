@@ -15,7 +15,7 @@ tags:
   - intermediate
   - renv
 subtitle: 'Tweeting from heroku'
-share_img: 'screenshot2.png'
+share_img: 'post/2020-09-21/screenshot2.png'
 output:
   html_document:
     keep_md: yes
@@ -226,7 +226,7 @@ sessioninfo::session_info()
  collate  en_US.UTF-8                 
  ctype    en_US.UTF-8                 
  tz       Europe/Amsterdam            
- date     2020-09-21                  
+ date     2020-09-24                  
 
 ─ Packages ───────────────────────────────────────────────────────────────────
  package     * version date       lib source        
