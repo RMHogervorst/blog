@@ -74,7 +74,7 @@ In this tutorial I have an R script that runs every day on github actions. It cr
 **The use case is this: You have a script and it needs to run on a schedule (for instance every day).**
 
 ### Other ways to schedule a script
-*I will create a new post for many of the other ways on which you can run an R script on schedule. But in this case I will run the script on github actions. Github actions is completely scriptable and works quite well. I found it quite difficult to make it work in one go.* 
+*I will create a new post for many of the other ways on which you can run an R script on schedule. But in this case I will run the script on github actions. Github actions is completely scriptable and works quite well. I found it quite difficult to make it work in one go. Find all posts about scheduling an R script [here](https://blog.rmhogervorst.nl/tags/scheduling/)* 
 
 
 ## Github actions details
@@ -208,10 +208,14 @@ steps:
 `- run: Rscript run_job.R`
 
 # Conclusion
+So to run a thing on github actions we have to give instructions to the 
+infrastructure, we tell it what docker container to use, what things to install
+and what commands to run, until, finally, we can run our script.
 And now it runs every day.
 
 ### References
 - Find more tutorials by me in [this tutorial overview page](https://blog.rmhogervorst.nl/tags/tutorial/)
+- Find all posts about scheduling an R script [here](https://blog.rmhogervorst.nl/tags/scheduling/)
 - the [github workflow file](https://github.com/RMHogervorst/invertedushape/blob/main/.github/workflows/main.yml)
 - [examples of R-specific github actions can be found here](https://github.com/r-lib/actions)
 - there is a [book](https://ropenscilabs.github.io/actions_sandbox/) of github actions for R online.

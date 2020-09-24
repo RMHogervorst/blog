@@ -39,7 +39,7 @@ In 2018 I wrote a small post how to run [an R script on heroku](https://blog.rmh
 The amazing thing is that the bot I created back then is still running! But I recently got a question about the scheduling,  and because I did not really document it that well I will do a small update here. 
 
 ### Other ways to schedule a script
-*I will create a new post for many of the other ways on which you can run an R script on schedule. But in this case I will run the script on heroku. Heroku is useful if you have one script you want to run, and not too often (every hour/ every day). If you have many scripts, long running scripts or you want more precise time control, heroku is not the best solution. Also there are quite some manual steps, this is not really suited for a complete automatic setup.*
+*I will create a new post for many of the other ways on which you can run an R script on schedule. But in this case I will run the script on heroku. Heroku is useful if you have one script you want to run, and not too often (every hour/ every day). If you have many scripts, long running scripts or you want more precise time control, heroku is not the best solution. Also there are quite some manual steps, this is not really suited for a complete automatic setup. Find all posts about scheduling an R script [here](https://blog.rmhogervorst.nl/tags/scheduling/)*
 
 ## Heroku details
 Heroku does not have dedicated R runners but you can install an R runtime created by other people. In heroku they are called buildpacks. I'm using this one: <https://github.com/virtualstaticvoid/heroku-buildpack-r>
@@ -201,6 +201,7 @@ logs and no fine grained control. So if it fails, you wouldn't know.
 
 ### References
 - Find more tutorials by me in [this tutorial overview page](https://blog.rmhogervorst.nl/tags/tutorial/)
+- Find all posts about scheduling an R script [here](https://blog.rmhogervorst.nl/tags/scheduling/)
 - [previous post by me about heroku](https://blog.rmhogervorst.nl/tags/heroku/)
 - [heroku CLI docs](https://devcenter.heroku.com/articles/heroku-cli)
 - [my current R script](https://github.com/RMHogervorst/invertedushape/blob/main/run_job.R)
