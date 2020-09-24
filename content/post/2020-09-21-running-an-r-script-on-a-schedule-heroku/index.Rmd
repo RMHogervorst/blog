@@ -15,7 +15,7 @@ tags:
   - intermediate
   - renv
 subtitle: 'Tweeting from heroku'
-share_img: 'post/2020-09-21/screenshot2.png'
+share_img: 'post/2020-09-21-running-an-r-script-on-a-schedule-heroku/screenshot2.png'
 output:
   html_document:
     keep_md: yes
