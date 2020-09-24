@@ -21,19 +21,6 @@ output:
     keep_md: yes
 ---
 
-<!-- tags choose:
-beginner, intermediate or advanced
-*beginner:*
-*for, loops, brackets, vectors, data structures, subsetting, functions, qplot, ggplot2, dplyr, spps-to-r, haven, tidyr, tidyverse*
-
-*intermediate:* 
-*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
-
-*advanced:*
-*S4 classes, extensions , shiny, Object Oriented Programming, Non standard Evaluation, code performance, profiling, Rcpp, optimize-your-code*
--->
-<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
-
 <!-- useful settings for rmarkdown-->
 
 ```{r setup, include=FALSE}
