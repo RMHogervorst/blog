@@ -17,7 +17,7 @@ output:
 
 <!-- tags  at least intermediate, clarification, explainer and all packages used.  -->
 <!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
-
+<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
 
 <!-- useful settings for rmarkdown-->
 
@@ -79,9 +79,8 @@ After reading this post, you will be able to do this thing you did in this langu
 Frequently go back (bookmark) to this post as a reference to find out how you do a thing, and eventually use R alone because it is easier
 
 Make a great image to add to the share link on top.
-
-
 -->
+
 
 
 

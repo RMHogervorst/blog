@@ -26,6 +26,8 @@ beginner, intermediate or advanced
 -->
 <!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
 
+<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
+
 <!-- useful settings for rmarkdown-->
 
 ```{r setup, include=FALSE}
