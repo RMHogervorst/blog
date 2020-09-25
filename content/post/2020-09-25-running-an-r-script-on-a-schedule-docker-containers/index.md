@@ -105,6 +105,10 @@ The configuration has 2 stages: build and test.
 It is waaay faster than my previous approach.
 A nice effect of having two stages in this file is that if the later stage fails you can rerun that stage without rerunning the first part.
 
+![Image that shows step 1 had success, but 2 not](step_1_succes.png)
+
+
+
 You can schedule it again like [in this gitlab post](http://localhost:1313/blog/2020/09/24/running-an-r-script-on-a-schedule-gitlab/) go to CI/CD - schedules and make a schedule
 
 
@@ -138,7 +142,7 @@ sessioninfo::session_info()
  collate  en_US.UTF-8                 
  ctype    en_US.UTF-8                 
  tz       Europe/Amsterdam            
- date     2020-09-24                  
+ date     2020-09-25                  
 
 ─ Packages ───────────────────────────────────────────────────────────────────
  package     * version date       lib source        
