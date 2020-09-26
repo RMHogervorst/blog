@@ -11,8 +11,8 @@ tags:
   - glue
   - ggplot2
   - rtweet
-subtitle: 'img/rinprod/horloge_klein.png'
-share_img: 
+subtitle: 
+share_img: 'img/rinprod/horloge_klein.png' 
 output:
   html_document:
     keep_md: yes
@@ -24,7 +24,8 @@ output:
 <!-- content -->
 In this tutorial/howto I show you how to run a docker container on a schedule on gitlab. 
 
-Docker containers are awesome because, once made, they run everywhere! It does not matter what type of computer^[Though I believe there is a problem with ARM based vs other CPU's]. you have. Once I build a container you can run my container on a linux box, windows machine or mac. This is also why people love containers for production, you can finally truly pick up a container from development and hand it over to production. 
+Docker containers are awesome because, once made, they run everywhere! It does not matter what type of computer
+*(Though I believe there is a problem with ARM based vs other CPU's)*. you have. Once I build a container you can run my container on a linux box, windows machine or mac. This is also why people love containers for production, you can finally truly pick up a container from development and hand it over to production. 
 
 Thanks to the massive work by [the rocker team](https://github.com/rocker-org/rocker)
 we have containers ready that 'just work' with R, there are
@@ -142,7 +143,7 @@ sessioninfo::session_info()
  collate  en_US.UTF-8                 
  ctype    en_US.UTF-8                 
  tz       Europe/Amsterdam            
- date     2020-09-25                  
+ date     2020-09-26                  
 
 ─ Packages ───────────────────────────────────────────────────────────────────
  package     * version date       lib source        
