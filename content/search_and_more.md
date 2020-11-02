@@ -14,3 +14,6 @@ Find all the [tags here](/tags/).
 
 I also write down half formed ideas and notes to myself on a secondary (or is it
 third already?) blog: [notes.rmhogervorst.nl](https://notes.rmhogervorst.nl/)
+
+## Search
+ {{<search>}}

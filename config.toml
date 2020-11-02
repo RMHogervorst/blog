@@ -7,7 +7,7 @@ pygmentsUseClasses = false
 pygmentsStyle = "trac"
 pygmentsUseClassic = true
 enableEmoji = true
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "index\\.html"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "index\\.html",  "\\.knit\\.md$", "\\.utf8\\.md$"]
 publishDir = "public"
 
 [markup.goldmark.renderer]
@@ -51,7 +51,7 @@ unsafe= true
 [[menu.main]]
     name = "About"
     url = "about/"
-    weight = 3
+    weight = 2
     
 [[menu.main]]
     name = "Getting updates"
@@ -61,4 +61,8 @@ unsafe= true
 [[menu.main]]
     name = "search and more "
     url = "search_and_more/"
-    weight = 3
+    weight = 4
+
+
+[outputs]
+   home = [ "HTML", "JSON" ]
