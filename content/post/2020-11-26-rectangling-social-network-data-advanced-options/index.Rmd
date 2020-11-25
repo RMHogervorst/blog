@@ -1,0 +1,306 @@
+---
+title: Rectangling (Social) Network Data, Advanced Options
+author: Roel M. Hogervorst
+date: '2020-11-26'
+categories:
+  - blog
+  - R
+tags:
+  - clarification
+  - data:fb-pages-food
+  - igraph
+  - intermediate
+  - regex
+  - networkdata
+  - tidygraph
+subtitle: 'Link features, for link prediction'
+slug: rectangling-social-network-data-advanced-options
+share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+output:
+  html_document:
+    keep_md: yes
+---
+
+<!-- tags  at least intermediate, clarification, explainer and all packages used.  -->
+<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
+<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
+
+<!-- useful settings for rmarkdown-->
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(fig.path = "", comment = "")
+
+# knitr hook to make images output use Hugo options
+knitr::knit_hooks$set(
+  plot = function(x, options) {
+    hugoopts <- options$hugoopts
+    paste0(
+      "{{<figure src=",
+      '"', x, '" ',
+      if (!is.null(hugoopts)) {
+        glue::glue_collapse(
+          glue::glue('{names(hugoopts)}="{hugoopts}"'),
+          sep = " "
+        )
+      },
+      ">}}\n"
+    )
+  }
+)
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+<!-- content -->
+
+This walkthrough is a follow up on [my previous post about rectangling network data](blog.rmhogervorst.nl/blog/2020/11/25/rectangling-social-network-data/)
+As a recap: we want to predict links between nodes in a graph by using features
+of the vertices.  In the previous post I showed how to load flat files into a graph structure with [{tidygraph}](https://CRAN.R-project.org/package=tidygraph), 
+how to select positive and negative examples and I extracted some node features.
+
+Because we want to predict if a link between two nodes is probable, we can
+use the node features, but there is also some other information in the graph
+that we cannot get out with that procedure.
+In this small walkthrough I will show you how I approached getting common neighbors between two nodes.
+I'm going to work with [{igraph}](https://CRAN.R-project.org/package=igraph), 
+lists, indices and regular expression. 
+
+
+```{r}
+library(tidygraph)
+library(dplyr)
+```
+
+
+## Create features for every edge
+If Boris, and Chandra don't know each other, but they have a few friends in 
+common, it seems more likely that they will form a connection too.
+There is some information in how many people we have
+in common, and maybe how many friends we have in common at a further distance.
+
+![Sheep, are close friends](connections.gif)
+ 
+ 
+
+Retrieve the data from the previous post:
+
+```{r}
+enriched_trainingset <- readr::read_rds(file = "data/enriched_trainingset.Rds")
+emptier_graph <- readr::read_rds("data/emptier_graph.Rds")
+```
+
+The current dataset contains degree, betweenness, pagerank, eigen centrality,
+closeness, bridge score and coreness for both vertices. 
+
+```{r}
+names(enriched_trainingset)
+```
+
+
+
+
+### Dealing with the differences between igraph and tidygraph
+_I believe these actions are also possible with tidygraph, but I haven't found out how yet. If you have examples, I really love to see them!_
+Maybe I should have structured the data differently but the indices of the 
+nodes in igraph are not the ids in tidygraph. So I have to work around that
+by using the names. 
+
+## Regular expressions
+*if you are familiar with regex [=>>skip to the code](#retrievingIds)*
+Some people are scared of regular expressions, and I get that they are not
+everone's cup of tea. There is even a famous quote:
+
+> Some people, when confronted with a problem, think "I know, I'll use regular expressions." 
+Now they have two problems. -- by  Jamie Zawinski, see notes for more info
+
+But although regular expressions can look like gibberish, they are super powerful
+and you can get a lot of things done with them. So I'll explain all the parts
+for you. I learned about regex in 
+
+I'm going to use a regular expression to extract the number between `(` and `)`
+in the text. 
+So I want to go from  `[1] "タコベル ジャパン　Taco Bell Japan (116)"` 
+to the number 116.
+
+I'm using this regex to search for what I want: `".+\\(([0-9]+)\\)$"` 
+and I'm using `"\\1"` to replace the result with "capture group 1".
+
+
+Let's break it down:
+
+* first the capture groups: you can use `()` to mark a piece of regex and call it back later with `\\number`
+* `.+` means: any character 1 or more times
+* `\\(` means: a '(', but because they have a special meaning, we have to 'escape' the character with two backslashes.
+* `([0-9]+)` means: in capture group 1: a number one or more times.
+* `\\)` means: a ')' but because they have a special meaning, we have to 'escape' the character with two backslashes.
+* `$` means: end of line
+
+So: take anything all the way until we find a '(' followed by numbers only and a ')' at the end of the line.
+So this matches things like: "Chef Grace Ramirez (412)", "도미노피자(Dominostory) (125)"
+and will return only the numbers between the '()'.
+
+<a id="retrievingIds"></a>
+
+```{r}
+nodes_igraph <- igraph::V(emptier_graph)
+ids <- names(nodes_igraph) %>%   
+  gsub(".+\\(([0-9]+)\\)$","\\1",x=.) %>% 
+  as.numeric()
+```
+
+
+## Finding the neighbors of every node
+
+For every node, find the nodes connected to it (a list)
+
+```{r}
+neighbors <- igraph::neighborhood(emptier_graph,order = 1)
+# for every node find the nodes at distance 2
+neighbors_dist2 <- igraph::neighborhood(emptier_graph,order = 2,mindist = 1)
+# Example of one
+neighbors_dist2[[11]]
+```
+
+
+I now create a set of functions
+
+* a function to lookup the node-index in the igraph objects. 
+* a function that takes two vertices, looks up all the direct neighbors of both vertices and counts the ones in common.
+* another like that one, but on distance 2
+* a loop through all edges in the trainingset (positive and negative examples) to apply the two functions and add them to the dataset.
+
+```{r}
+# convenience function to translate the id in tidygraph into the id in igraph. 
+lookup_vertice_id <- function(empty_graph_id){
+  which(ids == empty_graph_id)
+}
+
+n_common_neighbors <- function(from, to){
+  stopifnot(from != to) # I know myself, and protect against me
+  from_id <- lookup_vertice_id(as.integer(from))
+  from_nb <- names(neighbors[[from_id]])
+  from_itself <- names(nodes_igraph[[from_id]])
+  from_nbs <- setdiff(from_nb, from_itself)
+  to_id <- lookup_vertice_id(as.integer(to))
+  to_nb <- names(neighbors[[to_id]])
+  to_itself <- names(nodes_igraph[[to_id]])
+  to_nbs <- base::setdiff(to_nb, to_itself)
+  result <- base::intersect(from_nbs, to_nbs)
+    if(is.null(result)){
+      0
+    }else{
+      length(result)    
+    }
+}
+n2_common_neighbors <- function(from, to){
+  stopifnot(from != to) # I know myself, and protect against me
+  from_id <- lookup_vertice_id(as.integer(from))
+  from_nb <- names(neighbors_dist2[[from_id]])
+  from_itself <- names(nodes_igraph[[from_id]])
+  from_nbs <- setdiff(from_nb, from_itself)
+  to_id <- lookup_vertice_id(as.integer(to))
+  to_nb <- names(neighbors_dist2[[to_id]])
+  to_itself <- names(nodes_igraph[[to_id]])
+  to_nbs <- base::setdiff(to_nb, to_itself)
+  result <- base::intersect(from_nbs, to_nbs)
+  if(is.null(result)){
+    0
+  }else{
+    length(result)    
+  }
+}
+# superslow, because it is not vectorized.
+get_common_neighbors <- function(dataframe){
+  n1 <- rep(NA_integer_,nrow(dataframe))
+  n2 <- rep(NA_integer_,nrow(dataframe))
+  for (i in 1:nrow(dataframe)) {
+    n1[[i]] <- n_common_neighbors(
+      dataframe$from[[i]], dataframe$to[[i]]
+      )
+    n2[[i]] <- n2_common_neighbors(
+      dataframe$from[[i]], dataframe$to[[i]]
+      )
+}
+  dataframe$commonneighbors_1 = n1
+  dataframe$commonneighbors_2 = n2
+  dataframe
+}
+```
+
+Now lets execute the functions
+
+Enrich the trainingset with the number of neighbors in
+common between two nodes.
+
+```{r}
+enriched_trainingset <- 
+  enriched_trainingset %>% 
+  get_common_neighbors()  %>% 
+  mutate(unique_neighbors = degree + degree_to - commonneighbors_1)
+#readr::write_rds(enriched_trainingset, file="data/enriched_trainingset.Rds")
+```
+
+
+We can see that there is a difference in neighbors and unique neighbors between
+the positive and negative examples. So that is useful for ML later on!
+
+```{r}
+enriched_trainingset %>% 
+  group_by(target) %>% 
+  summarise(
+    avg_neighbors = mean(commonneighbors_1), 
+    avg_unique_nb = mean(unique_neighbors)
+    )
+```
+
+
+
+<!-- 
+
+intermediate (regular user, have a mental model, but it is not very sophisticated) 
+I wrote for intermediates with the following tags:
+*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
+
+
+Make a great image to add to the share link on top.
+-->
+
+
+### Reproducibility
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+### Notes about Regular Expressions
+
+- it seems the quote about regular expressions has a long history and someone did a deep dive into it [here](http://regex.info/blog/2006-09-15/247)
+- There is some great regex advice by [by Jeff Atwood (@codinghorror) in this post](https://blog.codinghorror.com/regular-expressions-now-you-have-two-problems/)
+- see also `?base::regexp`
+
+### References
+- Find more posts by me on [intermediate level](https://blog.rmhogervorst.nl/tags/intermediate/)
+- Find an Rmarkdown only version on my [github](https://github.com/RMHogervorst/link_prediction)
+- This post was inspired by a nice python post about networks from [analyticsvidhya.com here](https://www.analyticsvidhya.com/blog/2020/01/link-prediction-how-to-predict-your-future-connections-on-facebook/), that post used the same data and positive and negative examples but threw a deeplearning method against it immedately..

@@ -4,3 +4,5 @@
 .Ruserdata
 public/
 **/catboost_info/
+## ignore the html files created by knitr
+content/post/*.html
