@@ -6,3 +6,5 @@ public/
 **/catboost_info/
 ## ignore the html files created by knitr
 content/post/*.html
+**/index_cache/
+content/post/**/data/
