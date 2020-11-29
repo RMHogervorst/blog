@@ -1,29 +1,24 @@
 ---
 title: Rectangling (Social) Network Data, Advanced Options
 author: Roel M. Hogervorst
-date: '2020-11-26'
+date: '2020-12-01'
 categories:
   - blog
   - R
 tags:
-  - clarification
   - data:fb-pages-food
   - igraph
   - intermediate
-  - regex
   - networkdata
+  - regex
   - tidygraph
-subtitle: 'Link features, for link prediction'
+subtitle: Link features, for link prediction
 slug: rectangling-social-network-data-advanced-options
 share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
 output:
   html_document:
     keep_md: yes
 ---
-
-<!-- tags  at least intermediate, clarification, explainer and all packages used.  -->
-<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
-<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
 
 <!-- useful settings for rmarkdown-->
 
@@ -71,28 +66,30 @@ knitr::knit_hooks$set(
 ```
 <!-- content -->
 
-This walkthrough is a follow up on [my previous post about rectangling network data](blog.rmhogervorst.nl/blog/2020/11/25/rectangling-social-network-data/)
+This walkthrough is a follow up on [my previous post about rectangling network data](https://blog.rmhogervorst.nl/blog/2020/11/25/rectangling-social-network-data/)
 As a recap: we want to predict links between nodes in a graph by using features
-of the vertices.  In the previous post I showed how to load flat files into a graph structure with [{tidygraph}](https://CRAN.R-project.org/package=tidygraph), 
-how to select positive and negative examples and I extracted some node features.
+of the vertices.  In the previous post I showed how to load flat files into a graph structure with 
+[{tidygraph}](https://CRAN.R-project.org/package=tidygraph), 
+how to select positive and negative examples, and I extracted some node features.
 
 Because we want to predict if a link between two nodes is probable, we can
-use the node features, but there is also some other information in the graph
-that we cannot get out with that procedure.
+use the node features, but there is also some other information about the 
+edges in the graph
+that we cannot get out with node features only procedure.
 In this small walkthrough I will show you how I approached getting common neighbors between two nodes.
 I'm going to work with [{igraph}](https://CRAN.R-project.org/package=igraph), 
 lists, indices and regular expression. 
 
 
 ```{r}
-library(tidygraph)
 library(dplyr)
+library(tidygraph)
 ```
 
 
 ## Create features for every edge
-If Boris, and Chandra don't know each other, but they have a few friends in 
-common, it seems more likely that they will form a connection too.
+My intuition is this: If Boris and Chandra don't know each other, but they have a few friends in 
+common, it seems more likely that they will form a connection in time. If Boris and James have no friends in common, there will be less change of a connection.
 There is some information in how many people we have
 in common, and maybe how many friends we have in common at a further distance.
 
@@ -131,31 +128,42 @@ everone's cup of tea. There is even a famous quote:
 > Some people, when confronted with a problem, think "I know, I'll use regular expressions." 
 Now they have two problems. -- by  Jamie Zawinski, see notes for more info
 
-But although regular expressions can look like gibberish, they are super powerful
-and you can get a lot of things done with them. So I'll explain all the parts
-for you. I learned about regex in 
+I learned about regular expressions in one of the [coursera courses by the Johns Hopkins University at Coursera](https://www.coursera.org/specializations/jhu-data-science). And I used it a lot to extract phrases from tv-scripts in my star trek projects. 
 
+But although regular expressions CAN look like gibberish, they are super powerful
+and you can get a lot of things done with them.  I hope this doesn't scare you. My recommendation is to always create 
+test examples and verify your script does what it needs to do, also it is way
+easier to chain a number of small regular expressions together to get what you want" select larger pieces of text`captain crunch and his 4 friends` and do a new selection on top of that `4 friends` => `4`.
+
+
+I'll explain all the parts I've used for you.
 I'm going to use a regular expression to extract the number between `(` and `)`
 in the text. 
-So I want to go from  `[1] "タコベル ジャパン　Taco Bell Japan (116)"` 
-to the number 116.
+So I want to go from  `"タコベル ジャパン　Taco Bell Japan (116)"` 
+to the number `116`.
 
+This is the command: `gsub(pattern=".+\\(([0-9]+)\\)$",replacement="\\1",x=.)`
 I'm using this regex to search for what I want: `".+\\(([0-9]+)\\)$"` 
-and I'm using `"\\1"` to replace the result with "capture group 1".
+and I'm using `"\\1"` to replace the result with "capture group 1", the last 
+part `x=.` is a consequence of me chaining things together with a pipe and 
+you should read it as: `names(nodes_igraph)`.
+So take the names of all of the vertices, search for the pattern with a `(`and `)`, and replace the entire text with only the number you found.
 
 
 Let's break it down:
 
 * first the capture groups: you can use `()` to mark a piece of regex and call it back later with `\\number`
-* `.+` means: any character 1 or more times
-* `\\(` means: a '(', but because they have a special meaning, we have to 'escape' the character with two backslashes.
-* `([0-9]+)` means: in capture group 1: a number one or more times.
-* `\\)` means: a ')' but because they have a special meaning, we have to 'escape' the character with two backslashes.
+* `.+` the `.` means: any character, and the `+` means: 1 or more times (this matches to everything)
+* `\\(` means: a literal parentheses or round brackets  '(', but because parentheses have a special meaning, we have to 'escape' the character with two backslashes to tell the regular expression that we want parentheses.
+* `([0-9]+)` means: in capture group 1: a number (between 0-9, in other words, all numbers) one or more times.
+* `\\)` means: a literal parentheses or round brackets ')' but because they have a special meaning, we have to 'escape' the character with two backslashes.
 * `$` means: end of line
 
-So: take anything all the way until we find a '(' followed by numbers only and a ')' at the end of the line.
+So I think you could explain the regex as: take any character all the way until we find a literal opening parenthesis '(' followed by numbers only and a closing parenthesis ')' followed by the end of the line.
 So this matches things like: "Chef Grace Ramirez (412)", "도미노피자(Dominostory) (125)"
 and will return only the numbers between the '()'.
+_It will not match `blabla (23) `, nor `blabla ()`_
+
 
 <a id="retrievingIds"></a>
 
@@ -169,9 +177,10 @@ ids <- names(nodes_igraph) %>%
 
 ## Finding the neighbors of every node
 
-For every node, find the nodes connected to it (a list)
+For every node, find the nodes connected to it, the neighborhood function returns a list with for every node the directly connected nodes.
 
 ```{r}
+# for every node find the nodes at distance 1.
 neighbors <- igraph::neighborhood(emptier_graph,order = 1)
 # for every node find the nodes at distance 2
 neighbors_dist2 <- igraph::neighborhood(emptier_graph,order = 2,mindist = 1)
@@ -180,29 +189,30 @@ neighbors_dist2[[11]]
 ```
 
 
-I now create a set of functions
+I now create a set of functions:
 
-* a function to lookup the node-index in the igraph objects. 
-* a function that takes two vertices, looks up all the direct neighbors of both vertices and counts the ones in common.
+* a function to look up the node-index in the igraph objects. 
+* a function that takes two nodes, looks up all the direct neighbors of both nodes and counts the ones in common.
 * another like that one, but on distance 2
-* a loop through all edges in the trainingset (positive and negative examples) to apply the two functions and add them to the dataset.
+* a loop through all edges in the trainingset ( the positive and negative examples) to apply the two functions and add them to the dataset.
 
 ```{r}
 # convenience function to translate the id in tidygraph into the id in igraph. 
-lookup_vertice_id <- function(empty_graph_id){
+lookup_node_id <- function(empty_graph_id){
   which(ids == empty_graph_id)
 }
 
 n_common_neighbors <- function(from, to){
   stopifnot(from != to) # I know myself, and protect against me
-  from_id <- lookup_vertice_id(as.integer(from))
-  from_nb <- names(neighbors[[from_id]])
+  from_id <- lookup_node_id(as.integer(from))
+  from_nb <- names(neighbors[[from_id]]) # name of this node
   from_itself <- names(nodes_igraph[[from_id]])
   from_nbs <- setdiff(from_nb, from_itself)
-  to_id <- lookup_vertice_id(as.integer(to))
+  to_id <- lookup_node_id(as.integer(to))
   to_nb <- names(neighbors[[to_id]])
   to_itself <- names(nodes_igraph[[to_id]])
   to_nbs <- base::setdiff(to_nb, to_itself)
+  ### return only the neighbor nodes found in both sides
   result <- base::intersect(from_nbs, to_nbs)
     if(is.null(result)){
       0
@@ -212,11 +222,11 @@ n_common_neighbors <- function(from, to){
 }
 n2_common_neighbors <- function(from, to){
   stopifnot(from != to) # I know myself, and protect against me
-  from_id <- lookup_vertice_id(as.integer(from))
+  from_id <- lookup_node_id(as.integer(from))
   from_nb <- names(neighbors_dist2[[from_id]])
   from_itself <- names(nodes_igraph[[from_id]])
   from_nbs <- setdiff(from_nb, from_itself)
-  to_id <- lookup_vertice_id(as.integer(to))
+  to_id <- lookup_node_id(as.integer(to))
   to_nb <- names(neighbors_dist2[[to_id]])
   to_itself <- names(nodes_igraph[[to_id]])
   to_nbs <- base::setdiff(to_nb, to_itself)
@@ -245,17 +255,17 @@ get_common_neighbors <- function(dataframe){
 }
 ```
 
-Now lets execute the functions
+Now lets execute the functions:
 
 Enrich the trainingset with the number of neighbors in
-common between two nodes.
+common between two nodes and calculate how many nodes per edge are unique.
 
 ```{r}
 enriched_trainingset <- 
   enriched_trainingset %>% 
   get_common_neighbors()  %>% 
   mutate(unique_neighbors = degree + degree_to - commonneighbors_1)
-#readr::write_rds(enriched_trainingset, file="data/enriched_trainingset.Rds")
+#readr::write_rds(enriched_trainingset, file="data/enriched_trainingset2.Rds")
 ```
 
 
@@ -272,16 +282,6 @@ enriched_trainingset %>%
 ```
 
 
-
-<!-- 
-
-intermediate (regular user, have a mental model, but it is not very sophisticated) 
-I wrote for intermediates with the following tags:
-*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
-
-
-Make a great image to add to the share link on top.
--->
 
 
 ### Reproducibility
@@ -302,5 +302,5 @@ sessioninfo::session_info()
 
 ### References
 - Find more posts by me on [intermediate level](https://blog.rmhogervorst.nl/tags/intermediate/)
-- Find an Rmarkdown only version on my [github](https://github.com/RMHogervorst/link_prediction)
+- Find a slightly different Rmarkdown only version on my [github](https://github.com/RMHogervorst/link_prediction)
 - This post was inspired by a nice python post about networks from [analyticsvidhya.com here](https://www.analyticsvidhya.com/blog/2020/01/link-prediction-how-to-predict-your-future-connections-on-facebook/), that post used the same data and positive and negative examples but threw a deeplearning method against it immedately..
