@@ -1,7 +1,7 @@
 ---
 title: Rectangling (Social) Network Data, Advanced Options
 author: Roel M. Hogervorst
-date: '2020-12-01'
+date: '2020-12-04'
 categories:
   - blog
   - R
@@ -14,7 +14,7 @@ tags:
   - tidygraph
 subtitle: Link features, for link prediction
 slug: rectangling-social-network-data-advanced-options
-share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+share_img: 'https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif'
 output:
   html_document:
     keep_md: yes
@@ -137,6 +137,7 @@ easier to chain a number of small regular expressions together to get what you w
 
 
 I'll explain all the parts I've used for you.
+
 I'm going to use a regular expression to extract the number between `(` and `)`
 in the text. 
 So I want to go from  `"タコベル ジャパン　Taco Bell Japan (116)"` 

@@ -1,7 +1,7 @@
 ---
 title: Rectangling (Social) Network Data, Advanced Options
 author: Roel M. Hogervorst
-date: '2020-12-01'
+date: '2020-12-04'
 categories:
   - blog
   - R
@@ -14,7 +14,7 @@ tags:
   - tidygraph
 subtitle: Link features, for link prediction
 slug: rectangling-social-network-data-advanced-options
-share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+share_img: 'https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif'
 output:
   html_document:
     keep_md: yes
@@ -71,12 +71,11 @@ names(enriched_trainingset)
 ```
 
 ```
- [1] "from"           "to"             "target"        
- [4] "degree"         "betweenness"    "pg_rank"       
- [7] "eigen"          "closeness"      "br_score"      
-[10] "coreness"       "degree_to"      "betweenness_to"
-[13] "pg_rank_to"     "eigen_to"       "closeness_to"  
-[16] "br_score_to"    "coreness_to"   
+ [1] "from"           "to"             "target"         "degree"        
+ [5] "betweenness"    "pg_rank"        "eigen"          "closeness"     
+ [9] "br_score"       "coreness"       "degree_to"      "betweenness_to"
+[13] "pg_rank_to"     "eigen_to"       "closeness_to"   "br_score_to"   
+[17] "coreness_to"   
 ```
 
 
@@ -105,6 +104,7 @@ easier to chain a number of small regular expressions together to get what you w
 
 
 I'll explain all the parts I've used for you.
+
 I'm going to use a regular expression to extract the number between `(` and `)`
 in the text. 
 So I want to go from  `"タコベル ジャパン　Taco Bell Japan (116)"` 
@@ -279,7 +279,7 @@ sessioninfo::session_info()
 ```
 
 ```
-─ Session info ──────────────────────────────────────────────────
+─ Session info ─────────────────────────────────────────────────────────────
  setting  value                       
  version  R version 4.0.2 (2020-06-22)
  os       macOS Catalina 10.15.7      
@@ -289,99 +289,61 @@ sessioninfo::session_info()
  collate  en_US.UTF-8                 
  ctype    en_US.UTF-8                 
  tz       Europe/Amsterdam            
- date     2020-11-29                  
+ date     2020-12-04                  
 
-─ Packages ──────────────────────────────────────────────────────
- package      * version    date       lib source        
- assertthat     0.2.1      2019-03-21 [1] CRAN (R 4.0.2)
- backports      1.2.0      2020-11-02 [1] CRAN (R 4.0.2)
- BBmisc         1.11       2017-03-10 [1] CRAN (R 4.0.2)
- blogdown       0.21       2020-10-11 [1] CRAN (R 4.0.2)
- bookdown       0.21       2020-10-13 [1] CRAN (R 4.0.2)
- checkmate      2.0.0      2020-02-06 [1] CRAN (R 4.0.2)
- class          7.3-17     2020-04-26 [1] CRAN (R 4.0.2)
- cli            2.2.0      2020-11-20 [1] CRAN (R 4.0.2)
- codetools      0.2-18     2020-11-04 [1] CRAN (R 4.0.2)
- colorspace     2.0-0      2020-11-11 [1] CRAN (R 4.0.2)
- crayon         1.3.4      2017-09-16 [1] CRAN (R 4.0.2)
- data.table     1.13.2     2020-10-19 [1] CRAN (R 4.0.2)
- digest         0.6.27     2020-10-24 [1] CRAN (R 4.0.2)
- doParallel     1.0.16     2020-10-16 [1] CRAN (R 4.0.2)
- dplyr        * 1.0.2      2020-08-18 [1] CRAN (R 4.0.2)
- ellipsis       0.3.1      2020-05-15 [1] CRAN (R 4.0.2)
- evaluate       0.14       2019-05-28 [1] CRAN (R 4.0.1)
- fansi          0.4.1      2020-01-08 [1] CRAN (R 4.0.2)
- fastmap        1.0.1      2019-10-08 [1] CRAN (R 4.0.2)
- fastmatch      1.1-0      2017-01-28 [1] CRAN (R 4.0.2)
- FNN            1.1.3      2019-02-15 [1] CRAN (R 4.0.2)
- foreach        1.5.1      2020-10-15 [1] CRAN (R 4.0.2)
- generics       0.1.0      2020-10-31 [1] CRAN (R 4.0.2)
- ggplot2        3.3.2      2020-06-19 [1] CRAN (R 4.0.2)
- glue           1.4.2      2020-08-27 [1] CRAN (R 4.0.2)
- gower          0.2.2      2020-06-23 [1] CRAN (R 4.0.2)
- gtable         0.3.0      2019-03-25 [1] CRAN (R 4.0.2)
- hms            0.5.3      2020-01-08 [1] CRAN (R 4.0.2)
- htmltools      0.5.0      2020-06-16 [1] CRAN (R 4.0.2)
- httpuv         1.5.4      2020-06-06 [1] CRAN (R 4.0.2)
- igraph         1.2.6      2020-10-06 [1] CRAN (R 4.0.2)
- ipred          0.9-9      2019-04-28 [1] CRAN (R 4.0.2)
- iterators      1.0.13     2020-10-15 [1] CRAN (R 4.0.2)
- jsonlite       1.7.1      2020-09-07 [1] CRAN (R 4.0.2)
- knitr          1.30       2020-09-22 [1] CRAN (R 4.0.2)
- later          1.1.0.1    2020-06-05 [1] CRAN (R 4.0.2)
- lattice        0.20-41    2020-04-02 [1] CRAN (R 4.0.2)
- lava           1.6.8.1    2020-11-04 [1] CRAN (R 4.0.2)
- lifecycle      0.2.0      2020-03-06 [1] CRAN (R 4.0.2)
- lubridate      1.7.9.2    2020-11-13 [1] CRAN (R 4.0.2)
- magrittr       2.0.1      2020-11-17 [1] CRAN (R 4.0.2)
- MASS           7.3-53     2020-09-09 [1] CRAN (R 4.0.2)
- Matrix         1.2-18     2019-11-27 [1] CRAN (R 4.0.2)
- mime           0.9        2020-02-04 [1] CRAN (R 4.0.2)
- miniUI         0.1.1.1    2018-05-18 [1] CRAN (R 4.0.2)
- mlr            2.18.0     2020-10-05 [1] CRAN (R 4.0.2)
- munsell        0.5.0      2018-06-12 [1] CRAN (R 4.0.2)
- nnet           7.3-14     2020-04-26 [1] CRAN (R 4.0.2)
- parallelMap    1.5.0      2020-03-26 [1] CRAN (R 4.0.2)
- ParamHelpers   1.14       2020-03-24 [1] CRAN (R 4.0.2)
- pillar         1.4.7      2020-11-20 [1] CRAN (R 4.0.2)
- pkgconfig      2.0.3      2019-09-22 [1] CRAN (R 4.0.2)
- plyr           1.8.6      2020-03-03 [1] CRAN (R 4.0.2)
- processx       3.4.4      2020-09-03 [1] CRAN (R 4.0.2)
- prodlim        2019.11.13 2019-11-17 [1] CRAN (R 4.0.2)
- promises       1.1.1      2020-06-09 [1] CRAN (R 4.0.2)
- ps             1.4.0      2020-10-07 [1] CRAN (R 4.0.2)
- purrr          0.3.4      2020-04-17 [1] CRAN (R 4.0.2)
- R6             2.5.0      2020-10-28 [1] CRAN (R 4.0.2)
- RANN           2.6.1      2019-01-08 [1] CRAN (R 4.0.2)
- Rcpp           1.0.5      2020-07-06 [1] CRAN (R 4.0.2)
- readr          1.4.0      2020-10-05 [1] CRAN (R 4.0.2)
- recipes        0.1.15     2020-11-11 [1] CRAN (R 4.0.2)
- reshape2       1.4.4      2020-04-09 [1] CRAN (R 4.0.2)
- rlang          0.4.9      2020-11-26 [1] CRAN (R 4.0.2)
- rmarkdown      2.5        2020-10-21 [1] CRAN (R 4.0.2)
- ROSE           0.0-3      2014-07-15 [1] CRAN (R 4.0.2)
- rpart          4.1-15     2019-04-12 [1] CRAN (R 4.0.2)
- rstudioapi     0.13       2020-11-12 [1] CRAN (R 4.0.2)
- scales         1.1.1      2020-05-11 [1] CRAN (R 4.0.2)
- servr          0.20       2020-10-19 [1] CRAN (R 4.0.2)
- sessioninfo    1.1.1      2018-11-05 [1] CRAN (R 4.0.2)
- shiny        * 1.5.0      2020-06-23 [1] CRAN (R 4.0.2)
- stringi        1.5.3      2020-09-09 [1] CRAN (R 4.0.2)
- stringr        1.4.0      2019-02-10 [1] CRAN (R 4.0.2)
- survival       3.2-7      2020-09-28 [1] CRAN (R 4.0.2)
- themis         0.1.3      2020-11-12 [1] CRAN (R 4.0.2)
- tibble         3.0.4      2020-10-12 [1] CRAN (R 4.0.2)
- tidygraph    * 1.2.0      2020-05-12 [1] CRAN (R 4.0.2)
- tidyr          1.1.2      2020-08-27 [1] CRAN (R 4.0.2)
- tidyselect     1.1.0      2020-05-11 [1] CRAN (R 4.0.2)
- timeDate       3043.102   2018-02-21 [1] CRAN (R 4.0.2)
- unbalanced     2.0        2015-06-26 [1] CRAN (R 4.0.2)
- utf8           1.1.4      2018-05-24 [1] CRAN (R 4.0.2)
- vctrs          0.3.5      2020-11-17 [1] CRAN (R 4.0.2)
- withr          2.3.0      2020-09-22 [1] CRAN (R 4.0.2)
- xfun           0.19       2020-10-30 [1] CRAN (R 4.0.2)
- xtable         1.8-4      2019-04-21 [1] CRAN (R 4.0.2)
- yaml           2.2.1      2020-02-01 [1] CRAN (R 4.0.2)
+─ Packages ─────────────────────────────────────────────────────────────────
+ package     * version date       lib source        
+ assertthat    0.2.1   2019-03-21 [1] CRAN (R 4.0.2)
+ blogdown      0.21    2020-10-11 [1] CRAN (R 4.0.2)
+ bookdown      0.21    2020-10-13 [1] CRAN (R 4.0.2)
+ cli           2.2.0   2020-11-20 [1] CRAN (R 4.0.2)
+ crayon        1.3.4   2017-09-16 [1] CRAN (R 4.0.2)
+ digest        0.6.27  2020-10-24 [1] CRAN (R 4.0.2)
+ dplyr       * 1.0.2   2020-08-18 [1] CRAN (R 4.0.2)
+ ellipsis      0.3.1   2020-05-15 [1] CRAN (R 4.0.2)
+ evaluate      0.14    2019-05-28 [1] CRAN (R 4.0.1)
+ fansi         0.4.1   2020-01-08 [1] CRAN (R 4.0.2)
+ fastmap       1.0.1   2019-10-08 [1] CRAN (R 4.0.2)
+ generics      0.1.0   2020-10-31 [1] CRAN (R 4.0.2)
+ glue          1.4.2   2020-08-27 [1] CRAN (R 4.0.2)
+ hms           0.5.3   2020-01-08 [1] CRAN (R 4.0.2)
+ htmltools     0.5.0   2020-06-16 [1] CRAN (R 4.0.2)
+ httpuv        1.5.4   2020-06-06 [1] CRAN (R 4.0.2)
+ igraph        1.2.6   2020-10-06 [1] CRAN (R 4.0.2)
+ jsonlite      1.7.1   2020-09-07 [1] CRAN (R 4.0.2)
+ knitr         1.30    2020-09-22 [1] CRAN (R 4.0.2)
+ later         1.1.0.1 2020-06-05 [1] CRAN (R 4.0.2)
+ lifecycle     0.2.0   2020-03-06 [1] CRAN (R 4.0.2)
+ magrittr      2.0.1   2020-11-17 [1] CRAN (R 4.0.2)
+ mime          0.9     2020-02-04 [1] CRAN (R 4.0.2)
+ miniUI        0.1.1.1 2018-05-18 [1] CRAN (R 4.0.2)
+ pillar        1.4.7   2020-11-20 [1] CRAN (R 4.0.2)
+ pkgconfig     2.0.3   2019-09-22 [1] CRAN (R 4.0.2)
+ processx      3.4.4   2020-09-03 [1] CRAN (R 4.0.2)
+ promises      1.1.1   2020-06-09 [1] CRAN (R 4.0.2)
+ ps            1.4.0   2020-10-07 [1] CRAN (R 4.0.2)
+ purrr         0.3.4   2020-04-17 [1] CRAN (R 4.0.2)
+ R6            2.5.0   2020-10-28 [1] CRAN (R 4.0.2)
+ Rcpp          1.0.5   2020-07-06 [1] CRAN (R 4.0.2)
+ readr         1.4.0   2020-10-05 [1] CRAN (R 4.0.2)
+ rlang         0.4.9   2020-11-26 [1] CRAN (R 4.0.2)
+ rmarkdown     2.5     2020-10-21 [1] CRAN (R 4.0.2)
+ rstudioapi    0.13    2020-11-12 [1] CRAN (R 4.0.2)
+ servr         0.20    2020-10-19 [1] CRAN (R 4.0.2)
+ sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 4.0.2)
+ shiny       * 1.5.0   2020-06-23 [1] CRAN (R 4.0.2)
+ stringi       1.5.3   2020-09-09 [1] CRAN (R 4.0.2)
+ stringr       1.4.0   2019-02-10 [1] CRAN (R 4.0.2)
+ tibble        3.0.4   2020-10-12 [1] CRAN (R 4.0.2)
+ tidygraph   * 1.2.0   2020-05-12 [1] CRAN (R 4.0.2)
+ tidyr         1.1.2   2020-08-27 [1] CRAN (R 4.0.2)
+ tidyselect    1.1.0   2020-05-11 [1] CRAN (R 4.0.2)
+ utf8          1.1.4   2018-05-24 [1] CRAN (R 4.0.2)
+ vctrs         0.3.5   2020-11-17 [1] CRAN (R 4.0.2)
+ withr         2.3.0   2020-09-22 [1] CRAN (R 4.0.2)
+ xfun          0.19    2020-10-30 [1] CRAN (R 4.0.2)
+ xtable        1.8-4   2019-04-21 [1] CRAN (R 4.0.2)
+ yaml          2.2.1   2020-02-01 [1] CRAN (R 4.0.2)
 
 [1] /Library/Frameworks/R.framework/Versions/4.0/Resources/library
 ```
