@@ -15,20 +15,14 @@
               </li>
             {{- end -}}
           {{ end }}
-          {{ if .Site.Params.rss }}
           <li>
-            {{ if .RSSLink }}
-            <a href="{{ .RSSLink }}" title="RSS">
-            {{ else }}
-            <a href="{{ .Site.RSSLink }}" title="RSS">
-            {{ end }}
+            <a href="{{ .Site.BaseURL }}categories/r/index.xml" title="RSS">
               <span class="fa-stack fa-lg">
                 <i class="fa fa-circle fa-stack-2x"></i>
                 <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
               </span>
             </a>
           </li>
-          {{ end }}
         </ul>
         <p class="credits copyright text-muted">
           {{ if .Site.Author.name }}
