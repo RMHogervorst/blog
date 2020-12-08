@@ -9,8 +9,8 @@ tags:
   - beginner
   - ggplot2
   - spps-to-r
-  - mtcars
-  - chickwts
+  - data:mtcars
+  - data:chickwts
   - tutorial
 slug: from-spss-to-r-part3
 ---

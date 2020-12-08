@@ -10,7 +10,8 @@ tags:
   - dplyr
   - NSE
   - optimize-your-code
-  - duo2015
+  - data:duo2015
+  - data:mtcars
   - lazyeval
   - reminder
 slug: NSE_standard_evaluation_dplyr

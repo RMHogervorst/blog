@@ -9,7 +9,7 @@ tags:
   - beginner
   - dplyr
   - tidyr
-  - duo2015
+  - data:duo2015
   - tutorial
 slug: creating-tidy-data
 ---

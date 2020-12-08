@@ -8,7 +8,7 @@ categories:
 tags:
   - intermediate
   - package
-  - coffeedata
+  - data:coffeedata
   - tutorial
 slug: create-package-for-dataset
 ---

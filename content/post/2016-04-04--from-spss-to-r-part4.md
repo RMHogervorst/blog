@@ -11,6 +11,7 @@ tags:
   - ggplot2
   - spps-to-r
   - tutorial
+  - data:duo2015
 slug: from-spss-to-r-part4
 ---
 

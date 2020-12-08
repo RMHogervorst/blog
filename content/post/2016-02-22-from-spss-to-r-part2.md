@@ -10,7 +10,7 @@ tags:
   - haven
   - dplyr
   - spps-to-r
-  - duo2015
+  - data:duo2015
   - tutorial
 slug: from-spss-to-r-part2
 ---
