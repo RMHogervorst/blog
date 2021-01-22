@@ -12,3 +12,4 @@ options(
   blogdown.title_case = TRUE,
   blogdown.knit.on_save = TRUE
 )
+options(blogdown.hugo.version = "0.69.0")

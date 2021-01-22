@@ -3,8 +3,12 @@
 .RData
 .Ruserdata
 public/
+resources/
 **/catboost_info/
 ## ignore the html files created by knitr
 content/post/*.html
 **/index_cache/
 content/post/**/data/
+
+.DS_Store
+Thumbs.db

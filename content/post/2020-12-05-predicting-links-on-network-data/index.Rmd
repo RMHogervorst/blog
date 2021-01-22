@@ -1,0 +1,621 @@
+---
+title: Predicting links for network data
+author: Roel M. Hogervorst
+date: '2020-12-05'
+categories:
+  - blog
+  - R
+tags:
+  - data:fb-pages-food
+  - dplyr
+  - ggplot2
+  - glmnet
+  - interactions
+  - intermediate
+  - networkdata
+  - parsnip
+  - ranger
+  - recipes
+  - themis
+  - tidymodels
+  - tune
+  - vip
+share_img: 'https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139'
+output:
+  html_document:
+    keep_md: yes
+---
+
+<!-- useful settings for rmarkdown-->
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(fig.path = "", comment = "")
+
+# knitr hook to make images output use Hugo options
+knitr::knit_hooks$set(
+  plot = function(x, options) {
+    hugoopts <- options$hugoopts
+    paste0(
+      "{{<figure src=",
+      '"', x, '" ',
+      if (!is.null(hugoopts)) {
+        glue::glue_collapse(
+          glue::glue('{names(hugoopts)}="{hugoopts}"'),
+          sep = " "
+        )
+      },
+      ">}}\n"
+    )
+  }
+)
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+    hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+        paste0(
+          "{",
+          glue::glue_collapse(
+            glue::glue("{names(hlopts)}={hlopts}"),
+            sep = ","
+          ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+<!-- content --> 
+
+NETWORKS, PREDICT EDGES
+> Can we predict if two nodes in the graph are connected or not?
+
+But let's make it very practical:
+
+Let's say you work in a social media company and your boss asks you to create
+a model to predict who will be friends, so you can feed those recommendations 
+back to the website and serve those to users. 
+
+You are tasked to create a model that predicts, once a day for all users, who is likely to connect to whom. 
+
+
+PART 2 [my previous post about rectangling network data](https://blog.rmhogervorst.nl/blog/2020/11/25/rectangling-social-network-data/)
+
+BUILD MODEL WITH TIDYMODELS
+
+
+
+# Loading packages and data
+Using [{tidymodels}](https://cran.r-project.org/package=tidymodels) (a meta package that also loads {broom}, {recipes}, {dials}, {rsample}, {dplyr}, {tibble}, {ggplot2}, {tidyr}, {infer}, {tune}, {workflows}, {modeldata}, {parsnip}, {yardstick}, and {[{purrr}](https://CRAN.R-project.org/package=purrr)})
+
+also using [{themis}](https://CRAN.R-project.org/package=themis), [{vip}](https://CRAN.R-project.org/package=vip) [{readr}](https://CRAN.R-project.org/package=readr), [{dplyr}](https://CRAN.R-project.org/package=dplyr), [{ggplot2}](https://CRAN.R-project.org/package=ggplot2), for models
+using [{glmnet}](https://CRAN.R-project.org/package=glmnet), [{ranger}](https://CRAN.R-project.org/package=ranger)
+
+
+```{r}
+library(tidymodels)
+```
+
+Load data 
+CONTAINS ALSO FROM ADVANCED THINGY
+
+```{r}
+enriched_trainingset <-
+  readr::read_rds(file = "data/enriched_trainingset.Rds") %>%
+  mutate(target = as.factor(target))
+names(enriched_trainingset)
+```
+
+# Feature information
+I 
+
+IS THERE ENOUGH INFORMATION IN THE DATASET TO PREDICT 
+
+
+
+
+
+
+MANY MORE NEGATIVE THAN POSITIVE EXAMPLES.
+```{r}
+enriched_trainingset %>%
+  count(target) %>%
+  mutate(percentage = n / sum(n))
+```
+
+MAKE SUBSET TO VISUALISE 
+
+
+```{r}
+smpl_trainingset <-
+  enriched_trainingset %>%
+  group_by(target) %>%
+  sample_n(1000) %>%
+  mutate(label = ifelse(target == 1, "link", "no-link")) %>%
+  ungroup()
+smpl_trainingset %>% count(label)
+```
+
+
+OVERVIERW OF ALL VARIABLES
+THIS IS NOT A BEST PRACTICE, AND I'M NOT EVEN SURE IF THE INFORMATION
+I'M SHOWING HERE IS TELLING US SOMETHING. 
+
+`(NODE)-[EDGE]-(NODE)` 
+BOTH SIDES OF EDGE HAVE PROPERTIES. WE DON'T CARE ABOUT DIRECTION AND SO
+IS MORE OR LESS EQUIVALIENT. MAYBE THE COMBIANTOIN OF THE TWO IS MORE IMPORTANT?
+
+
+```{r}
+smpl_trainingset %>%
+  mutate(
+    degree2 = degree * degree_to,
+    eigen2 = eigen * eigen_to,
+    pg_rank2 = pg_rank * pg_rank_to,
+    betweenness2 = betweenness * betweenness_to,
+    br_score2 = br_score * br_score_to,
+    coreness2 = coreness * coreness_to,
+    closeness2 = closeness * closeness_to
+  ) %>%
+  select(label, degree2:closeness2) %>%
+  group_by(label) %>%
+  summarise(across(.fns = c(mean = mean, sd = sd))) %>%
+  pivot_longer(-label) %>%
+  tidyr::separate(name, into = c("metric", "summary"), sep = "2_") %>%
+  pivot_wider(names_from = summary, values_from = value) %>%
+  ggplot(aes(label, color = label)) +
+  geom_point(aes(label, y = mean), shape = 22, fill = "grey50") +
+  geom_point(aes(label, y = mean + sd), shape = 2) +
+  geom_point(aes(label, y = mean - sd), shape = 6) +
+  geom_linerange(aes(label, ymin = mean - sd, ymax = mean + sd)) +
+  facet_wrap(~metric, scales = "free") +
+  labs(
+    title = "Small differences in features for link vs no-link",
+    subtitle = "mean (+/-) 1 sd",
+    x = NULL, y = "feature"
+  )
+```
+
+
+VISUALIZE 
+
+BETWEENNESS
+
+```{r}
+smpl_trainingset %>%
+  select(betweenness, betweenness_to, label) %>%
+  pivot_longer(-label) %>%
+  ggplot(aes(value, color = label)) +
+  geom_density() +
+  facet_wrap(~name) +
+  scale_x_continuous(trans = scales::log1p_trans())
+```
+
+DEGREE
+
+```{r}
+smpl_trainingset %>%
+  ggplot(aes(degree, degree_to, color = label)) +
+  geom_point() +
+  scale_x_continuous(trans = scales::log1p_trans()) +
+  scale_y_continuous(trans = scales::log1p_trans())
+```
+
+PAGE RANK
+
+```{r}
+smpl_trainingset %>%
+  ggplot(aes(pg_rank, pg_rank_to, color = label)) +
+  geom_point(alpha = 1 / 2)
+```
+
+EIGEN DOESN'T REALLY SEEM TO BE DIFFERENT
+
+```{r}
+smpl_trainingset %>%
+  ggplot(aes(eigen, eigen_to, color = label)) +
+  geom_point(alpha = 1 / 2)
+```
+
+ETCETEA
+
+
+
+# Actual feature engineering (recipe)
+I decided to create some interactions
+between page rank of two nodes, and the degree of the nodes, drop the identifiers
+to and from and make the target a factor. Furthermore I drop correlated features
+and normalize and center all features (there are no nominal variables in this
+dataset).
+
+_This recipe is only a plan of action, nothing has happened yet._
+
+```{r}
+# make it very simple first.
+ntwrk_recipe <-
+  recipe(enriched_trainingset, formula = target ~ .) %>%
+  recipes::update_role(to, new_role = "other") %>%
+  recipes::update_role(from, new_role = "other") %>%
+  step_interact(terms = ~ pg_rank:pg_rank_to) %>%
+  step_interact(terms = ~ degree:degree_to) %>%
+  step_interact(terms = ~ eigen:eigen_to) %>%
+  step_interact(terms = ~ betweenness:betweenness_to) %>%
+  step_interact(terms = ~ closeness:closeness_to) %>%
+  step_interact(terms = ~ coreness:coreness_to) %>%
+  step_interact(terms = ~ br_score:br_score_to) %>%
+  step_corr(all_numeric()) %>%
+  step_nzv(all_predictors()) %>%
+  step_normalize(all_predictors(), -all_nominal()) %>%
+  step_mutate(target = as.factor(target))
+```
+
+
+## Model
+simple model to start with generalized linear model
+
+So what are we going to do with the model? I'm using a logistic regression 
+from [{glmnet}](https://cran.r-project.org/package=glmnet) and capture the steps
+of data preparation and modeling into 1 workflow-object.
+
+```{r}
+ntwrk_spec <-
+  logistic_reg(penalty = tune(), mixture = 1) %>% # pure lasso
+  set_engine("glmnet")
+
+ntwrk_workflow <-
+  workflow() %>%
+  add_recipe(ntwrk_recipe) %>%
+  add_model(ntwrk_spec)
+```
+
+## Train and test sets
+
+I split the data into a test and train set, but making sure the proportion
+of targets is the same in test and train data.
+```{r}
+### split into training and test set
+set.seed(2345)
+tr_te_split <- initial_split(enriched_trainingset, strata = target)
+val_set <- validation_split(training(tr_te_split), strata = target, prop = .8)
+```
+
+## Model tuning
+I don't know what the best penalty is for this model and data, so we have
+to test different versions and choose the best one.
+
+```{r}
+## Setting up tune grid manually, because it is just one column
+lr_reg_grid <- tibble(penalty = 10^seq(-5, -1, length.out = 30))
+```
+
+
+```{r}
+ntwrk_res <-
+  ntwrk_workflow %>%
+  tune_grid(val_set,
+    grid = lr_reg_grid,
+    control = control_grid(save_pred = TRUE),
+    metrics = metric_set(roc_auc)
+  )
+```
+
+Visualise results 
+(I DID SOME DEEPER DIVE ANY SMALL PENALTY LESS THAN 10E-05 LEADS TO THE SAME
+VALUES ~ 0.0000240 as pentlay is boundary)
+
+```{r}
+ntwrk_res %>%
+  collect_metrics() %>%
+  ggplot(aes(x = penalty, y = mean)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    subtitle = "Ideal penalty is larger then 1.610e-05, but certainly less than 0.04",
+    title = "Penalty values",
+    y = "Area under the ROC Curve",
+    x = "Penalty values for this GLM"
+  ) +
+  scale_x_log10(labels = scales::label_number()) +
+  geom_vline(xintercept = 0.0386, color = "tomato3") +
+  geom_vline(xintercept = 1.610e-05, color = "tomato3") +
+  theme_minimal()
+```
+
+What are the best models?
+
+```{r}
+## show best models
+top_models <-
+  ntwrk_res %>%
+  show_best("roc_auc", n = 5) %>%
+  arrange(penalty)
+lr_best <-
+  ntwrk_res %>%
+  collect_metrics() %>%
+  arrange(penalty) %>%
+  slice(5)
+
+pred_auc <-
+  ntwrk_res %>%
+  collect_predictions(parameters = lr_best) %>%
+  roc_curve(target, .pred_0) %>%
+  mutate(model = "Logistic Regression")
+
+autoplot(pred_auc) +
+  ggtitle("ROC curve of GLM")
+```
+## Best performing GLM
+Let's use the best performing model and modify the current workflow,
+by replacing the penalty value in the model with one of the best values.
+
+(this model is still untrained, we used the crossvalidation to find the best parameter values)
+
+```{r}
+best_penalty <- top_models %>%
+  pull(penalty) %>%
+  .[[3]]
+ntwrk_spec_1 <-
+  logistic_reg(penalty = best_penalty, mixture = 1) %>%
+  set_engine("glmnet")
+
+## change model
+updated_workflow <-
+  ntwrk_workflow %>%
+  update_model(ntwrk_spec_1)
+```
+
+Last fit is a special function from tune that fits data on the training set
+and predicts on the testset.
+
+### GLM results
+
+```{r}
+ntwrk_fit <-
+  updated_workflow %>%
+  last_fit(tr_te_split)
+
+ntwrk_fit %>% pull(.metrics)
+```
+The accuracy is super misleading here, which is why I added it here. 
+Since the dataset contains ~95.5% 0s and only ~0.5% true links, just predicting no-connection would give me 95.5% accuracy.
+The area under the curve is quite okay with ~0.80.
+
+```{r}
+ntwrk_fit$.predictions[[1]] %>%
+  group_by(target, .pred_class) %>%
+  summarize(
+    count = n(),
+    avg_prob1 = mean(.pred_1)
+  )
+```
+Let's unpack the predictions. I've created a table with the actual value `target` and what was predicted `.pred_class`. There should be 4 rows...
+We never predicted a link when there was one! So the score looks good, but the results are not that useful.
+
+
+```{r variable importance glm}
+library(vip)
+prediction_model_glm <- fit(
+  ntwrk_fit$.workflow[[1]],
+  enriched_trainingset
+)
+prediction_model_glm %>%
+  pull_workflow_fit() %>%
+  vip(geom = "point") +
+  ggtitle("Variable importance GLM",
+    subtitle = "Top 10 of Generalized Linear Model"
+  )
+```
+### Next steps
+As you can see in feature importance the interactions do play quite a role. 
+Next steps would be to dive into residuals, explanations, and see if we can add features that will help distinguish the `connected` edges from the `non-connected` edges. Some of the features do not really seem to work.
+
+Maybe we need a different model that automatically 
+takes interactions into account? Models like decision trees or random forests
+for example. 
+
+
+# Let's try with random forest.
+
+I'm using the same recipe, we don't need to do any scaling or centering for
+random forest, these algorithms work fine without, but I'm lazy here.
+
+```{r}
+rf_recipe <- ntwrk_recipe
+
+rf_spec <-
+  rand_forest(mtry = tune(), min_n = tune(), trees = 1000) %>%
+  set_mode("classification") %>%
+  set_engine("ranger", importance = "impurity")
+
+rf_workflow <-
+  workflow() %>%
+  add_recipe(rf_recipe) %>%
+  add_model(rf_spec)
+```
+
+Let's also create a crossvalidation set
+```{r}
+crossvalidation_sets <- vfold_cv(
+  training(tr_te_split),
+  v = 3, 
+  strata = target)
+```
+
+
+
+```{r, crossvalidate random forest, cache=TRUE}
+system.time(
+  {
+set.seed(88708)
+rf_grid <-
+  grid_max_entropy(
+    mtry(range = c(3, 15)), # you have to give some range here
+    min_n(),
+    size = 10
+  )
+
+rf_tune <-
+  tune_grid(rf_workflow,
+    resamples = crossvalidation_sets,
+    grid = rf_grid,
+    control = control_grid(
+      save_pred = TRUE,
+      allow_par = TRUE
+    ),
+    metrics = metric_set(roc_auc)
+  )
+  }
+)
+
+```
+
+
+So what is the best parameter set?
+
+
+```{r}
+rf_tune %>%
+  collect_metrics() %>%
+  select(mean, mtry:min_n) %>%
+  pivot_longer(mtry:min_n,
+    values_to = "value",
+    names_to = "parameter"
+  ) %>%
+  ggplot(aes(value, mean, color = parameter)) +
+  geom_point(alpha = 0.8, show.legend = FALSE) +
+  geom_hline(yintercept = 0.8206, color = "tomato3") +
+  facet_wrap(~parameter, scales = "free_x") +
+  labs(
+    x = NULL, y = "AUC",
+    title = "Random Forest approach is way better",
+    subtitle = "Quite some variation, but always better than glm (red line)"
+  )
+```
+
+
+
+```{r}
+top_models_rf <-
+  rf_tune %>%
+  show_best("roc_auc", n = 5)
+rf_best <-
+  rf_tune %>%
+  collect_metrics() %>%
+  arrange(mtry) %>%
+  slice(5)
+
+pred_auc_rf <-
+  rf_tune %>%
+  collect_predictions(parameters = rf_best) %>%
+  roc_curve(target, .pred_0) %>%
+  mutate(model = "Random Forest")
+```
+
+overlay both models
+
+```{r}
+bind_rows(
+  pred_auc_rf,
+  pred_auc
+) %>%
+  ggplot(
+    aes(
+      x = 1 - specificity,
+      y = sensitivity,
+      color = model
+    )
+  ) +
+  geom_line() +
+  geom_abline(
+    lty = 2, alpha = 0.5,
+    color = "gray50",
+    size = 1.2
+  ) +
+  theme_minimal() +
+  labs(title = "Overall better performance in the Random Forest model")
+```
+Use the best model to make a final prediction
+
+```{r}
+best_auc_rf <- select_best(rf_tune, "roc_auc")
+final_workflow_rf <- finalize_workflow(
+  rf_workflow,
+  best_auc_rf
+)
+final_res_rf <- last_fit(final_workflow_rf, tr_te_split)
+collect_metrics(final_res_rf)
+```
+Compare this area under the ROC curve (0.91) with the previous value 0.8206.
+
+
+Investigate feature importance.
+
+```{r variable importance rf model}
+library(vip)
+prediction_model2 <- fit(
+  final_res_rf$.workflow[[1]],
+  enriched_trainingset
+)
+prediction_model2 %>%
+  pull_workflow_fit() %>%
+  vip(geom = "point") +
+  ggtitle("Variable importance of Random Forest model", subtitle = "Top 10")
+```
+
+# Conclusion
+
+So the random forest model was better in predicting links than a GLM model. 
+But you should always wonder, what good enough is. Maybe a score of over .80 is
+enough? In that case why bother using a more complicated model that takes
+longer to run? GLM's are usually easier explained and run faster. Provided 
+that we are predicting both classes. 
+
+I started this project with the question:
+
+> Can we predict if two nodes in the graph are connected or not?
+
+And the practical task  was actually:
+
+your boss asks you to create
+a model to predict who will be friends, so you can feed those recommendations 
+back to the website and serve those to users. 
+
+You are tasked to create a model that predicts, once a day for all users, who is likely to connect to whom. 
+
+The stakes in this case are not that high. False positives (I predict a link
+but there is none) is preferable to false negatives (predict no link , but there 
+is).
+
+
+### Bringing it to production
+
+* use renv to capture the dependencies
+* set up pipeline of data from system to dataset
+* see if you can minimize the number of features necessary
+* checks on data quality and features
+* predict all no connections and check if flow from model to website works
+* predict actual data
+* keep track of metrics
+* retrain when problematic
+
+
+### State of the machine
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
+### Notes
+* used this example from Julia Silge as template <https://juliasilge.com/blog/xgboost-tune-volleyball/>
