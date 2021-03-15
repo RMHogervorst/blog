@@ -1,5 +1,5 @@
 ---
-title: some Thoughts About Dbt for Data Engineering
+title: Some Thoughts About dbt for Data Engineering
 author: Roel M. Hogervorst
 date: '2021-03-15'
 slug: some-thoughts-about-dbt-for-data-engineering
@@ -13,15 +13,15 @@ tags:
   - testing
   - git
 subtitle: ''
-share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+share_img: '/blog/2021/03/15/some-thoughts-about-dbt-for-data-engineering/lineage_graph.png'
 output:
   html_document:
     keep_md: yes
 ---
 
-
 Over the last week I have experimented with dbt (data built tool), a cmdline tool
-created by fishtown-analytics.[linkhere]. I'm hardly the first to write or talk about it (see 
+created by [Fishtown-analytics](https://docs.getdbt.com/). 
+I'm hardly the first to write or talk about it (see 
 all the references at the bottom of this piece). But I just want to record my
 thoughts at this point in time. 
 
@@ -75,9 +75,10 @@ This is not very different from
 airflow DAGs (but these graphs also contains links to the data documentation 
 which you don't have in airlflow).
 
-I love that you have **tests** for your data that you can run yourself
-![cmdline tests](cmdline_tests.png), but you can also run the tests in a 
+I love that you have **tests** for your data that you can run yourself, 
+but you can also run the tests in a 
 CI/CD job for every PR.
+![cmdline tests](cmdline_tests.png)
 
 Everything is SQL (with a bit of jinja magic) this is very understandable to 
 analysts. They live and breath SQL! 
@@ -117,13 +118,13 @@ I would like it if downstream models that have identical column names automatica
 have the same description, tags and tests. I have seen a talk where people 
 automate that process, but I guess I have to make that myself.
 
-## conclusion
+## Conclusion
 Overal I think dbt is great tool! I love the logic, the tests and the docs. 
 I think using the cloud (SAAS) version is supernice, you have scheduling, 
 docs page, and visual interface with compiled SQL all in one package.
 
 
-For first time use the setup is not trivial, and for subsquent project setups
+For first time use the setup is not trivial, and for subsequent project setups
 you need some experience too. 
 
 
