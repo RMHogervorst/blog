@@ -1,0 +1,11 @@
+{{- with .Title | default .Site.Title }}
+<meta class="p-name" content="{{ . }}" />
+{{- end }}
+{{- with .Description | default .Params.subtitle | default .Summary }}
+<meta class="p-summary" content="{{ . }}">
+{{- end }}
+{{ if not .PublishDate.IsZero -}}
+<meta class="dt-published" datetime="{{ .PublishDate.Format "2006-01-02" | safeHTML }}" >
+  {{- else if not .Date.IsZero -}}
+<meta class="dt-published" datetime="{{ .Date.Format "2006-01-02" | safeHTML }}" >
+  {{- end }}
