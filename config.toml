@@ -1,6 +1,7 @@
 theme = "beautifulhugo"
 baseURL = "https://blog.rmhogervorst.nl/"
 languageCode = "en-us"
+DefaultContentLanguage = "en"
 title = "Roel's R-tefacts"
 pygmentsCodeFences = true
 pygmentsUseClasses = false
@@ -12,10 +13,10 @@ publishDir = "public"
 
 [markup.goldmark.renderer]
 unsafe= true
-  
+
 [permalinks]
     post = "/blog/:year/:month/:day/:slug/"
-    
+
 [Params]
   subtitle = "Tips about clean R-code and reproducible work, but also fun!"
   logo = "img/avatar-icon.png"
@@ -28,6 +29,7 @@ unsafe= true
   GithubEdit = "https://github.com/RMHogervorst/blog/tree/master/content/"
   useHLJS = true
   selfHosted = false
+  wordCount = true
 
 [Author]
   name = "Roel M. Hogervorst"
@@ -42,7 +44,7 @@ unsafe= true
   stackoverflow = "users/5573955/roel-hogervorst"
   devto = "rmhogervorst"
   mastodon = "mastodon.technology/@rmhogervorst"
- 
+
 [[menu.main]]
     name = "Blog"
     url = ""
@@ -52,7 +54,7 @@ unsafe= true
     name = "About"
     url = "about/"
     weight = 2
-    
+
 [[menu.main]]
     name = "Getting updates"
     url = "subscribing"
