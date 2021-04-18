@@ -1,4 +1,5 @@
 {{ define "main" }}
+{{ $datestr := default (i18n "dateFormat") .Site.Params.dateformat | .Date.Format }}
 <div class="container" role="main">
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -6,6 +7,10 @@
         <div class="e-content">
         {{ .Content }}
         </div>
+        <hr>
+        <a class="u-url" href="{{ .Permalink }}"><div class="p-name">{{ .Title }}  </div></a>
+        <time class="dt-published" datetime="{{ .Date }}">{{ $datestr | i18n "postedOnDate"}} </time>.
+
         {{ if .Params.tags }}
           <div class="blog-tags p-category">
             {{ range .Params.tags }}
@@ -39,7 +44,7 @@
 
           {{ end }}
         {{ end }}
-      </article>
+          </article>
 
       {{ if ne .Type "page" }}
         <ul class="pager blog-pager">
@@ -60,7 +65,7 @@
       {{ if (.Params.comments) | or (and (or (not (isset .Params "comments")) (eq .Params.comments nil)) (and .Site.Params.comments (ne .Type "page"))) }}
         {{ if .Site.DisqusShortname }}
           {{ if .Site.Params.delayDisqus }}
-          <div class="disqus-comments">                  
+          <div class="disqus-comments">
             <button id="show-comments" class="btn btn-default" type="button">{{ i18n "show" }} <span class="disqus-comment-count" data-disqus-url="{{ trim .Permalink "/" }}">{{ i18n "comments" }}</span></button>
             <div id="disqus_thread"></div>
 
