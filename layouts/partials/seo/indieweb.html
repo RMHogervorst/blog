@@ -1,0 +1,3 @@
+{{- with .Description | default .Params.subtitle | default .Summary }}
+<meta class="p-summary" content="{{ . }}">
+{{- end }}
