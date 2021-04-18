@@ -61,7 +61,7 @@
               {{ if eq .Type "list" }}
                 <h1>{{ if .Data.Singular }}#{{ end }}{{ .Title }}</h1>
               {{ else }}
-                <a class="u-url" href="{{ .Permalink }}"> <h1 class="p-name">{{ with $title }}{{.}}{{ else }}<br/>{{ end }}</h1></a>
+               <h1>{{ with $title }}{{.}}{{ else }}<br/>{{ end }}</h1>
               {{ end }}
               {{ if ne .Type "post" }}
                 <hr class="small">
