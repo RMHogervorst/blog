@@ -1,0 +1,43 @@
+---
+title: Import Ethics as E
+author: Roel M. Hogervorst
+date: '2021-06-29'
+slug: import-ethics-as-e
+categories:
+  - blog
+tags:
+  - fairness
+  - antipattern
+output:
+  html_document:
+    keep_md: yes
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<pre class="python"><code>import pandas as pd
+from sklearn import linear_model
+import Ethics as E</code></pre>
+<p>Ethics and fairness do not come after you’ve imported scikitlearn, but it is often talked about in that way.</p>
+<p>I mean it’s good that we’re thinking about ethics when we start using more advanced models, but I don’t agree with the point in time we start talking about it! We should think about the consequences of our automated decision makers way earlier!</p>
+<blockquote>
+<p>Honestly there can even be unethical database joins!</p>
+</blockquote>
+<p>For example you can enrich your data with information that people have not given consent for, or you can draw conclusions about people based on the neighborhood they live in. And that is even before we run models on flawed data.</p>
+<div id="scary-words-and-automated-decisions" class="section level3">
+<h3>Scary words and automated decisions</h3>
+<p>The word ‘Ethics’ makes people stand back and think, but it also sounds complicated and scary.
+I sometimes feel using the word ‘ethical’ evokes the wrong ideas. Unfortunately that sometimes means people give up and don’t even bother, thinking its an academic subject and nothing to do with ‘real’ work. And so scary words, stop you from doing the right thing!</p>
+<p>Related, the use of words such as ‘machine learning’ (and god forbid artificial intelligence) evoke visions of sentient robots and almost real fake humans. And that is a very cool vision! But it is fiction and makes us focus on the wrong things. It makes us think we only have to consider consequences downstream when we use a ‘complicated’ model. But that is wrong.</p>
+<p>There are enough automated decision machines (ADM) that create pain and suffering, and those ADM can be just excel spread sheets or simple rules. There is no need to bring in ideas of semi self aware robots, when simple if-else rules mess up the lives of ordinary people already.</p>
+</div>
+<div id="all-automated-decision-rules-have-consequences" class="section level3">
+<h3>All automated decision rules have consequences</h3>
+<p>For instance “Should we manually check this online transaction?”, that is a decision left for automated decision machines. That decision can be based on a neural network or a set of business rules. There are so many transactions, and you have only so much staff, so a decision needs to be made somewhere. I’m not blaming people for that automated decision. What I DO find odd is that in the case of business rules no mention of ethics is made, while in the case of a linear regression it suddenly seems an important thing to talk about. Again, I think it is important to reason about, but we should do it for ALL of the automated decision makers.</p>
+</div>
+<div id="think-about-the-consequences" class="section level3">
+<h3>think about the consequences</h3>
+<p>I think that what we want is transparent decision making, fairness, and correctness. So in stead of calling the magical Ethics word, and getting stranded in talks about ethics; talk to your stakeholders, bosses and peers about the consequences of your automated decision machine, whether it is a set of rules, or a complicated machine learning model. Talk about how you would know if your decision was wrong (correctness), detecting edgecases (fairness), explaining how a decision was made (transparancy) and how to check if all your users are treated in the same way (fairness); for instance what are the properties of a group that scores consistently low?</p>
+<p>That way we are behaving ethically, in stead of only talking about ethics.</p>
+</div>
