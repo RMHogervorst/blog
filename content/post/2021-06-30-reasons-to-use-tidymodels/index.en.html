@@ -1,0 +1,52 @@
+---
+title: Reasons to Use Tidymodels
+author: Roel M. Hogervorst
+date: '2021-06-30'
+slug: reasons-to-use-tidymodels
+categories:
+  - blog
+  - R
+tags:
+  - tidymodels
+  - intermediate
+  - parsnip
+  - tune
+  - recipes
+share_img: '/post/2021/06/30/reasons-to-use-tidymodels/nina-mercado-shQuPtpXfoM-unsplash.jpg'
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p>I was listening to episode 135 of <a href="https://nssdeviations.com/135-moderate-confidence">‘Not so standard deviations’ - Moderate confidence</a>
+The hosts, <a href="https://twitter.com/hspter">Hilary</a> and <a href="https://twitter.com/rdpeng">Roger</a>
+talked about when to use tidymodels packages and when not.
+Here are my 2 cents for when I think it makes sense to use these packages and
+when not:</p>
+<div id="when-not" class="section level3">
+<h3>When not</h3>
+<ul>
+<li><strong>you are always using GLM models</strong>. (they are very flexible!) it makes no sense to me to go for the extra {parsnip} layer if you are always using the same models. You could still consider using recipes to feature engineer.</li>
+<li>If you are <strong>familiar with the kind of data</strong> and <strong>what models will work on that data</strong>. Basically you are an expert on this field and have worked on it for many years. There is no need to experiment.</li>
+</ul>
+</div>
+<div id="when-to-use-it" class="section level3">
+<h3>When to use it</h3>
+<ul>
+<li><p><strong>To make the steps very clear</strong>, when you work in a team, or when you have to come back to your code in a month, I really appreciate the clear verbs and consistent steps. I also think this readability is great for newcomers to R (maybe from another language)</p></li>
+<li><p><strong>experimenting with models to get a feel for the problem and solution space</strong>, I don’t know yet what model will work, so I try examples of different classes:decision trees, linear models, knn. To get a feel for the problem and solutions. (I’m sorry Roger, this does feel like kaggle)</p></li>
+<li><p><strong>modular approach to improving your machine learning pipelines</strong>, You often end up with one model that works well and develop feature engineering ({recipes}) next, tuning ({tune}) later. Trying out new models is so much better when the syntax/ arguments is clear!</p></li>
+<li><p><strong>turning exploration into production code</strong>. Ideally you cut out your working model code and deploy only that with some added logging to production (whatever that means to you). Here is where the plugability really shines. Maybe you don’t need the feature engineering? don’t use the recipes part, maybe your model hyper parameters fall within a certain range? make a small interval around that range. (with warnings when the hyperparameters fall outside of the known range?)</p></li>
+</ul>
+<p>Right now, I’m a consultant, that means solving different problems with different data. When the tools remain the same but allow me to be very flexible I’m very happy! I feel the tools in tidymodels are like a car mechanic’s toolbox. For certain problems you grab a special tool, for others the basic ones, but they all work together. Most car mechanic tools work with the same pneumatic system and you can just swap out the tool while the framework remains the same.</p>
+<div class="figure">
+<img src="nina-mercado-shQuPtpXfoM-unsplash.jpg" alt="" />
+<p class="caption">image of mechanic tools</p>
+</div>
+</div>
+<div id="notes" class="section level3">
+<h3>Notes</h3>
+<p>Question asked by <a href="https://twitter.com/hspter"><code>@hspter</code></a> and <a href="https://twitter.com/rdpeng"><code>@rdpeng</code></a>
+In episode <a href="https://twitter.com/NSSDeviations/status/1407958363795755011">135 - moderate confidence</a>.</p>
+<p><a href="https://unsplash.com/photos/shQuPtpXfoM">Image of toolbox</a> from unsplash by <a href="https://unsplash.com/@nina_mercado">Nina Mercado</a></p>
+</div>
