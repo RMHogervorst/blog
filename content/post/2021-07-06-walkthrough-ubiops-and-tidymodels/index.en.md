@@ -85,7 +85,8 @@ The init function doesn't do anything here but the file starts with imports
 that you need. imported are pandas, numpy and from sklearn import the StandardScaler
 
 The request function:
-```{python, eval=FALSE}
+
+```python
 class Deployment:
   # init function
     def request(self, data):
@@ -124,7 +125,8 @@ at the top of the file. But in this case I set them up in the init(). I load {re
 {readr} adds some dependencies, but I feel they largely overlap with {recipes} and so it's a nice
 addition because it is faster and more consistent then standard read.csv().
 
-```{r, eval=FALSE}
+
+```r
 request <- function(input_data, base_directory, context) {
   diabetes_data <- read_csv(input_data[['data']])
   diabetes_recipe <- 
@@ -158,7 +160,6 @@ request <- function(input_data, base_directory, context) {
     "target_data"= 'y.csv'
   )
 }
-
 ```
 
 ### Pre-process differences and similarities
@@ -183,7 +184,8 @@ This component has the following steps:
 ### train knn model python
 The python version initializes with pandas, numpy, and imports train_test_split, KNeighborsClassifier and classification_report. 
 
-```{python, eval=FALSE}
+
+```python
 class Deployment:
   # init function
     def request(self, data):        
@@ -208,7 +210,8 @@ class Deployment:
 ### train knn model R
 library calls: {readr},{kknn},{magrittr},{rsample},{parsnip},{yardstick}
 
-```{r, eval=FALSE}
+
+```r
 request <- function(input_data, base_directory, context){
  
   X <- read_csv(input_data[["cleaned_data"]])
@@ -261,7 +264,8 @@ generic set.seed. There is not a classification_report function in the packages 
 ### predict python
 The init function loads the model from disk. 
 
-```{python, eval=FALSE}
+
+```python
 class Deployment:
   # init function
     def request(self, data):
@@ -273,14 +277,14 @@ class Deployment:
         return {
             "prediction": 'prediction.csv', "predicted_diabetes_instances": diabetes_instances
         }
-
 ```
 
 
 ### predict R
 The init function loads the model from disk. 
 
-```{r, eval=FALSE}
+
+```r
 request <- function(input_data, base_directory, context){
   input_data = read_csv(input_data[['data']])
   
@@ -343,7 +347,3 @@ turning it into a deployment.zip.
 Later, I think a small addin for rstudio that talks to the API would be awesome!
 
 I haven't used the API here, I developed locally and defined everything through the webinterface. 
-
-
-### references
-* image by [Alex Loup](https://unsplash.com/@alexloup) from [unsplash](https://unsplash.com/photos/On2VseHUDXw)
