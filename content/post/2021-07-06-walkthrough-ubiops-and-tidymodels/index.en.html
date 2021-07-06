@@ -1,0 +1,330 @@
+---
+title: Walkthrough UbiOps and Tidymodels
+author: Roel M. Hogervorst
+date: '2021-07-06'
+slug: walkthrough-ubiops-and-tidymodels
+categories:
+  - blog
+  - R
+tags:
+  - UbiOps
+  - tidymodels
+  - parsnip
+  - python
+subtitle: 'From python cookbook to R {recipes}'
+share_img: '/post/2021/07/06/walkthrough-ubiops-and-tidymodels/alex-loup-On2VseHUDXw-unsplash.jpg'
+output:
+  html_document:
+    keep_md: yes
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p>In this walkthrough I modified a tutorial from the UbiOps cookbook <a href="https://ubiops.com/docs/ubiops_cookbook/scikit-deployment/index.html">‘Python Scikit learn and UbiOps’</a>,
+but I replaced everything python with R. So in stead of scikitlearn I’m using <a href="https://CRAN.R-project.org/package=tidymodels">{tidymodels}</a>, and where python uses a requirement.txt, I will use <a href="https://CRAN.R-project.org/package=renv">{renv}</a>.
+So in a way I’m going from python cookbook to {recipes} in R!
+<img src="alex-loup-On2VseHUDXw-unsplash.jpg" alt="Picture of cake" /></p>
+<div id="components-of-the-pipeline" class="section level3">
+<h3>Components of the pipeline</h3>
+<p>The original cookbook (and my rewrite too) has three components:</p>
+<ul>
+<li>a preprocess component</li>
+<li>a training model component</li>
+<li>a predict component</li>
+</ul>
+<p>You can combine those parts into</p>
+<ul>
+<li>a preprocess-training pipeline with a trained model as result</li>
+<li>a preprocess-predict pipeline to predict new result</li>
+</ul>
+<p>The cool thing about UbiOps is that we don’t care what language something is
+in, we could do preprocessing in Python and predictions in R for example.
+And we could use version “0.1.6” of <a href="https://CRAN.R-project.org/package=parsnip">{parsnip}</a> in one component and version “0.1.3” of that same package in another component.
+As long as you keep the interface the same (“output”:integer, “score”: double) or something.
+we can just pass information along.</p>
+<p>This was a lot of fun, but if you use this as your example for R projects, there is a catch, in keeping the R version as similar to python as possible I had to take some steps you might not take that are related to python or sklearn:</p>
+<p>We pull apart the trainingset by cutting of the target values (y) from the predictor variables (X),
+that is not something we do with tidymodels, so to keep the tutorial equivalent, I splitted the
+values, and in the next component, combined them again.
+Similarly inside sklearn there is a function split_train_test or something that
+takes in an X and y dataset and returns train_X, test_x, train_y and test_y.</p>
+<p>with rsample you leave the dataset intact, create a split object (that only contains
+the indices for test and train) and let the package handle the particulars.<br />
+Returning multiple objects is a cool feature in python and there are packages
+in R that do it too, but in general I don’t miss it.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>In these code examples I have removed all print statements and comments,
+for the full code go to <a href="https://gitlab.com/rmhogervorst/ubiops_tidymodel_walkthrough">gitlab</a> or <a href="https://github.com/RMHogervorst/ubiops_tidymodels_walkthrough">github</a>.
+Both python and R examples have an init() function that runs when the container is first started and
+a request() function that runs when we send an actual request to the service.
+In these examples I only show the request part and not the init because the init is mostly
+empty for the python code and contain the library statements for the R code.</p>
+<p>Let’s dive in.
+For every component I show the python code first and my R version after.</p>
+<div id="pre-process" class="section level2">
+<h2>pre-process</h2>
+<p>The pre-process component does feature engineering on the dataset, which I don’t think is necessary for a KNN model, but that doesn’t matter for the example.</p>
+<ul>
+<li>read in data</li>
+<li>replace 0s in Glucose, Bloodpressure, SkinThickness, Insulin and BMI columns with NA</li>
+<li>impute the NAs with mean for Glucose and Bloodpressure columns</li>
+<li>impute the NAs with median for ScinThickness, Insulin and BMI columns</li>
+<li>when ‘training’ input is set to TRUE: remove the Outcome column and save dataset as X and return the Outcome column as a seperate dataset y. if ‘training’ is FALSE return the entire set as X and a single value 1 as y.</li>
+<li>normalize/standardize the dataset so every column has mean=0 and sd=1.</li>
+<li>create csv files for X and y</li>
+<li>return resulting files</li>
+</ul>
+<div id="pre-process---python" class="section level3">
+<h3>Pre-process - python</h3>
+<p>The init function doesn’t do anything here but the file starts with imports
+that you need. imported are pandas, numpy and from sklearn import the StandardScaler</p>
+<p>The request function:</p>
+<pre class="python"><code>class Deployment:
+  # init function
+    def request(self, data):
+        diabetes_data = pd.read_csv(data[&quot;data&quot;])
+        diabetes_data[[&#39;Glucose&#39;,&#39;BloodPressure&#39;,&#39;SkinThickness&#39;,&#39;Insulin&#39;,&#39;BMI&#39;]] = diabetes_data[[&#39;Glucose&#39;,&#39;BloodPressure&#39;,&#39;SkinThickness&#39;,&#39;Insulin&#39;,&#39;BMI&#39;]].replace(0,np.NaN)
+        diabetes_data[&#39;Glucose&#39;].fillna(diabetes_data[&#39;Glucose&#39;].mean(), inplace = True)
+        diabetes_data[&#39;BloodPressure&#39;].fillna(diabetes_data[&#39;BloodPressure&#39;].mean(), inplace = True)
+        diabetes_data[&#39;SkinThickness&#39;].fillna(diabetes_data[&#39;SkinThickness&#39;].median(), inplace = True)
+        diabetes_data[&#39;Insulin&#39;].fillna(diabetes_data[&#39;Insulin&#39;].median(), inplace = True)
+        diabetes_data[&#39;BMI&#39;].fillna(diabetes_data[&#39;BMI&#39;].median(), inplace = True)
+
+        if data[&quot;training&quot;] == True:
+            X = diabetes_data.drop([&quot;Outcome&quot;], axis = 1) 
+            y = diabetes_data.Outcome
+        else:
+            X = diabetes_data
+            y = pd.DataFrame([1])
+            
+        sc_X = StandardScaler()
+        X =  pd.DataFrame(sc_X.fit_transform(X,),
+                columns=[&#39;Pregnancies&#39;, &#39;Glucose&#39;, &#39;BloodPressure&#39;, &#39;SkinThickness&#39;, &#39;Insulin&#39;,
+               &#39;BMI&#39;, &#39;DiabetesPedigreeFunction&#39;, &#39;Age&#39;])
+        
+        X.to_csv(&#39;X.csv&#39;, index = False)
+        y.to_csv(&#39;y.csv&#39;, index = False, header = False)
+
+        return {
+            &quot;cleaned_data&quot;: &#39;X.csv&#39;, &quot;target_data&quot;: &#39;y.csv&#39;
+        }</code></pre>
+</div>
+<div id="pre-process---r" class="section level3">
+<h3>Pre-process - r</h3>
+<p>I could have done the same thing as within python, setting the library() calls
+at the top of the file. But in this case I set them up in the init(). I load {readr} and {recipes}
+{readr} adds some dependencies, but I feel they largely overlap with {recipes} and so it’s a nice
+addition because it is faster and more consistent then standard read.csv().</p>
+<pre class="r"><code>request &lt;- function(input_data, base_directory, context) {
+  diabetes_data &lt;- read_csv(input_data[[&#39;data&#39;]])
+  diabetes_recipe &lt;- 
+    recipe(diabetes_data, Outcome~.) %&gt;%  
+    step_mutate(
+      Glucose = ifelse(Glucose ==0 , NA_real_, Glucose), 
+      BloodPressure = ifelse(BloodPressure ==0 , NA_real_, BloodPressure),
+      SkinThickness = ifelse(SkinThickness ==0 , NA_real_, SkinThickness),
+      Insulin = ifelse(Insulin ==0 , NA_real_, Insulin),
+      BMI = ifelse(BMI ==0 , NA_real_, BMI)
+    ) %&gt;% 
+    step_impute_mean(Glucose, BloodPressure) %&gt;% 
+    step_impute_median(SkinThickness, Insulin, BMI) %&gt;% 
+    step_normalize(all_predictors()) %&gt;% 
+    prep()  
+
+  diabetes_preprocessed &lt;- 
+    diabetes_recipe %&gt;% 
+    bake(diabetes_data) 
+  if(input_data[[&quot;training&quot;]]){
+    Y &lt;- diabetes_preprocessed %&gt;% select(Outcome)
+    X &lt;- diabetes_preprocessed %&gt;% select(-Outcome)
+  }else{
+    X &lt;- diabetes_data
+    Y &lt;- tibble(1)
+  }
+  write_csv(X, file = &#39;x.csv&#39;)
+  write_csv(Y, file = &quot;y.csv&quot;, col_names = FALSE)
+  list(
+    &quot;cleaned_data&quot;= &#39;x.csv&#39;, 
+    &quot;target_data&quot;= &#39;y.csv&#39;
+  )
+}</code></pre>
+</div>
+<div id="pre-process-differences-and-similarities" class="section level3">
+<h3>Pre-process differences and similarities</h3>
+<p>I chose to move the selection based on ‘training’==TRUE to the end and so
+when you call training==FALSE in the python version, the Outcome column is also
+standardized while in the R version it will never be standardized.
+In the R version I first only create the recipe and run it in the next step,
+you could chain the <code>bake()</code> step directly to the previous steps, so it behaves
+like the <code>fit_transform()</code> method from sklearn.</p>
+</div>
+</div>
+<div id="train-knn-model" class="section level2">
+<h2>train knn model</h2>
+<p>This component has the following steps:</p>
+<ul>
+<li>Read in the X (called cleaned_data) and y (called target_data),</li>
+<li>split data into training (60%) and test (40%) set.</li>
+<li>fit a 7 nearest neighbors model on the trainingset</li>
+<li>score the test set on accuracy</li>
+<li>create an overview of performance which includes precision, recall, and f1 measure.</li>
+<li>return the trained model and accuracy</li>
+</ul>
+<div id="train-knn-model-python" class="section level3">
+<h3>train knn model python</h3>
+<p>The python version initializes with pandas, numpy, and imports train_test_split, KNeighborsClassifier and classification_report.</p>
+<pre class="python"><code>class Deployment:
+  # init function
+    def request(self, data):        
+        X = pd.read_csv(data[&quot;cleaned_data&quot;])
+        y = pd.read_csv(data[&quot;target_data&quot;], header = None)
+        X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.4,random_state=42, stratify=y)
+
+        knn = KNeighborsClassifier(n_neighbors=7) 
+        knn.fit(X_train,y_train)
+        score = knn.score(X_test,y_test)
+        y_pred = knn.predict(X_test)
+        print(classification_report(y_test,y_pred))
+        
+        with open(&#39;knn.joblib&#39;, &#39;wb&#39;) as f:
+           dump(knn, &#39;knn.joblib&#39;)
+        return {
+            &quot;trained_model&quot;: &#39;knn.joblib&#39;, &quot;model_score&quot;: score
+        }</code></pre>
+</div>
+<div id="train-knn-model-r" class="section level3">
+<h3>train knn model R</h3>
+<p>library calls: {readr},{kknn},{magrittr},{rsample},{parsnip},{yardstick}</p>
+<pre class="r"><code>request &lt;- function(input_data, base_directory, context){
+ 
+  X &lt;- read_csv(input_data[[&quot;cleaned_data&quot;]])
+  y &lt;- read_csv(input_data[[&quot;target_data&quot;]],col_names = &quot;Outcome&quot;)
+
+  input_dataset &lt;- X %&gt;% 
+    dplyr::bind_cols(y)
+  input_dataset$Outcome &lt;- as.factor(input_dataset$Outcome)
+  set.seed(42)
+  split_object &lt;- initial_split(input_dataset, prop = 0.6,strata = Outcome)
+  library(&quot;kknn&quot;)  # bug? it works without this call on my machine, but not on ubiops.
+  modelspec &lt;- 
+    nearest_neighbor(mode = &quot;classification&quot;,neighbors = 7) %&gt;% 
+    set_engine(&quot;kknn&quot;)
+
+  trained_model &lt;- modelspec %&gt;% fit(Outcome~., data=training(split_object))
+
+  test_results &lt;- 
+    testing(split_object) %&gt;% 
+    dplyr::bind_cols(
+      trained_model %&gt;% predict(testing(split_object))
+      )
+
+  acc &lt;- test_results %&gt;% accuracy(truth=Outcome, estimate = .pred_class) %&gt;% dplyr::pull(.estimate)
+
+  classification_report &lt;- metric_set(precision, recall, f_meas)
+  class_results &lt;- 
+    test_results %&gt;% 
+    classification_report(truth=Outcome, estimate = .pred_class)
+  print(glue::glue_data(class_results,&quot;{.metric}: {round(.estimate,4)}&quot;))
+  modelname &lt;- &#39;knnmodel.RDS&#39;
+  write_rds(trained_model, modelname)
+  
+  list(trained_model = modelname, model_score=acc)  
+}</code></pre>
+</div>
+<div id="training-differences-and-similarities" class="section level3">
+<h3>Training differences and similarities</h3>
+<p>In R I don’t need to supply the seed to the split function because it picks up the
+generic set.seed. There is not a classification_report function in the packages I use, but looking at the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html">sklearn documentation this classification_report</a> contains the precision, recall and f1-measure. So I used the metric_set function from yardstick to create a similar thing.</p>
+</div>
+</div>
+<div id="predict" class="section level2">
+<h2>predict</h2>
+<ul>
+<li>read the data in</li>
+<li>use the trained model to predict on the new data</li>
+<li>count the number of cases (diabetes = 1)</li>
+<li>create a csv of predictions including an index</li>
+</ul>
+<div id="predict-python" class="section level3">
+<h3>predict python</h3>
+<p>The init function loads the model from disk.</p>
+<pre class="python"><code>class Deployment:
+  # init function
+    def request(self, data):
+        input_data = pd.read_csv(data[&#39;data&#39;])
+        prediction = self.model.predict(input_data)
+        diabetes_instances = sum(prediction)
+        pd.DataFrame(prediction).to_csv(&#39;prediction.csv&#39;, header = [&#39;diabetes_prediction&#39;], index_label= &#39;index&#39;)
+        
+        return {
+            &quot;prediction&quot;: &#39;prediction.csv&#39;, &quot;predicted_diabetes_instances&quot;: diabetes_instances
+        }</code></pre>
+</div>
+<div id="predict-r" class="section level3">
+<h3>predict R</h3>
+<p>The init function loads the model from disk.</p>
+<pre class="r"><code>request &lt;- function(input_data, base_directory, context){
+  input_data = read_csv(input_data[[&#39;data&#39;]])
+  
+  predictions &lt;- 
+    model %&gt;% 
+    predict(input_data)
+  diabetes_instances = sum(predictions$.pred_class == 1)
+  predictions %&gt;% 
+    mutate(index=row_number()) %&gt;% 
+    select(index, diabetes_prediction = .pred_class) %&gt;% 
+    write_csv(file=&quot;prediction.csv&quot;)
+  
+  list(prediction=&quot;prediction.csv&quot;,predicted_diabetes_instances=diabetes_instances)
+}</code></pre>
+</div>
+<div id="predict-differences-and-similarities" class="section level3">
+<h3>predict differences and similarities</h3>
+<p>The index doesn’t make sense to me, but i added it anyways.</p>
+</div>
+</div>
+<div id="connecting-the-pipeline" class="section level2">
+<h2>Connecting the pipeline</h2>
+<p>Training pipeline inputs</p>
+<ul>
+<li>data: blob(file)</li>
+<li>training: boolean</li>
+</ul>
+<p>Training pipeline outputs:
+* trained_model: blob(file)
+* model_score: double (accuracy score)</p>
+<p><img src="training_pipeline.png" /></p>
+<p>Production pipeline inputs:
+* data: blob(file)
+* training: boolean</p>
+<p>production pipeline outputs:
+* prediction: blob(file)
+* predicted_diabetes_instances: integer</p>
+<p><img src="production_pipeline.png" />
+## lessons learned
+While building these three components in R, I’ve found that creating a separate rstudio project for every component makes your work really easy. The {renv} package works really well with Rstudio projects too. Finally I now created a new folder deployment and copied the relevant files to it before zipping it, so the zipfile works nicely with UbiOps.</p>
+<p>Tidymodels and sklearn have many similarities and it is relatively easy to write
+components from one language to another (though the whole point of UbiOps is that you don’t need to!). sklearn is an enormous python package that contains everything you ever could need, while the R philosophy is creating wrappers around existing packages to make sure everything works together nicely.</p>
+</div>
+<div id="improvements" class="section level2">
+<h2>Improvements</h2>
+<p>Now all we need is a way to move the trained model from the training pipeline to
+the production pipeline.</p>
+<p>I think a supersimple project starter for Rstudio could be very useful, something
+like <a href="https://rstudio.github.io/rstudio-extensions/rstudio_project_templates.html" class="uri">https://rstudio.github.io/rstudio-extensions/rstudio_project_templates.html</a>
+where you define a deployment.R file with init() and request() and a test_request.R
+file that contains basics for testing the deployment file and the basics for
+turning it into a deployment.zip.</p>
+<p>Later, I think a small addin for rstudio that talks to the API would be awesome!</p>
+<p>I haven’t used the API here, I developed locally and defined everything through the webinterface.</p>
+<div id="references" class="section level3">
+<h3>references</h3>
+<ul>
+<li>image by <a href="https://unsplash.com/@alexloup">Alex Loup</a> from <a href="https://unsplash.com/photos/On2VseHUDXw">unsplash</a></li>
+</ul>
+</div>
+</div>
+</div>
