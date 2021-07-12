@@ -31,7 +31,7 @@ need:
 * some insight into what the process is doing: logging
 * notifications to the right people when something goes wrong: alerting
 
-I super enjoyed finding talks that hit those points.
+I super enjoyed finding talks that hit those points. And I will highlight a few of them.
 
 
 ### Gergely Daroczi - Using R to Empower a Precision Dosing Web Application 
@@ -50,7 +50,7 @@ I believe there is an alerting service on top of the logging service.
 
 noteworthy packages:
 
-* logger 
+* [{logger}](https://CRAN.R-project.org/package=logger) 
 
 ### Maximilian Held, Najko Jahn - Bridging the Unproductive Valley: Building Data Products Strictly Without Magic
 This package makes it easier to do the right thing in devops. Fall into the pit of
