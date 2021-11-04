@@ -1,7 +1,7 @@
 ---
 title: Distributing data science products
 author: Roel M. Hogervorst
-date: '2021-11-02'
+date: '2021-11-05'
 categories:
   - blog
   - R
@@ -11,7 +11,7 @@ tags:
   - tools
 slug: distributing-data-science-products
 subtitle: ''
-share_img: /img/rinprod/robot-916284_640.jpg
+share_img: '/img/rinprod/robot-916284_640.jpg'
 ---
 
 <!-- tags choose:
@@ -51,7 +51,7 @@ How we go from there is one of three ways
 
 * The end goal is a **rapport** (analysis done in Rmarkdown/jupyter-notebook) End result delivered in [a knowledge repo](https://github.com/airbnb/knowledge-repo/), internal website or pdf via email. _You use statistical models to gain insight, an explanation._
 * The end goal is a **prediction**. _You use a statistical model to create predictions._ Data goes in, and predictions (in the form of data) go out. 
-* The end goal is **the trained model itself**. _You deliver a trained statistical model_, to be used downstream by someone else / another team. Very popular with neural networks (because it takes forever to train them), there are pre-trained word and image recognition models. There are several ways to distribute that model, see next section.
+* The end goal is **the trained model itself**. _You deliver a trained statistical model_, to be used downstream by someone else. Very popular with neural networks (because it takes forever to train them), there are pre-trained word and image recognition models. There are several ways to distribute that model, see next section.
 
 ### Options for distributing a trained model
 1. **distribute the parameters of the model** alone. For instance: If you build a linear model, you can extract the parameters and turn those into an advanced SQL query with f.i.: [`{tidypredict}`](https://tidypredict.tidymodels.org/#supported-models) or [`{modeldb}`](https://modeldb.tidymodels.org/). I don't know any python packages that can do this, but you could program it. If your model is sufficiently simple you can even print out the decision rules for practitioners, for instance with [`{FFTrees}`](https://github.com/ndphillips/FFTrees). 
