@@ -1,0 +1,371 @@
+---
+title: Should I Move to a Database?
+author: Roel M. Hogervorst
+date: '2021-11-08'
+slug: should-i-move-to-a-database
+categories:
+  - blog
+  - R
+tags:
+  - intermediate
+  - advanced
+subtitle: ''
+share_img: '/img/big_data.gif'
+---
+
+<!-- content  -->
+Long ago at a real-life meetup (remember those?), I received a t-shirt which said: "biggeR than R". I think it was by microsoft, who develop a special version of R with automatic parallel work. Anyways, I was thinking about bigness (is that a word? it is now!) of your data. **Is your data becoming to big?**
+
+![big data stupid gif](/img/big_data.gif)
+
+Your dataset becomes so big and unwieldy that operations take a long time. How long is too long? That depends on you, I get annoyed if I don' t get feedback within 20 seconds (and I love it when a program shows me a progress bar at that point, at least I know how long it will take!), your boundary may lay at some other point. When you reach that point of annoyance or point of no longer being able to do your work. You should improve your workflow.
+
+I will show you how to do some speedups by using other R packages, in python moving from pandas to polars, or leveraging databases.
+I see some hesitancy about moving to a database for analytical work, and that is too bad. Bad for two reasons, one: it is super simple, two it will
+save you a lot of time.
+
+
+## using dplyr (example for the rest of the examples)
+Imagine we have a dataset of sales. (see github page for the dataset generation details).
+I imagine that analysts have to do some manipulation to figure out sales and plot
+the details for in rapports _(If my approach looks stupid; I never do this kind of work)._
+The end-result of this computation is a monthly table.
+See this [github page with easy to copy code examples ](https://github.com/RMHogervorst/bigger_then_memory) for all my steps.
+
+```{r}
+source("datasetgeneration.R")
+suppressPackageStartupMessages(
+library(dplyr)  
+)
+```
+
+Load in the dataset. 
+
+```{r}
+# this is where you would read in data, but I generate it.
+sales <- 
+  as_tibble(create_dataset(rows = 1E6))
+sales %>% arrange(year, month, SKU) %>% head()
+```
+This is a dataset with 1.000.000 rows of sales where every row is a single sale
+sales in this case can be 1, 2 or -1 (return).You'd like to see monthly and yearly aggregates of sales per Stock Keeping Unit (SKU).
+
+```{r}
+# create monthly aggregates
+montly_sales <- 
+  sales %>% 
+  group_by(month, year, SKU) %>% 
+  mutate(pos_sales = case_when(
+    sales_units > 0 ~ sales_units,
+    TRUE ~ 0
+  )) %>% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+    )
+# create yearly aggregates
+yearly_sales <-
+  sales %>% 
+  group_by(year, SKU) %>% 
+  mutate(pos_sales = case_when(
+    sales_units > 0 ~ sales_units,
+    TRUE ~ 0
+  )) %>% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )
+head(montly_sales)
+```
+
+The analist reports this data to the CEO in the form of an inappropriate bar graph
+(where a linegraph would be best, _but you lost all of your bargaining power when you veto'd pie-charts lost week_). This is a plot of just 2 of the products. 
+
+```{r}
+library(ggplot2)
+ggplot(yearly_sales %>% 
+         filter(SKU %in% c("112348", "109234")), 
+       aes(year, total_revenue, fill = SKU))+
+  geom_col(alpha = 2/3)+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~SKU)+
+  labs(
+    title = "Yearly revenue for two products",
+    subtitle= "Clearly no one should give me an analist job",
+    caption = "bars are inapropriate for this data, but sometimes it is just easier to give in ;)",
+    y = "yearly revenue"
+  )
+```
+
+Computation of this dataset took some time with [1E8 rows (See github page.)](https://github.com/RMHogervorst/bigger_then_memory) so I simplified it for this blogpost.
+
+# Improving speeeeeeeeeed!
+
+Let's use specialized libraries, for R, use data.table, for Python move from pandas to polars
+
+
+## Using data.table
+
+```{r}
+library(data.table)
+source("datasetgeneration.R")
+salesdt <- 
+  as.data.table(create_dataset(10E5))
+```
+
+Pure datatable syntax for the total_revenue step (I think there are better ways to do this)
+
+```{r}
+salesdt[, .(total_revenue = sum(sales_units * 
+    item_price_eur)),keyby = .(year, 
+    SKU)]
+```
+
+Using dplyr on top of data.table :
+
+```{r}
+library(dtplyr)
+salesdt <- 
+  as.data.table(create_dataset(10E5))
+salesdt %>% 
+  group_by(year, SKU) %>% 
+  mutate(pos_sales = case_when(
+    sales_units > 0 ~ sales_units,
+    TRUE ~ 0
+  )) %>% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )
+```
+
+## What if I use python locally
+The pandas library has a lot of functionality but can be a bit slow at large data sizes. 
+
+```{r, eval=FALSE}
+# write csv so pandas and polars can read it in again.
+# arrow is another way to transfer data.
+readr::write_csv(sales, "sales.csv")
+```
+
+
+```{python, eval=FALSE}
+import pandas as pd
+df = pd.read_csv("sales.csv")
+df["pos_sales"] = 0
+df['pos_sales'][df["sales_units"] >0] = df["sales_units"][df["sales_units"] >0]
+sales["euros"] = sales["sales_units"] * sales["item_price_eur"]
+sales.groupby(["month", "year", "SKU"]).agg({
+"item_price_eur":["mean"],
+"euros":["sum", "max"]
+}).reset_index()
+```
+
+```python
+    month  year      SKU item_price_eur        euros
+                                   mean          sum     max
+0     Apr  2001   109234      27.538506   5876923.23  100.00
+1     Apr  2001   112348      27.506314   8774064.08  100.00
+2     Apr  2001   112354      27.436687   2945084.13  100.00
+3     Apr  2001   123145      27.594551   2943957.39   99.98
+4     Apr  2001   123154      27.555665   2931884.68  100.00
+..    ...   ...      ...            ...          ...     ...
+427   Sep  2004   123154      27.508490   2932012.98  100.00
+428   Sep  2004   123194      27.515314   1467008.19   99.98
+429   Sep  2004   153246      27.491941   2949899.86  100.00
+430   Sep  2004  1003456      27.530511  29326323.18  100.00
+431   Sep  2004  1923456      27.483273   2927890.77  100.00
+
+[432 rows x 6 columns]
+```
+
+There is a python version of data.table (it is all C or C++? so it is quite portable).
+There is also a new pandas replacement that is called [polars](https://pola-rs.github.io/polars-book/user-guide/index.html) 
+and is superfast! 
+
+```{python, eval=FALSE}
+sales = pl.read_csv("sales.csv")
+# 44 sec read time.
+sales["euros"] = sales["sales_units"] * sales["item_price_eur"]
+sales.groupby(["month", "year", "SKU"]).agg({
+"item_price_eur":["mean"],
+"euros":["sum", "max"]
+})
+
+```
+
+```python
+shape: (432, 6)
+┌───────┬──────┬─────────┬─────────────────────┬──────────────────────┬───────────┐
+│ month ┆ year ┆ SKU     ┆ item_price_eur_mean ┆ euros_sum            ┆ euros_max │
+│ ---   ┆ ---  ┆ ---     ┆ ---                 ┆ ---                  ┆ ---       │
+│ str   ┆ i64  ┆ i64     ┆ f64                 ┆ f64                  ┆ f64       │
+╞═══════╪══════╪═════════╪═════════════════════╪══════════════════════╪═══════════╡
+│ Mar   ┆ 2002 ┆ 123154  ┆ 27.483172388110916  ┆ 2.946295520000007e6  ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Jun   ┆ 2004 ┆ 1923456 ┆ 27.491890680384582  ┆ 2.9289146600000123e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Feb   ┆ 2003 ┆ 1003456 ┆ 27.50122395426729   ┆ 2.9425509809999317e7 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Jul   ┆ 2003 ┆ 1923456 ┆ 27.515498919450454  ┆ 2.9408777300000447e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ ...   ┆ ...  ┆ ...     ┆ ...                 ┆ ...                  ┆ ...       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Sep   ┆ 2003 ┆ 109234  ┆ 27.47832064931681   ┆ 5.875787689999974e6  ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Oct   ┆ 2004 ┆ 123145  ┆ 27.51980323559326   ┆ 2.9235666999999783e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Mar   ┆ 2004 ┆ 123145  ┆ 27.532764418358507  ┆ 2.9523948500000383e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ May   ┆ 2003 ┆ 1003456 ┆ 27.496404438507874  ┆ 2.9371373149999738e7 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ May   ┆ 2004 ┆ 109234  ┆ 27.47367882104357   ┆ 5.862501800000172e6  ┆ 100       │
+└───────┴──────┴─────────┴─────────────────────┴──────────────────────┴───────────┘
+```
+
+### Combine python and R
+Alternatively you could do a part of your data work in R and parts in python and
+share the data using the Apache Arrow fileformat. You can write the results in
+Arrow in R, and read them in through python. Alternatively you can use parquet
+files, those are very optimized too.
+
+
+## Using a local database
+There comes a point where your data becomes too big, or you have to make use of
+several datasets that, together, are bigger in size than your memory. 
+
+We can make use of all the brainwork that went into database design since the
+1980s. A lot of people spent a lot of time on making sure these things work.
+
+Easiest to start with is SQLite a supersimple database that can run in memory
+or through disk and needs nothing from R except the package {RSQLite}. In fact
+SQLite is used so much in computing you have probably dozens of sqlite databases on your computer or smartphone. 
+
+```{r, eval=FALSE}
+# Example with SQLite
+# Write data set to sqlite
+source("datasetgeneration.R")
+con <- DBI::dbConnect(RSQLite::SQLite(), "sales.db")
+DBI::dbWriteTable(con, name = "sales",value = sales)
+```
+
+```{r, eval=FALSE}
+# write sql yourself 
+# it is a bit slow. 
+head(DBI::dbGetQuery(con, "SELECT SKU, year, sales_units * item_price_eur AS total_revenue FROM sales GROUP BY year, SKU"))
+```
+
+The R community has made sure that almost every database can talk to the Database
+Interface Package (DBI). Other packages can talk to DBI and that combination 
+allows R to do things you cannot do in python; you can use the same code to 
+run a query against a dataframe (or data.table) in memory, or in the database!
+
+```{r, eval=FALSE}
+library(dplyr)
+library(dbplyr)
+sales_tbl <- tbl(con, "sales") # link to table in database on disk
+sales_tbl %>% # Now dplyr talks to the database.
+  group_by(year, SKU) %>% 
+  mutate(pos_sales = case_when(
+    sales_units > 0 ~ sales_units,
+    TRUE ~ 0
+  )) %>% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )
+```
+
+Recently duckdb came out, it is also a database you can run inside your R or python process with no frills.
+So while I used to recommend SQLite, and you can still use it, I now recommend duckdb 
+for most analysis work. SQLite is amazing for transactional work, so for 
+instance many shiny apps work very nicely with sqlite.
+
+
+```{r, eval=FALSE}
+source("datasetgeneration.R")
+#(you also don't want to load all the data like this, it is usually better to load directly into duckdb, read the docs for more info)
+duck = DBI::dbConnect(duckdb::duckdb(), dbdir="duck.db", read_only=FALSE)
+DBI::dbWriteTable(duck, name = "sales",value = sales)
+```
+
+```{r, eval=FALSE}
+library(dplyr)
+# SQL queries work exactly the same as SQLite, so I'm not going to show it.
+# It's just an amazing piece of technology!
+sales_duck <- tbl(duck, "sales")
+sales_duck %>% 
+  group_by(year, SKU) %>% 
+  mutate(pos_sales = case_when(
+    sales_units > 0 ~ sales_units,
+    TRUE ~ 0
+  )) %>% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )
+DBI::dbDisconnect(duck)
+```
+
+The results are the same, but duckdb is way faster for most analytics queries (sums, aggregates etc).
+
+You can use sqlite and duckdb in memory only too! that is even faster, 
+but of course you need the data to fit into memory, 
+which was our problem from the start...
+
+**So what is the point where you should  move from data.table to sqlite/duckdb?** 
+I think when you start to have multiple datasets or when you want to make use
+of several columns in one table and other columns in another table you should consider going the local database route. 
+
+
+# Dedicated databases
+In practice you work with data from a business, that data already sits inside a
+database. Hopefully in a data warehouse that you can access. For example many 
+companies use cloud datawarehouses like Amazon Redshift, Google Bigquery, (Azure Synapse Analytics?) or Snowflake to enable analytics in the company. 
+
+Or when you work on prem there are dedicated analytics databases like monetDB or the
+newer and faster russion kid on the block Clickhouse. 
+
+DBI has connectors to all of those databases. 
+It is just a matter of writing the correct configuration and you can create a `tbl()` connection to that database table and work with it like you would locally! 
+
+What if I use python? There is no {dbplyr} equivalent in python so in practice 
+you have to write SQL to get your data (there are tools to make that easier).
+Still it is super useful to push as much computation and pre work into the database
+and let your python session do only the things that databases can not do.
+
+### Clean up
+```{r, eval=FALSE}
+file.remove('sales.db')
+file.remove("duck.db")
+```
+
+
+
+### Reproducibility
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+
+### Notes and references
+
+* [is there a DBplyr equivalent in python?](https://www.reddit.com/r/datascience/comments/fgusho/what_is_the_closest_python_equivalent_of_rs_dbplyr/)
+* [python data.table walkthrough](https://towardsdatascience.com/an-overview-of-pythons-datatable-package-5d3a97394ee9)
+* My [github page with easy to copy code examples ](https://github.com/RMHogervorst/bigger_then_memory)
