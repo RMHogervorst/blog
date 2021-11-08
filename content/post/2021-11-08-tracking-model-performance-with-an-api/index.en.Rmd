@@ -1,0 +1,60 @@
+---
+title: Tracking Model Performance with an API
+author: Roel M. Hogervorst
+date: '2021-11-08'
+slug: tracking-model-performance-with-an-api
+categories:
+  - blog
+  - R
+tags:
+  - advanced
+  - plumber
+subtitle: ''
+share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+
+---
+
+<!-- tags choose:
+beginner, intermediate or advanced
+*beginner:*
+*for, loops, brackets, vectors, data structures, subsetting, functions, qplot, ggplot2, dplyr, spps-to-r, haven, tidyr, tidyverse*
+
+*intermediate:* 
+*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
+
+*advanced:*
+*S4 classes, extensions , shiny, Object Oriented Programming, Non standard Evaluation, code performance, profiling, Rcpp, optimize-your-code*
+-->
+<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
+
+<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
+
+<!-- content-->
+I'm a maker, and so as my role becomes more and more engineer I want to engineer things. In the last few weeks I've been building a modeltracking API. While I was building it, I found out it is very much like MLflow, a python project with R binding (but needs reticulate).
+
+So I made a [modelserver](https://github.com/RMHogervorst/modelserver)
+
+Here is the high level design
+
+```
+[API in plumber] - database (sqlite by default)
+
+[haven't build a postgres part yet.]
+```
+
+I create several tables to track stuff and used one id to match it all. 
+
+For every run we need a token, that token can be used to glue together everything. 
+
+
+### Reproducibility
+<details>
+<summary> At the moment of creation (when I knitted this document ) this was the state of my machine: **click here to expand** </summary>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
+
+

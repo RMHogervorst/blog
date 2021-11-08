@@ -1,0 +1,470 @@
+---
+title: Should I Move to a Database?
+author: Roel M. Hogervorst
+date: '2021-11-08'
+slug: should-i-move-to-a-database
+categories:
+  - blog
+  - R
+tags:
+  - intermediate
+  - advanced
+subtitle: ''
+share_img: '/img/big_data.gif'
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<!-- tags choose:
+beginner, intermediate or advanced
+*beginner:*
+*for, loops, brackets, vectors, data structures, subsetting, functions, qplot, ggplot2, dplyr, spps-to-r, haven, tidyr, tidyverse*
+
+*intermediate:* 
+*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
+
+*advanced:*
+*S4 classes, extensions , shiny, Object Oriented Programming, Non standard Evaluation, code performance, profiling, Rcpp, optimize-your-code*
+-->
+<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
+<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
+<!-- useful settings for rmarkdown-->
+<!-- content  -->
+<p>Long ago at a real-life meetup (remember those?), I received a t-shirt which said: “biggeR than R”. I think it was by microsoft, who develop a special version of R with automatic parallel work. Anyways, I was thinking about bigness (is that a word? it is now!) of your data. <strong>Is your data becoming to big?</strong></p>
+<div class="figure">
+<img src="/img/big_data.gif" alt="" />
+<p class="caption">big data stupid gif</p>
+</div>
+<p>Your dataset becomes so big and unwieldy that operations take a long time. How long is too long? That depends on you, I get annoyed if I don’ t get feedback within 20 seconds (and I love it when a program shows me a progress bar at that point, at least I know how long it will take!), your boundary may lay at some other point. When you reach that point of annoyance or point of no longer being able to do your work. You should improve your workflow.</p>
+<p>I will show you how to do some speedups by using other R packages, in python moving from pandas to polars, or leveraging databases.
+I see some hesitancy about moving to a database for analytical work, and that is too bad. Bad for two reasons, one: it is super simple, two it will
+save you a lot of time.</p>
+<div id="using-dplyr-example-for-the-rest-of-the-examples" class="section level2">
+<h2>using dplyr (example for the rest of the examples)</h2>
+<p>Imagine we have a dataset of sales. (see github page for the dataset generation details).
+I imagine that analysts have to do some manipulation to figure out sales and plot
+the details for in rapports <em>(If my approach looks stupid; I never do this kind of work).</em>
+The end-result of this computation is a monthly table.</p>
+<pre class="r"><code>source(&quot;datasetgeneration.R&quot;)
+suppressPackageStartupMessages(
+library(dplyr)  
+)</code></pre>
+<p>Load in the dataset.</p>
+<pre class="r"><code># this is where you would read in data, but I generate it.
+sales &lt;- 
+  as_tibble(create_dataset(rows = 1E6))
+sales %&gt;% arrange(year, month, SKU) %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month  year sales_units SKU     item_price_eur
+##   &lt;chr&gt; &lt;int&gt;       &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;
+## 1 Apr    2001           1 1003456          49.9 
+## 2 Apr    2001           1 1003456          43.6 
+## 3 Apr    2001           1 1003456           9.04
+## 4 Apr    2001           1 1003456          37.5 
+## 5 Apr    2001           1 1003456          22.1 
+## 6 Apr    2001           1 1003456          28.0</code></pre>
+<p>This is a dataset with 1.000.000 rows of sales where every row is a single sale
+sales in this case can be 1, 2 or -1 (return).You’d like to see monthly and yearly aggregates of sales per Stock Keeping Unit (SKU).</p>
+<pre class="r"><code># create monthly aggregates
+montly_sales &lt;- 
+  sales %&gt;% 
+  group_by(month, year, SKU) %&gt;% 
+  mutate(pos_sales = case_when(
+    sales_units &gt; 0 ~ sales_units,
+    TRUE ~ 0
+  )) %&gt;% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+    )</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;month&#39;, &#39;year&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code># create yearly aggregates
+yearly_sales &lt;-
+  sales %&gt;% 
+  group_by(year, SKU) %&gt;% 
+  mutate(pos_sales = case_when(
+    sales_units &gt; 0 ~ sales_units,
+    TRUE ~ 0
+  )) %&gt;% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;year&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code>head(montly_sales)</code></pre>
+<pre><code>## # A tibble: 6 × 7
+## # Groups:   month, year [1]
+##   month  year SKU     total_revenue max_order_price avg_price_SKU items_sold
+##   &lt;chr&gt; &lt;int&gt; &lt;chr&gt;           &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;      &lt;int&gt;
+## 1 Apr    2001 1003456       291261.           100.           27.6      10083
+## 2 Apr    2001 109234         59375.            99.8          27.5       2053
+## 3 Apr    2001 112348         87847             99.8          27.7       3053
+## 4 Apr    2001 112354         30644.            99.5          27.4       1081
+## 5 Apr    2001 123145         29485.            99.7          27.4        993
+## 6 Apr    2001 123154         28366.            99.9          27.4       1005</code></pre>
+<p>The analist reports this data to the CEO in the form of an inappropriate bar graph
+(where a linegraph would be best, <em>but you lost all of your bargaining power when you veto’d pie-charts lost week</em>). This is a plot of just 2 of the products.</p>
+<pre class="r"><code>library(ggplot2)
+ggplot(yearly_sales %&gt;% 
+         filter(SKU %in% c(&quot;112348&quot;, &quot;109234&quot;)), 
+       aes(year, total_revenue, fill = SKU))+
+  geom_col(alpha = 2/3)+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~SKU)+
+  labs(
+    title = &quot;Yearly revenue for two products&quot;,
+    subtitle= &quot;Clearly no one should give me an analist job&quot;,
+    caption = &quot;bars are inapropriate for this data, but sometimes it is just easier to give in ;)&quot;,
+    y = &quot;yearly revenue&quot;
+  )</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Computation of this dataset took some time with <a href="https://github.com/RMHogervorst/bigger_then_memory">1E8 rows (See github page.)</a> so I simplified it for this blogpost.</p>
+</div>
+<div id="improving-speeeeeeeeeed" class="section level1">
+<h1>Improving speeeeeeeeeed!</h1>
+<p>Let’s use specialized libraries, for R, use data.table, for Python move from pandas to polars</p>
+<div id="using-data.table" class="section level2">
+<h2>Using data.table</h2>
+<pre class="r"><code>library(data.table)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;data.table&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     between, first, last</code></pre>
+<pre class="r"><code>source(&quot;datasetgeneration.R&quot;)
+salesdt &lt;- 
+  as.data.table(create_dataset(10E5))</code></pre>
+<p>Pure datatable syntax for the total_revenue step (I think there are better ways to do this)</p>
+<pre class="r"><code>salesdt[, .(total_revenue = sum(sales_units * 
+    item_price_eur)),keyby = .(year, 
+    SKU)]</code></pre>
+<pre><code>##     year     SKU total_revenue
+##  1: 2001 1003456       3506290
+##  2: 2001  109234        703168
+##  3: 2001  112348       1058960
+##  4: 2001  112354        352691
+##  5: 2001  123145        342890
+##  6: 2001  123154        350893
+##  7: 2001  123194        174627
+##  8: 2001  153246        350923
+##  9: 2001 1923456        349300
+## 10: 2002 1003456       3529040
+## 11: 2002  109234        701677
+## 12: 2002  112348       1047698
+## 13: 2002  112354        354164
+## 14: 2002  123145        348351
+## 15: 2002  123154        355113
+## 16: 2002  123194        177576
+## 17: 2002  153246        355111
+## 18: 2002 1923456        348666
+## 19: 2003 1003456       3520253
+## 20: 2003  109234        704738
+## 21: 2003  112348       1043208
+## 22: 2003  112354        355979
+## 23: 2003  123145        350588
+## 24: 2003  123154        350832
+## 25: 2003  123194        178416
+## 26: 2003  153246        356952
+## 27: 2003 1923456        346832
+## 28: 2004 1003456       3530158
+## 29: 2004  109234        701551
+## 30: 2004  112348       1053773
+## 31: 2004  112354        353585
+## 32: 2004  123145        362977
+## 33: 2004  123154        355703
+## 34: 2004  123194        175472
+## 35: 2004  153246        352139
+## 36: 2004 1923456        354396
+##     year     SKU total_revenue</code></pre>
+<p>Using dplyr on top of data.table :</p>
+<pre class="r"><code>library(dtplyr)
+salesdt &lt;- 
+  as.data.table(create_dataset(10E5))
+salesdt %&gt;% 
+  group_by(year, SKU) %&gt;% 
+  mutate(pos_sales = case_when(
+    sales_units &gt; 0 ~ sales_units,
+    TRUE ~ 0
+  )) %&gt;% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )</code></pre>
+<pre><code>## Source: local data table [36 x 6]
+## Groups: year
+## Call:   copy(`_DT1`)[, `:=`(pos_sales = fcase(sales_units &gt; 0, sales_units, 
+##     rep(TRUE, .N), 0)), by = .(year, SKU)][, .(total_revenue = sum(sales_units * 
+##     item_price_eur), max_order_price = max(pos_sales * item_price_eur), 
+##     avg_price_SKU = mean(item_price_eur), items_sold = .N), keyby = .(year, 
+##     SKU)]
+## 
+##    year SKU     total_revenue max_order_price avg_price_SKU items_sold
+##   &lt;int&gt; &lt;chr&gt;           &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;      &lt;int&gt;
+## 1  2001 1003456      3506290.           100            27.5     121462
+## 2  2001 109234        703168.           100            27.5      24402
+## 3  2001 112348       1058960.           100.           27.5      36759
+## 4  2001 112354        352691.           100.           27.4      12323
+## 5  2001 123145        342890.            99.8          27.4      11903
+## 6  2001 123154        350893.           100.           27.5      12228
+## # … with 30 more rows
+## 
+## # Use as.data.table()/as.data.frame()/as_tibble() to access results</code></pre>
+</div>
+<div id="what-if-i-use-python-locally" class="section level2">
+<h2>What if I use python locally</h2>
+<p>The pandas library has a lot of functionality but can be a bit slow at large data sizes.</p>
+<pre class="r"><code># write csv so pandas and polars can read it in again.
+# arrow is another way to transfer data.
+readr::write_csv(sales, &quot;sales.csv&quot;)</code></pre>
+<pre class="python"><code>import pandas as pd
+df = pd.read_csv(&quot;sales.csv&quot;)
+df[&quot;pos_sales&quot;] = 0
+df[&#39;pos_sales&#39;][df[&quot;sales_units&quot;] &gt;0] = df[&quot;sales_units&quot;][df[&quot;sales_units&quot;] &gt;0]
+sales[&quot;euros&quot;] = sales[&quot;sales_units&quot;] * sales[&quot;item_price_eur&quot;]
+sales.groupby([&quot;month&quot;, &quot;year&quot;, &quot;SKU&quot;]).agg({
+&quot;item_price_eur&quot;:[&quot;mean&quot;],
+&quot;euros&quot;:[&quot;sum&quot;, &quot;max&quot;]
+}).reset_index()</code></pre>
+<pre class="python"><code>    month  year      SKU item_price_eur        euros
+                                   mean          sum     max
+0     Apr  2001   109234      27.538506   5876923.23  100.00
+1     Apr  2001   112348      27.506314   8774064.08  100.00
+2     Apr  2001   112354      27.436687   2945084.13  100.00
+3     Apr  2001   123145      27.594551   2943957.39   99.98
+4     Apr  2001   123154      27.555665   2931884.68  100.00
+..    ...   ...      ...            ...          ...     ...
+427   Sep  2004   123154      27.508490   2932012.98  100.00
+428   Sep  2004   123194      27.515314   1467008.19   99.98
+429   Sep  2004   153246      27.491941   2949899.86  100.00
+430   Sep  2004  1003456      27.530511  29326323.18  100.00
+431   Sep  2004  1923456      27.483273   2927890.77  100.00
+
+[432 rows x 6 columns]</code></pre>
+<p>There is a python version of data.table (it is all C or C++? so it is quite portable).
+There is also a new pandas replacement that is called <a href="https://pola-rs.github.io/polars-book/user-guide/index.html">polars</a>
+and is superfast!</p>
+<pre class="python"><code>sales = pl.read_csv(&quot;sales.csv&quot;)
+# 44 sec read time.
+sales[&quot;euros&quot;] = sales[&quot;sales_units&quot;] * sales[&quot;item_price_eur&quot;]
+sales.groupby([&quot;month&quot;, &quot;year&quot;, &quot;SKU&quot;]).agg({
+&quot;item_price_eur&quot;:[&quot;mean&quot;],
+&quot;euros&quot;:[&quot;sum&quot;, &quot;max&quot;]
+})</code></pre>
+<pre class="python"><code>shape: (432, 6)
+┌───────┬──────┬─────────┬─────────────────────┬──────────────────────┬───────────┐
+│ month ┆ year ┆ SKU     ┆ item_price_eur_mean ┆ euros_sum            ┆ euros_max │
+│ ---   ┆ ---  ┆ ---     ┆ ---                 ┆ ---                  ┆ ---       │
+│ str   ┆ i64  ┆ i64     ┆ f64                 ┆ f64                  ┆ f64       │
+╞═══════╪══════╪═════════╪═════════════════════╪══════════════════════╪═══════════╡
+│ Mar   ┆ 2002 ┆ 123154  ┆ 27.483172388110916  ┆ 2.946295520000007e6  ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Jun   ┆ 2004 ┆ 1923456 ┆ 27.491890680384582  ┆ 2.9289146600000123e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Feb   ┆ 2003 ┆ 1003456 ┆ 27.50122395426729   ┆ 2.9425509809999317e7 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Jul   ┆ 2003 ┆ 1923456 ┆ 27.515498919450454  ┆ 2.9408777300000447e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ ...   ┆ ...  ┆ ...     ┆ ...                 ┆ ...                  ┆ ...       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Sep   ┆ 2003 ┆ 109234  ┆ 27.47832064931681   ┆ 5.875787689999974e6  ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Oct   ┆ 2004 ┆ 123145  ┆ 27.51980323559326   ┆ 2.9235666999999783e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ Mar   ┆ 2004 ┆ 123145  ┆ 27.532764418358507  ┆ 2.9523948500000383e6 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ May   ┆ 2003 ┆ 1003456 ┆ 27.496404438507874  ┆ 2.9371373149999738e7 ┆ 100       │
+├╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┤
+│ May   ┆ 2004 ┆ 109234  ┆ 27.47367882104357   ┆ 5.862501800000172e6  ┆ 100       │
+└───────┴──────┴─────────┴─────────────────────┴──────────────────────┴───────────┘</code></pre>
+<div id="combine-python-and-r" class="section level3">
+<h3>Combine python and R</h3>
+<p>Alternatively you could do a part of your data work in R and parts in python and
+share the data using the Apache Arrow fileformat. You can write the results in
+Arrow in R, and read them in through python. Alternatively you can use parquet
+files, those are very optimized too.</p>
+</div>
+</div>
+<div id="using-a-local-database" class="section level2">
+<h2>Using a local database</h2>
+<p>There comes a point where your data becomes too big, or you have to make use of
+several datasets that, together, are bigger in size than your memory.</p>
+<p>We can make use of all the brainwork that went into database design since the
+1980s. A lot of people spent a lot of time on making sure these things work.</p>
+<p>Easiest to start with is SQLite a supersimple database that can run in memory
+or through disk and needs nothing from R except the package {RSQLite}. In fact
+SQLite is used so much in computing you have probably dozens of sqlite databases on your computer or smartphone.</p>
+<pre class="r"><code># Example with SQLite
+# Write data set to sqlite
+source(&quot;datasetgeneration.R&quot;)
+con &lt;- DBI::dbConnect(RSQLite::SQLite(), &quot;sales.db&quot;)
+DBI::dbWriteTable(con, name = &quot;sales&quot;,value = sales)</code></pre>
+<pre class="r"><code># write sql yourself 
+# it is a bit slow. 
+head(DBI::dbGetQuery(con, &quot;SELECT SKU, year, sales_units * item_price_eur AS total_revenue FROM sales GROUP BY year, SKU&quot;))</code></pre>
+<p>The R community has made sure that almost every database can talk to the Database
+Interface Package (DBI). Other packages can talk to DBI and that combination
+allows R to do things you cannot do in python; you can use the same code to
+run a query against a dataframe (or data.table) in memory, or in the database!</p>
+<pre class="r"><code>library(dplyr)
+library(dbplyr)
+sales_tbl &lt;- tbl(con, &quot;sales&quot;) # link to table in database on disk
+sales_tbl %&gt;% # Now dplyr talks to the database.
+  group_by(year, SKU) %&gt;% 
+  mutate(pos_sales = case_when(
+    sales_units &gt; 0 ~ sales_units,
+    TRUE ~ 0
+  )) %&gt;% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )</code></pre>
+<p>Recently duckdb came out, it is also a database you can run inside your R or python process with no frills.
+So while I used to recommend SQLite, and you can still use it, I now recommend duckdb
+for most analysis work. SQLite is amazing for transactional work, so for
+instance many shiny apps work very nicely with sqlite.</p>
+<pre class="r"><code>source(&quot;datasetgeneration.R&quot;)
+#(you also don&#39;t want to load all the data like this, it is usually better to load directly into duckdb, read the docs for more info)
+duck = DBI::dbConnect(duckdb::duckdb(), dbdir=&quot;duck.db&quot;, read_only=FALSE)
+DBI::dbWriteTable(duck, name = &quot;sales&quot;,value = sales)</code></pre>
+<pre class="r"><code>library(dplyr)
+# SQL queries work exactly the same as SQLite, so I&#39;m not going to show it.
+# It&#39;s just an amazing piece of technology!
+sales_duck &lt;- tbl(duck, &quot;sales&quot;)
+sales_duck %&gt;% 
+  group_by(year, SKU) %&gt;% 
+  mutate(pos_sales = case_when(
+    sales_units &gt; 0 ~ sales_units,
+    TRUE ~ 0
+  )) %&gt;% 
+  summarise(
+    total_revenue = sum(sales_units * item_price_eur),
+    max_order_price = max(pos_sales * item_price_eur),
+    avg_price_SKU = mean(item_price_eur),
+    items_sold = n()
+  )
+DBI::dbDisconnect(duck)</code></pre>
+<p>The results are the same, but duckdb is way faster for most analytics queries (sums, aggregates etc).</p>
+<p>You can use sqlite and duckdb in memory only too! that is even faster,
+but of course you need the data to fit into memory,
+which was our problem from the start…</p>
+<p><strong>So what is the point where you should move from data.table to sqlite/duckdb?</strong>
+I think when you start to have multiple datasets or when you want to make use
+of several columns in one table and other columns in another table you should consider going the local database route.</p>
+</div>
+</div>
+<div id="dedicated-databases" class="section level1">
+<h1>Dedicated databases</h1>
+<p>In practice you work with data from a business, that data already sits inside a
+database. Hopefully in a data warehouse that you can access. For example many
+companies use cloud datawarehouses like Amazon Redshift, Google Bigquery, (Azure Synapse Analytics?) or Snowflake to enable analytics in the company.</p>
+<p>Or when you work on prem there are dedicated analytics databases like monetDB or the
+newer and faster russion kid on the block Clickhouse.</p>
+<p>DBI has connectors to all of those databases.
+It is just a matter of writing the correct configuration and you can create a <code>tbl()</code> connection to that database table and work with it like you would locally!</p>
+<p>What if I use python? There is no {dbplyr} equivalent in python so in practice
+you have to write SQL to get your data (there are tools to make that easier).
+Still it is super useful to push as much computation and pre work into the database
+and let your python session do only the things that databases can not do.</p>
+<div id="clean-up" class="section level3">
+<h3>Clean up</h3>
+<pre class="r"><code>file.remove(&#39;sales.db&#39;)
+file.remove(&quot;duck.db&quot;)</code></pre>
+</div>
+<div id="reproducibility" class="section level3">
+<h3>Reproducibility</h3>
+<details>
+<summary>
+At the moment of creation (when I knitted this document ) this was the state of my machine: <strong>click here to expand</strong>
+</summary>
+<pre class="r"><code>sessioninfo::session_info()</code></pre>
+<pre><code>## ─ Session info ───────────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 4.1.0 (2021-05-18)
+##  os       macOS Big Sur 10.16         
+##  system   x86_64, darwin17.0          
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  ctype    en_US.UTF-8                 
+##  tz       Europe/Amsterdam            
+##  date     2021-11-08                  
+## 
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package     * version date       lib source        
+##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 4.1.0)
+##  blogdown      1.5     2021-09-02 [1] CRAN (R 4.1.0)
+##  bookdown      0.24    2021-09-02 [1] CRAN (R 4.1.0)
+##  bslib         0.3.1   2021-10-06 [1] CRAN (R 4.1.0)
+##  cli           3.0.1   2021-07-17 [1] CRAN (R 4.1.0)
+##  colorspace    2.0-2   2021-06-24 [1] CRAN (R 4.1.0)
+##  crayon        1.4.1   2021-02-08 [1] CRAN (R 4.1.0)
+##  data.table  * 1.14.2  2021-09-27 [1] CRAN (R 4.1.0)
+##  DBI           1.1.1   2021-01-15 [1] CRAN (R 4.1.0)
+##  digest        0.6.28  2021-09-23 [1] CRAN (R 4.1.0)
+##  dplyr       * 1.0.7   2021-06-18 [1] CRAN (R 4.1.0)
+##  dtplyr      * 1.1.0   2021-02-20 [1] CRAN (R 4.1.0)
+##  ellipsis      0.3.2   2021-04-29 [1] CRAN (R 4.1.0)
+##  evaluate      0.14    2019-05-28 [1] CRAN (R 4.1.0)
+##  fansi         0.5.0   2021-05-25 [1] CRAN (R 4.1.0)
+##  farver        2.1.0   2021-02-28 [1] CRAN (R 4.1.0)
+##  fastmap       1.1.0   2021-01-25 [1] CRAN (R 4.1.0)
+##  generics      0.1.0   2020-10-31 [1] CRAN (R 4.1.0)
+##  ggplot2     * 3.3.5   2021-06-25 [1] CRAN (R 4.1.0)
+##  glue          1.4.2   2020-08-27 [1] CRAN (R 4.1.0)
+##  gtable        0.3.0   2019-03-25 [1] CRAN (R 4.1.0)
+##  highr         0.9     2021-04-16 [1] CRAN (R 4.1.0)
+##  htmltools     0.5.2   2021-08-25 [1] CRAN (R 4.1.0)
+##  jquerylib     0.1.4   2021-04-26 [1] CRAN (R 4.1.0)
+##  jsonlite      1.7.2   2020-12-09 [1] CRAN (R 4.1.0)
+##  knitr         1.36    2021-09-29 [1] CRAN (R 4.1.0)
+##  labeling      0.4.2   2020-10-20 [1] CRAN (R 4.1.0)
+##  lattice       0.20-45 2021-09-22 [1] CRAN (R 4.1.0)
+##  lifecycle     1.0.1   2021-09-24 [1] CRAN (R 4.1.0)
+##  magrittr      2.0.1   2020-11-17 [1] CRAN (R 4.1.0)
+##  Matrix        1.3-4   2021-06-01 [1] CRAN (R 4.1.0)
+##  munsell       0.5.0   2018-06-12 [1] CRAN (R 4.1.0)
+##  pillar        1.6.4   2021-10-18 [1] CRAN (R 4.1.0)
+##  pkgconfig     2.0.3   2019-09-22 [1] CRAN (R 4.1.0)
+##  png           0.1-7   2013-12-03 [1] CRAN (R 4.1.0)
+##  purrr         0.3.4   2020-04-17 [1] CRAN (R 4.1.0)
+##  R6            2.5.1   2021-08-19 [1] CRAN (R 4.1.0)
+##  Rcpp          1.0.7   2021-07-07 [1] CRAN (R 4.1.0)
+##  reticulate    1.22    2021-09-17 [1] CRAN (R 4.1.0)
+##  rlang         0.4.12  2021-10-18 [1] CRAN (R 4.1.0)
+##  rmarkdown     2.11    2021-09-14 [1] CRAN (R 4.1.0)
+##  rstudioapi    0.13    2020-11-12 [1] CRAN (R 4.1.0)
+##  sass          0.4.0   2021-05-12 [1] CRAN (R 4.1.0)
+##  scales        1.1.1   2020-05-11 [1] CRAN (R 4.1.0)
+##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 4.1.0)
+##  stringi       1.7.5   2021-10-04 [1] CRAN (R 4.1.0)
+##  stringr       1.4.0   2019-02-10 [1] CRAN (R 4.1.0)
+##  tibble        3.1.5   2021-09-30 [1] CRAN (R 4.1.0)
+##  tidyselect    1.1.1   2021-04-30 [1] CRAN (R 4.1.0)
+##  utf8          1.2.2   2021-07-24 [1] CRAN (R 4.1.0)
+##  vctrs         0.3.8   2021-04-29 [1] CRAN (R 4.1.0)
+##  withr         2.4.2   2021-04-18 [1] CRAN (R 4.1.0)
+##  xfun          0.27    2021-10-18 [1] CRAN (R 4.1.0)
+##  yaml          2.2.1   2020-02-01 [1] CRAN (R 4.1.0)
+## 
+## [1] /Library/Frameworks/R.framework/Versions/4.1/Resources/library</code></pre>
+</details>
+</div>
+<div id="notes-and-references" class="section level3">
+<h3>Notes and references</h3>
+<ul>
+<li><a href="https://www.reddit.com/r/datascience/comments/fgusho/what_is_the_closest_python_equivalent_of_rs_dbplyr/">is there a DBplyr equivalent in python?</a></li>
+<li><a href="https://towardsdatascience.com/an-overview-of-pythons-datatable-package-5d3a97394ee9">python data.table walkthrough</a></li>
+<li>My <a href="https://github.com/RMHogervorst/bigger_then_memory">github page with easy to copy code examples</a></li>
+</ul>
+</div>
+</div>
