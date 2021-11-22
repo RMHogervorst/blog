@@ -2,6 +2,7 @@
 title: Should I Move to a Database?
 author: Roel M. Hogervorst
 date: '2021-11-08'
+lastmod: '2021-11-22'
 slug: should-i-move-to-a-database
 categories:
   - blog
@@ -16,20 +17,6 @@ share_img: '/img/big_data.gif'
 <script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
 
 
-<!-- tags choose:
-beginner, intermediate or advanced
-*beginner:*
-*for, loops, brackets, vectors, data structures, subsetting, functions, qplot, ggplot2, dplyr, spps-to-r, haven, tidyr, tidyverse*
-
-*intermediate:* 
-*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
-
-*advanced:*
-*S4 classes, extensions , shiny, Object Oriented Programming, Non standard Evaluation, code performance, profiling, Rcpp, optimize-your-code*
--->
-<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
-<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
-<!-- useful settings for rmarkdown-->
 <!-- content  -->
 <p>Long ago at a real-life meetup (remember those?), I received a t-shirt which said: “biggeR than R”. I think it was by microsoft, who develop a special version of R with automatic parallel work. Anyways, I was thinking about bigness (is that a word? it is now!) of your data. <strong>Is your data becoming to big?</strong></p>
 <div class="figure">
@@ -45,7 +32,8 @@ save you a lot of time.</p>
 <p>Imagine we have a dataset of sales. (see github page for the dataset generation details).
 I imagine that analysts have to do some manipulation to figure out sales and plot
 the details for in rapports <em>(If my approach looks stupid; I never do this kind of work).</em>
-The end-result of this computation is a monthly table.</p>
+The end-result of this computation is a monthly table.
+See this <a href="https://github.com/RMHogervorst/bigger_then_memory">github page with easy to copy code examples</a> for all my steps.</p>
 <pre class="r"><code>source(&quot;datasetgeneration.R&quot;)
 suppressPackageStartupMessages(
 library(dplyr)  
@@ -224,6 +212,7 @@ salesdt %&gt;%
 <pre class="r"><code># write csv so pandas and polars can read it in again.
 # arrow is another way to transfer data.
 readr::write_csv(sales, &quot;sales.csv&quot;)</code></pre>
+<p><em>old version, see below</em></p>
 <pre class="python"><code>import pandas as pd
 df = pd.read_csv(&quot;sales.csv&quot;)
 df[&quot;pos_sales&quot;] = 0
@@ -248,10 +237,24 @@ sales.groupby([&quot;month&quot;, &quot;year&quot;, &quot;SKU&quot;]).agg({
 431   Sep  2004  1923456      27.483273   2927890.77  100.00
 
 [432 rows x 6 columns]</code></pre>
+<p><em>Newer version, suggested by Andrea Dalsano is quite faster</em></p>
+<pre class="python"><code>import pandas as pd
+sales = pd.read_csv(&quot;sales.csv&quot;)
+(sales.assign(
+    pos_sales= lambda x: x[&#39;sales_units&#39;].where(x[&#39;sales_units&#39;] &gt; 0, 0),
+    euros = lambda x : x[&quot;sales_units&quot;] * x[&quot;item_price_eur&quot;],
+    euros_sku = lambda x : x[&quot;pos_sales&quot;] * x[&quot;item_price_eur&quot;] )
+    .groupby([&quot;month&quot;, &quot;year&quot;, &quot;SKU&quot;], as_index=False)
+    .agg({
+        &quot;item_price_eur&quot;:[(&quot;avg_price_SKU&quot;,&quot;mean&quot;)],
+        &quot;euros&quot;:[(&quot;total_revenue&quot;,&quot;sum&quot;)],
+        &quot;euros_sku&quot;:[(&quot;max_price_SKU&quot;,&quot;max&quot;), (&quot;items_sold&quot;,&quot;count&quot;)]
+     }))</code></pre>
 <p>There is a python version of data.table (it is all C or C++? so it is quite portable).
 There is also a new pandas replacement that is called <a href="https://pola-rs.github.io/polars-book/user-guide/index.html">polars</a>
 and is superfast!</p>
-<pre class="python"><code>sales = pl.read_csv(&quot;sales.csv&quot;)
+<pre class="python"><code>import polars as pl
+sales = pl.read_csv(&quot;sales.csv&quot;)
 # 44 sec read time.
 sales[&quot;euros&quot;] = sales[&quot;sales_units&quot;] * sales[&quot;item_price_eur&quot;]
 sales.groupby([&quot;month&quot;, &quot;year&quot;, &quot;SKU&quot;]).agg({
@@ -289,7 +292,7 @@ sales.groupby([&quot;month&quot;, &quot;year&quot;, &quot;SKU&quot;]).agg({
 <p>Alternatively you could do a part of your data work in R and parts in python and
 share the data using the Apache Arrow fileformat. You can write the results in
 Arrow in R, and read them in through python. Alternatively you can use parquet
-files, those are very optimized too.</p>
+files, those are very optimized too. See this <a href="https://www.richpauloo.com/post/parquet/">post by Rich Pauloo</a> for amazing fast examples!</p>
 </div>
 </div>
 <div id="using-a-local-database" class="section level2">
@@ -397,7 +400,7 @@ At the moment of creation (when I knitted this document ) this was the state of 
 ##  collate  en_US.UTF-8                 
 ##  ctype    en_US.UTF-8                 
 ##  tz       Europe/Amsterdam            
-##  date     2021-11-08                  
+##  date     2021-11-22                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package     * version date       lib source        

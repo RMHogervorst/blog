@@ -2,6 +2,7 @@
 title: Should I Move to a Database?
 author: Roel M. Hogervorst
 date: '2021-11-08'
+lastmod: '2021-11-22'
 slug: should-i-move-to-a-database
 categories:
   - blog
@@ -155,7 +156,7 @@ The pandas library has a lot of functionality but can be a bit slow at large dat
 readr::write_csv(sales, "sales.csv")
 ```
 
-
+_old version, see below_
 ```{python, eval=FALSE}
 import pandas as pd
 df = pd.read_csv("sales.csv")
@@ -186,11 +187,30 @@ sales.groupby(["month", "year", "SKU"]).agg({
 [432 rows x 6 columns]
 ```
 
+_Newer version, suggested by Andrea Dalsano is quite faster_
+
+```{python, eval=FALSE}
+import pandas as pd
+sales = pd.read_csv("sales.csv")
+(sales.assign(
+    pos_sales= lambda x: x['sales_units'].where(x['sales_units'] > 0, 0),
+    euros = lambda x : x["sales_units"] * x["item_price_eur"],
+    euros_sku = lambda x : x["pos_sales"] * x["item_price_eur"] )
+    .groupby(["month", "year", "SKU"], as_index=False)
+    .agg({
+        "item_price_eur":[("avg_price_SKU","mean")],
+        "euros":[("total_revenue","sum")],
+        "euros_sku":[("max_price_SKU","max"), ("items_sold","count")]
+     }))
+```
+
+
 There is a python version of data.table (it is all C or C++? so it is quite portable).
 There is also a new pandas replacement that is called [polars](https://pola-rs.github.io/polars-book/user-guide/index.html) 
 and is superfast! 
 
 ```{python, eval=FALSE}
+import polars as pl
 sales = pl.read_csv("sales.csv")
 # 44 sec read time.
 sales["euros"] = sales["sales_units"] * sales["item_price_eur"]
@@ -234,7 +254,7 @@ shape: (432, 6)
 Alternatively you could do a part of your data work in R and parts in python and
 share the data using the Apache Arrow fileformat. You can write the results in
 Arrow in R, and read them in through python. Alternatively you can use parquet
-files, those are very optimized too.
+files, those are very optimized too. See this [post by Rich Pauloo](https://www.richpauloo.com/post/parquet/) for amazing fast examples!
 
 
 ## Using a local database
