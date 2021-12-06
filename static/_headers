@@ -8,7 +8,7 @@
   X-Clacks-Overhead: "GNU Terry Pratchett"
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin;
+  Referrer-Policy: strict-origin;
   # Feature-Policy   # don't know what to do with this one yet
   # Test @ https://report-uri.com/account/reports/csp/
   # Build @ https://report-uri.com/home/generate
@@ -17,6 +17,8 @@
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   
 # Reporting api https://docs.report-uri.com/setup/reporting-api/
-Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://blogrmhogervorst.report-uri.com/a/d/g"}],"include_subdomains":true}
+Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://blogrmhogervorst.report-uri.com/a/d/g"}],"include_subdomains":true};
 
-  NEL: {"report_to":"default","max_age":31536000,"include_subdomains":true}
+NEL: {"report_to":"default","max_age":31536000,"include_subdomains":true};
+  
+Permissions-Policy: geolocation=(), microphone=(), camera=()
