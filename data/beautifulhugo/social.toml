@@ -165,3 +165,9 @@ id = "devto"
 url= "https://dev.to/%s"
 title = "Dev.to profile"
 icon = "fab fa-dev"
+
+[[social_icons]]
+id = "orchid"
+url= "https://orcid.org/%s"
+title="(Academic) publications linked to ORCHID"
+icon= "fab fa-orcid"
