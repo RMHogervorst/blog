@@ -1,5 +1,5 @@
 theme = "beautifulhugo"
-baseURL = "https://blog.rmhogervorst.nl/"
+baseURL = "https://blog.rmhogervorst.nl"
 languageCode = "en-us"
 DefaultContentLanguage = "en"
 title = "Roel's R-tefacts"
