@@ -59,7 +59,7 @@ usercode server does not break down the main systems. The dagit UI will complain
 but never break down. You could give a user code repository responsibility to a 
 team and with these guardrails in place they can keep their system up.
 
-## end product
+## End product
 There is one repository with code that runs the the dagster main components:
 * the database
 * the deamon (that keeps track of schedules and sensors)
