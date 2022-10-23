@@ -10,7 +10,7 @@ tags:
   - featurestore
   - intermediate
   - tools
-subtitle: 'Why we MLOps'
+subtitle: 'From simple to advanced'
 share_img: '/blog/2022/10/22/do-you-need-a-feature-store/erda-estremera-sxNt9g77PE0-unsplash.jpg'
 output:
   html_document:
@@ -128,9 +128,6 @@ You don't start with a feature store, you grow into the need.
 
 
 ## image credits
-- Photo by <a href="https://unsplash.com/@kelli_mcclintock?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kelli McClintock</a> on <a href="https://unsplash.com/s/photos/boxes?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-- Photo by <a href="https://unsplash.com/@kelli_mcclintock?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kelli McClintock</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-- Photo by <a href="https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Erda Estremera</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-- Photo by <a href="https://unsplash.com/@ricardoviana?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Ricardo Viana</a> on <a href="https://unsplash.com/s/photos/messy-box?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+- pictures taken from <a href="https://unsplash.com/">Unsplash</a>, from authors  <a href="https://unsplash.com/@kelli_mcclintock?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kelli McClintock</a> , <a href="https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Erda Estremera</a> and  <a href="https://unsplash.com/@ricardoviana?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Ricardo Viana</a> 
   
     
