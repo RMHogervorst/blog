@@ -30,6 +30,7 @@ unsafe= true
   useHLJS = true
   selfHosted = false
   wordCount = true
+  showRelatedPosts = true
 
 [Author]
   name = "Roel M. Hogervorst"
