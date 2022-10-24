@@ -8,9 +8,10 @@ categories:
 tags:
   - intermediate
   - development
-  - modular-projects
-  - optimize-your-code
-description: 'Have you received a project that someone else created and did it make you go 🤯? Sometimes a project organically grows into a mess of scripts and you don't know how to make it better. The main problem is often the project organization. I want you to think about, and organize, your project in three levels that I call city-level, neighborhood-level and street-level. In this post I will explain how to do that.'
+  - modular projects
+  - optimize your code
+description: >
+  "Have you received a project that someone else created and did it make you go 🤯? Sometimes a project organically grows into a mess of scripts and you don't know how to make it better. The main problem is often the project organization. I want you to think about, and organize, your project in three levels that I call city-level, neighborhood-level and street-level. In this post I will explain how to do that."
 subtitle: 'reduce your mental load by using conventions'
 share_img: '/blog/2022/10/25/organize-your-mlproject/kyler-boone-GRu2e_Z01-o-unsplash.jpg'
 output:
