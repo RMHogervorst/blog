@@ -1,0 +1,25 @@
+{{- with .Title | default .Site.Title }}
+<meta property="og:title" content="{{ . }}" />
+{{- end }}
+{{- with .Description | default .Params.subtitle | default .Summary }}
+<meta property="og:description" content="{{ . }}">
+{{- end }}
+{{- with .Params.share_img | default .Params.image | default .Site.Params.logo }}
+<meta property="og:image" content="{{ . | absURL }}" />
+{{- end }}
+{{- with .Site.Params.fb_app_id }}
+<meta property="fb:app_id" content="{{ . }}" />
+{{- end }}
+<meta property="og:url" content="{{ .Permalink | absLangURL }}" />
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+<meta property="og:site_name" content="{{ .Site.Title }}" />
+
+{{- if .IsPage }}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+<meta property="article:section" content="{{ .Section }}" />
+{{ with .PublishDate }}<meta name="article-published_time" property="og:article:published_time" {{ .Format $iso8601 | printf "content=%q" | safeHTMLAttr }} />
+<meta name="publish_date" property="og:publish_date" {{ .Format $iso8601 | printf "content=%q" | safeHTMLAttr }} />
+{{ end }}
+{{ with .Lastmod }}<meta name="article-modified_time" property="og:article:modified_time" {{ .Format $iso8601 | printf "content=%q" | safeHTMLAttr }} />{{ end }}
+
+{{- end -}}

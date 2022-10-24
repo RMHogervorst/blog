@@ -9,7 +9,7 @@
         </div>
         <hr>
         <a class="u-url" href="{{ .Permalink }}"><div class="p-name">{{ .Title }}  </div></a>
-        <time class="dt-published" datetime="{{ .Date }}">{{ $datestr | i18n "postedOnDate"}} </time>
+        <time class="dt-published" dateTime="{{ time.Format "2006-01-02T15:04:05-07:00" .Date  }}">{{ $datestr | i18n "postedOnDate"}} </time>
         by {{ if not .Site.Params.hideAuthor }}
           {{ if .Params.author }}
             &nbsp;|&nbsp;<a rel="author" class="p-author h-card" href="https://rmhogervorst.nl"> {{ .Params.author | safeHTML }} </a>
