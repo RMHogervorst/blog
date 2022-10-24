@@ -11,6 +11,6 @@
 {{- with .Site.Author.twitter }}
   <meta name="twitter:creator" content="@{{ . }}" />
 {{- end }}
-{{- with .Site.baseURL }}
+{{- with .Params.baseURL }}
   <meta name="twitter:site" content="{{ . }}" />
 {{- end }}
