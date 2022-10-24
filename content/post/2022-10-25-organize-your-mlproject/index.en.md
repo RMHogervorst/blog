@@ -11,7 +11,7 @@ tags:
   - modular-projects
   - optimize-your-code
 subtitle: 'reduce your mental load by using conventions'
-share_img: '/blog/2022/10/25/kyler-boone-GRu2e_Z01-o-unsplash.jpg'
+share_img: '/blog/2022/10/25/organize-your-mlproject/kyler-boone-GRu2e_Z01-o-unsplash.jpg'
 output:
   html_document:
     keep_md: yes
