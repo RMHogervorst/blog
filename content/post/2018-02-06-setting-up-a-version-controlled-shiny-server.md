@@ -1,6 +1,11 @@
 ---
 title: Setting up a version controlled shiny-server
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: 
+difficulty:
+  - advanced
+post-type:
+  - clarification
 date: '2018-02-06'
 categories:
   - blog

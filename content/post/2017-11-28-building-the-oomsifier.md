@@ -1,6 +1,11 @@
 ---
 title: Building the oomsifyer
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "In this post I am solving the life long dream of people all around the world … of adding dancing banana gifs to pictures…"
+post-type:
+  - walkthrough
 date: '2017-11-28'
 categories:
   - blog

@@ -21,8 +21,25 @@
         {{ if .Params.tags }}
           <div class="blog-tags p-category">
             {{ range .Params.tags }}
-              <a href="{{ $.Site.LanguagePrefix | absURL }}/tags/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+              <a href="{{ $.Site.LanguagePrefix | absURL }}tags/{{ . | urlize }}/">{{ . }}</a>&nbsp;
             {{ end }}
+          </div>
+        {{ end }}
+        {{ if .Params.difficulty }}
+          <div>
+            More posts of level: 
+            {{ range .Params.difficulty }}
+              <a href="{{ $.Site.LanguagePrefix | absURL }}difficulty/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+            {{ end }}
+          </div>
+        {{ end }}
+        {{ if .Params.post_type }}
+          <div>
+            More : 
+            {{ range .Params.post_type }}
+              <a href="{{ $.Site.LanguagePrefix | absURL }}post-type/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+            {{ end }}
+            posts.
           </div>
         {{ end }}
 

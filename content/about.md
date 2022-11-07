@@ -21,7 +21,6 @@ After about a year I wanted to learn more techniques and joined a commercial tra
 ## Contact
 Did I make a mistake? Are you excited about learning? Is there something I should really blog about? Did you find spelling mistakes (very probable, I make them alll the time)? I have an abundance of social links at the bottom of the page to reach me. Some of you even found my academic email account, now that is dedication (also don't do that anymore, because I no longer work in academia) ! There is also a edit this page at the bottom of every webpage where you can make an edit on github. 
 
-and also see <https://keybase.io/rmhogervorst>. 
 
 [![0000-0001-7509-0328](https://orcid.org/sites/default/files/images/orcid_16x16.png)](https://orcid.org/0000-0001-7509-0328)
 

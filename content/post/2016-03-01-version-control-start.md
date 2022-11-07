@@ -1,6 +1,11 @@
 ---
 title: Version control with Git
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: "How can I use git in my projects?"
+difficulty:
+  - beginner
+post-type:
+  - walkthrough
 date: '2016-03-01'
 categories:
   - blog

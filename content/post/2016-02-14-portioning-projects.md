@@ -1,14 +1,17 @@
 ---
 title: Portioning projects
-author: roel_hogervorst
+author: Roel M. Hogervorst
 date: '2016-02-14'
 categories:
   - blog
   - R
 tags:
   - philosophy
-  - intermediate
   - modular projects
+difficulty:
+  - intermediate
+post-type:
+  - post
 slug: portioning-projects
 ---
 

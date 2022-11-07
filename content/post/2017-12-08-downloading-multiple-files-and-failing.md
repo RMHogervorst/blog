@@ -1,6 +1,12 @@
 ---
 title: Downloading files from a webserver, and failing.
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "It can be incredibly useful to see where someone fails, here are my lessons learned from failing in dowloading many files."
+post-type:
+  - walkthrough
+  - reminder
 date: '2017-12-08'
 categories:
   - blog
@@ -10,8 +16,8 @@ tags:
   - curl
   - purrr
   - scraping
-  - intermediate
 slug: downloading-multiple-files-and-failing
+share_img: /img/scraping_a_plate.jpg
 ---
 
 Recently I wanted to download all the transcripts of a podcast (600+ episodes). 
@@ -19,7 +25,7 @@ The transcripts are simple txt files so in a way
 I am  not even 'web'-scraping but just reading in 600 or so text files which is 
 not really a big deal. I thought. 
 
-This post shows you where I went wrong
+This post shows you where I went wrong TL:DR : _do not assume everything will always work on the internet_.
 
 Also here is a [picture](https://www.flickr.com/photos/32123311@N00/502155430 "source: flickr, cc-by 2.0 jbloom") I found of scraping. 
 
@@ -45,7 +51,7 @@ Here are some general guides:
 ### Downloading non-html files
 There are multiple ways I could do this downloading:
 if I had used rvest to scrape a website I would have set a user-agent
-header^[a piece of information we snd with every request that describes who we are]
+header[^2] 
 and I would have used incremental backoff: when the server refuses a connection
 we would wait and retry again, if it still refuses we would wait twice as long
 and retry again etc.
@@ -83,7 +89,7 @@ This failed.
 
 Some episodes don't exists or have no transcript (I didn't know). Sometimes the internet connection didn't want to work and just threw me out. Sometimes the server stopped my requests. 
 
-On every of those occasions the process would stop, give an informative error^[really, it did]. But the R-process would stop and I had no endresult.
+On every of those occasions the process would stop, give an informative error[^3]. But the R-process would stop and I had no endresult.
 
 #### Getting more information to my eyeballs and pausing in between requests
 
@@ -116,7 +122,7 @@ Also I wanted to let the logs show that I was the one doing the scraping and how
 Enter curl. 
 Curl is a library that helps you download stuff, it is used by the httr package and is a wrapper around the c++ package with the same name, *wrapped by Jeroen 'c-plus-plus' Ooms*. 
 
-Since I ran this function a few times I downloaded some of the files, and didn't really want to download every file again, so I also added a check to see if the file wasn't already downloaded^[I thought that was really clever, didn't you?] . And I wanted it to print to the screen, because I like moving text over the screen when I'm debugging.
+Since I ran this function a few times I downloaded some of the files, and didn't really want to download every file again, so I also added a check to see if the file wasn't already downloaded[^1] . And I wanted it to print to the screen, because I like moving text over the screen when I'm debugging.
 
 ```r
 download_file <- function(file){
@@ -146,6 +152,11 @@ latest_episode <- 636
 walk(paste0("https://first-part-of-link.com/episodenr-",
            formatC(1:latest_episode, width = 3,flag = 0),".txt"), download_file)
 ```
+
+[^1]: I thought that was really clever, don't you? 
+[^2]: a piece of information we send with every request that describes who we are 
+[^3]: really, it did
+
 
 ## Conclusion
 

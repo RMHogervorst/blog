@@ -1,6 +1,11 @@
 ---
 title: Generate text using Markov Chains (sort of)
-author: roel_hogervorst
+author: Roel M. Hogervorst
+difficulty:
+  - beginner
+post-type:
+  - walkthrough
+description: "Building a bot that sort of talks like TNG characters"
 date: '2017-01-21'
 categories:
   - blog
@@ -191,6 +196,6 @@ For example this created for me: `generate_sentence("I", "am", 9)`
 -   it's incredibly slow and inefficient, but hey, it's a toy project!
 -   Also it failed on me multiple times on 15 length
 
-Right it makes no sense whatsover. Thanks for following along!
+Right it makes no sense whatsoever. Thanks for following along!
 
-Do you have suggestions, improvements, found errors? open an issue or email me. <https://github.com/RMHogervorst/blog/issues/new/>
+Do you have suggestions, improvements, found errors? open an issue or email me. 

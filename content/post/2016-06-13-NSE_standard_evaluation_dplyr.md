@@ -1,19 +1,22 @@
 ---
 title: Non-standard-evaluation and standard evaluation in dplyr
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - advanced
+description: "a description"
+post-type:
+  - reminder
 date: '2016-06-13'
 categories:
   - blog
   - R
 tags:
-  - advanced
   - dplyr
   - NSE
   - optimize-your-code
   - data:duo2015
   - data:mtcars
   - lazyeval
-  - reminder
 slug: NSE_standard_evaluation_dplyr
 ---
 

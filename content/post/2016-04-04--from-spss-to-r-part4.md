@@ -1,18 +1,22 @@
 ---
 title: From spss to R, part 4
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - beginner
+description: "Learn how to customize plots, create a theme."
+post-type:
+  - tutorial
 date: '2016-04-04'
 categories:
   - blog
   - R
 tags:
-  - beginner
   - dplyr
   - ggplot2
   - spps-to-r
-  - tutorial
   - data:duo2015
 slug: from-spss-to-r-part4
+share_img: /img/psychologystudentscities.png
 ---
 
 This is the second part of working with ggplot. We will combine the 

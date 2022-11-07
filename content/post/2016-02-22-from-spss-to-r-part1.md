@@ -1,15 +1,19 @@
 ---
 title: From spss to R, part 1
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: >
+  "This lesson is about Rstudio, basics, and we will import data from spss. Datamanipulation takes place in lesson 2 and in lesson 3 we will make beautiful plots. The approach is hands on, I want you to do all the things, go through all the motions and start working. Start making mistakes and learn from them."
+difficulty:
+  - beginner
+post-type:
+  - tutorial
 date: '2016-02-20'
 categories:
   - blog
   - R
 tags:
-  - beginner
   - ggplot2
   - spps-to-r
-  - tutorial
 slug: from-spss-to-r-part1
 ---
 

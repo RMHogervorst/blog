@@ -1,16 +1,19 @@
 ---
 title: Tidying your data
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - beginner
+description: "The basics for cleaning up data, and reshaping it to a form for your analysis."
+post-type:
+  - tutorial
 date: '2016-02-24'
 categories:
   - blog
   - R
 tags:
-  - beginner
   - dplyr
   - tidyr
   - data:duo2015
-  - tutorial
 slug: creating-tidy-data
 ---
 

@@ -1,13 +1,17 @@
 ---
 title: Your most valuable collaborator, future-you
-author: roel_hogervorst
+author: Roel M. Hogervorst
+subtitle: "You don’t want future-you to curse past-you" 
+difficulty:
+  - advanced
+  - intermediate
+post-type:
+  - thoughts
 date: '2016-05-26'
 categories:
   - blog
   - R
 tags:
-  - advanced
-  - intermediate
   - version control
   - TDD
   - readme
@@ -20,9 +24,9 @@ I was recently at a R users [meetup](http://www.meetup.com/amst-R-dam/ "amst-R-d
 I would like to give you some tips about working with someone you will probably work with in the future. Hadley will introduce that person to you:
  
 
-> “In every project you have at least one other collaborator; future-you. You don't want future-you to curse past-you”[^1] 
+> “In every project you have at least one other collaborator; future-you. You don't want future-you to curse past-you”[^1]
 
-And future-you is an important collaborator. I have worked with R for a almost two years [^2] and when I look back I actually see some progress in what I do with R. Most of the things I did in the past were poorly documented. I recently wanted to update my imdb search package but I decided not to touch it, because I don't know what will break if I change some things. I have less worries for more recent packages, because I have tests for almost all the functions and I could just run the tests after every change to see if the functionality is still there. 
+And future-you is an important collaborator. I have worked with R for a almost two years[^2] and when I look back I actually see some progress in what I do with R. Most of the things I did in the past were poorly documented. I recently wanted to update my imdb search package but I decided not to touch it, because I don't know what will break if I change some things. I have less worries for more recent packages, because I have tests for almost all the functions and I could just run the tests after every change to see if the functionality is still there. 
 
 *[update: I tried to find older creations in my github, but I was actually pretty impressed by how well documented it all was! So my example is not so good, or I just didn't upload bad examples...]*
 
@@ -112,10 +116,12 @@ compare:
 
 `filter_by(select( filter(dataset, year == 2012), month, children, accidents ),accidents)` with
 
-```dataset %>% 
+```
+dataset %>% 
 filter(year==2012) %>% 
 select(month, children, accidents) %>%
-group_by(accidents)```  
+group_by(accidents)
+```  
 
 Then there the  map functions from the purr package, which essentially replace loops. Not because loops are inherently bad, but the functions focus on the operation being performed instead of the details of the loop itself. I will write about these functions once I get used to them in the future.[^6] 
 

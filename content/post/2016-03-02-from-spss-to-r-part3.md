@@ -1,18 +1,22 @@
 ---
 title: From spss to R, part 3
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - beginner
+description: "How to build up graphics and the basics of ggplot2"
+post-type:
+  - tutorial
 date: '2016-03-02'
 categories:
   - blog
   - R
 tags:
-  - beginner
   - ggplot2
   - spps-to-r
   - data:mtcars
   - data:chickwts
-  - tutorial
 slug: from-spss-to-r-part3
+share_img: /img/graphs-have-layers.png
 ---
 
 

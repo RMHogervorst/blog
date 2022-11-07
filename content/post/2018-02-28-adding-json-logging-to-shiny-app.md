@@ -1,6 +1,11 @@
 ---
 title: Adding logging to a shiny app with loggit
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: 
+difficulty:
+  - advanced
+post-type:
+  - walkthrough
 date: '2018-02-28'
 categories:
   - blog
@@ -10,8 +15,6 @@ tags:
   - shiny-server
   - logging
   - loggit
-  - advanced
-  - R6
 slug: adding-json-logging-to-shiny-app
 ---
 

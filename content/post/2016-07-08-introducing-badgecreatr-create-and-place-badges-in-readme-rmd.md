@@ -1,6 +1,11 @@
 ---
 title: Introducing Badgecreatr, a package that places badges in your readme
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: Introducing **Badgecreatr**, a package to create and place badges in your readme.Rmd file on Github.
+difficulty:
+  - beginner
+post-type:
+  - post
 date: '2016-07-08'
 categories:
   - blog
