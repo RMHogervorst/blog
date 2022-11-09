@@ -9,6 +9,7 @@ resources/
 content/post/*.html
 **/index_cache/
 content/post/**/data/
-
+ignore/
 .DS_Store
 Thumbs.db
+content/post/**/*.html

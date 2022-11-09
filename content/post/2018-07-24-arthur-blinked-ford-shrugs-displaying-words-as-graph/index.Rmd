@@ -2,29 +2,39 @@
 title: Arthur blinked, Ford shrugs, but Zaphod leapt; text as graph
 author: Roel M. Hogervorst
 date: '2018-07-24'
+lastmod: "2022-11-09"
 slug: arthur-blinked-ford-shrugs-displaying-words-as-graph
+description: "What can we find out about the actions of people in a book by looking at words around subjects in a book?"
+difficulty:
+  - beginner
+post-type:
+  - analysis
 categories:
   - R
   - blog
 tags:
-  - analysis
-  - beginner
   - hhgttg
   - tidy
   - tidytext
+  - tidygraph
+  - ggraph
+  - NLP
 subtitle: 'Text can be interpreted as a graph'
-share_img: 'post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph_files/arthur_is_confused.png'
+share_img: post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph/arthur_is_confused.png
+output:
+  html_document:
+    keep_md: yes
 ---
 
 Can we make the computer say something about characters in a book? In this piece I will search for the names of characters and the words around those names in books. What can we learn about a character from text analysis? Of course it's also just another excuse for me to read the Hitchhikers series! I will break down the text into chunks of two words, extract the word pairs that matter and visualize the results. Come an play along with your favorite book.
 
 
 # Inspiration
-The Hitchhiker's Guide to the Galaxy (HHGTTG for short) is a series of scifi novels^[and radio plays and a TV-show and a movie, but we don't talk about the movie and TV-series, it's like jar-jar binks. The radio plays are amazing though.] about the last surviving man, Arthur Dent, after the destruction of earth. And I love it.
+The Hitchhiker's Guide to the Galaxy (HHGTTG for short) is a series of scifi novels[^1] about the last surviving man, Arthur Dent, after the destruction of earth. And I love it.
 
 Arthur is an anti-hero, he's not brave, he's not smart, he sort of stumbles through life and things happen to him, he has almost no agency. That is something you realize while you are reading the book, but can we find that in the text as well? What can we find out about the actions of people in a book by looking at words around subjects in a book?
 
-I'm inspired by the amazing text work of Julia Silge. For instance on "She giggles, he gallops"^[find her at https://juliasilge.com and [twitter](https://twitter.com/juliasilge)] (link at the bottom of page, really check it out!) Julia and her co-writers scanned through 2000 movie manuscripts and extracted words around gender pronouns. They show that  women will more likely snuggle, giggle, squeal, and sob, relative to men. Conversely, men are more likely to strap, gallop, shoot, howl, and kill. See more in [she giggles, he gallops](https://pudding.cool/2017/08/screen-direction/). 
+I'm inspired by the amazing text work of Julia Silge. For instance on "She giggles, he gallops"[^2] Julia and her co-writers scanned through 2000 movie manuscripts and extracted words around gender pronouns. They show that  women will more likely snuggle, giggle, squeal, and sob, relative to men. Conversely, men are more likely to strap, gallop, shoot, howl, and kill. See more in [she giggles, he gallops](https://pudding.cool/2017/08/screen-direction/). 
 
 So what can we do with these books? I will walk through all the main characters (and Marvin) and at the end I also look at gender pronouns (he vs she). There is already a problem: there is only one woman in the cast. This could be a problem. 
 
@@ -42,7 +52,7 @@ Many of the steps I take here are copied from the [tidytextmining book](www.tidy
 
 leading to:
 
-![Arthur Dent is confused (words connected to Arthur)](/post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph_files/arthur_is_confused.png){width=80% height=80%}
+![Arthur Dent is confused (words connected to Arthur)](arthur_is_confused.png){width=80% height=80%}
 
 ## Data
 The books are of course copyrighted so I cannot share the files with you, that would be piracy.
@@ -60,7 +70,7 @@ books loaded, cannot do it per chapter, because the chapters are messed up in so
 ## Loading the data
 
 ```{r, include=FALSE}
-HHGTTG <- readr::read_rds("~/Documents/actief/Projecten/hhgttg/data/HHGTG.RData")
+HHGTTG <- readr::read_rds("~/Documents/projecten/blog/ignore/HHGTG.RData")
 ```
 
 ```
@@ -141,7 +151,7 @@ create_hhgttg_plot <- function(data, title = "what an amazing title!", subtitle 
   # making a igraph object  
   data %>% 
         as_tbl_graph() %>%
-        ggraph(layout = "auto") + 
+        ggraph(layout = "kk") + 
         geom_edge_link(aes(edge_width = sqrt(n)),colour = c3_purple, show.legend = FALSE) +
         geom_node_point(color = "white", size = 5,alpha = 4/5 ) +
         geom_node_label(aes(label = name),color = c3_orange, repel = TRUE,size = 5) +
@@ -154,7 +164,7 @@ create_hhgttg_plot <- function(data, title = "what an amazing title!", subtitle 
         theme(
             plot.background = element_rect(fill =  "black"),
             text = element_text(colour = c3_orange),
-            plot.margin = unit(c(.3,.5,.1,.5), "cm")
+            plot.margin = unit(c(.3,.6,.2,.5), "cm")
         )
 }
 set.seed(42) # if I redo everything looks the same
@@ -227,12 +237,13 @@ Using the parts of speech data frame in tidytext I can select all
 verbs and select verbs I'm interested in. 
 
 ```{r}
+verbs <- parts_of_speech %>% filter(str_detect(pos, "Verb")) %>% distinct(word)
 action_words <- 
     unnested_hhgttg %>% 
     ungroup() %>% 
     group_by(word1, word2) %>% 
     summarise(n = sum(n)) %>% 
-    inner_join(parts_of_speech %>% filter(str_detect(pos, "Verb") ),by = c("word2"="word"))
+    inner_join(verbs ,by = c("word2"="word"))
 
 
 # action_words %>% pull(word2) %>% unique() # choose some words
@@ -244,6 +255,7 @@ action_words %>% filter(n>3) %>% pull(word2) %>% unique()
 ```{r}
 action_words %>% 
     filter(word2 == "realised") %>% 
+    filter(n>0) %>% 
     create_hhgttg_plot("Tricia, Arthur and Ford realise", 
                        "")
 ```
@@ -365,10 +377,13 @@ logratio_she_he %>%
 
 # Final thoughts
 
-I think it's a nice way to visualize information from a book. Some characters are more active and others more emotional. 
+I think it's a nice way to visualize information from a book. Some characters are more active and others more emotional. _Edit 2022: Since there is only one female lead character and the other leads are all male there is more diversity in words for men. The female characters are described by words like 'stared', 'paused', 'tried'. This matches my memory of these books, the female characters are perpetually perplexed by what stupidity the male characters possess._ 
 
 
 # References
+
+[^1]: ...and radio plays and a TV-show and a movie, but we don't talk about the movie and TV-series, it's like jar-jar binks. The radio plays are amazing though.
+[^2]: find Julia at https://juliasilge.com and [twitter](https://twitter.com/juliasilge) and mastodon
 
 - love the amount of detail in [the wikipedia pages about HHGTTG](https://en.wikipedia.org/wiki/The_Hitchhiker's_Guide_to_the_Galaxy)
 

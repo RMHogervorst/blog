@@ -3,13 +3,16 @@ title: Munging and reordering Polarsteps data
 author: Roel M. Hogervorst
 date: '2020-04-23'
 slug: munging-and-reordering-polarsteps-data
+difficulty:
+  - intermediate
+post-type:
+  - walkthrough
 categories:
   - R
 tags:
   - jsonlite
   - dplyr
   - purrr
-  - intermediate
   - rectangling
 subtitle: 'Turning nested lists into a data.frame with purrr'
 share_img: '/post/2020-04-21-munging-and-reordering-polarsteps-data_files/beach_smaller.jpg'

@@ -1,6 +1,11 @@
 ---
 title: "Graphing My Daily Phone Use"
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "Plotting my daily phone use with ggplot2"
+post-type:
+  - post
 date: '2019-01-28'
 slug: graphing-my-daily-phone-use
 categories:
@@ -8,15 +13,17 @@ categories:
   - R
 tags:   
   - tasker
-  - intermediate
   - phone
+  - ggplot2
+  - readr
+  - dplyr
 subtitle: ''
 share_img: '/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png'
 ---
 
 
 
-<p>How many times do I look at my phone? I set up a <a href="https://blog.rmhogervorst.nl/blog/2019/01/28/logging-my-phone-use-with-tasker/" title="With tasker, A previous blog post about how I did that">small program on my phone</a>
+<p>How many times do I look at my phone? I set up a <a href="/blog/2019/01/28/logging-my-phone-use-with-tasker/" title="With tasker, A previous blog post about how I did that">small program on my phone</a>
 to count the screen activations and logged to a file. In this post I show
 what went wrong and how to plot the results.</p>
 <div id="the-data" class="section level2">
@@ -85,7 +92,7 @@ reset.</p>
     ggtitle(&quot;Times I looked at my screen during vacation&quot;, subtitle = &quot;daily values&quot;)+
     theme_light()</code></pre>
 <div class="figure">
-<img src="/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png" alt="Daily cumulative screen looking values" style="width:80.0%" />
+<img src="/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png" style="width:80.0%" alt="" />
 <p class="caption">Daily cumulative screen looking values</p>
 </div>
 <p>But that is difficult to compare, so I also show them overlayed:</p>
@@ -95,7 +102,7 @@ reset.</p>
     ggtitle(&quot;Times I looked at my screen during vacation&quot;, subtitle = &quot;overlay plot&quot;)+
     theme_light()</code></pre>
 <div class="figure">
-<img src="/post/2019-01-28-graphing-my-daily-phone-use_files/screenlook_overlay.png" alt="overlay of cumulative screen lookings every day on the same hourly scale" style="width:80.0%" />
+<img src="/post/2019-01-28-graphing-my-daily-phone-use_files/screenlook_overlay.png" style="width:80.0%" alt="" />
 <p class="caption">overlay of cumulative screen lookings every day on the same hourly scale</p>
 </div>
 </div>

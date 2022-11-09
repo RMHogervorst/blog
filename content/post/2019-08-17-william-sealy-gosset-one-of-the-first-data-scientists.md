@@ -1,6 +1,11 @@
 ---
 title: William Sealy Gosset one of the first data scientists
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - beginner
+description: "Gosset, 'student' the first data scientist, honest, hardworking, practical and forgotten."
+post-type:
+  - thoughts
 date: '2019-08-17'
 slug: william-sealy-gosset-one-of-the-first-data-scientists
 categories:
@@ -21,9 +26,9 @@ And as the first member of that fanclub, I have been to the Guinness brewery to
 take a picture of Gosset's only visible legacy there. <img src="/post/2019-08-17-william-sealy-gosset-one-of-the-first-data-scientists_files/IMG_20180422_125809116.jpg" alt="Me with a plaque in the Guinness Storehouse commemorating Gosset" width="50%"/>
 
 W. S. Gosset had qualities that we should
-emulate. He was smart, resourceful, self-taught in statistics, humble^[Contemporary statisticians like W. Edward Deming, Udny Yule, and Florence Nightingale David, respectively called him a “very humble and pleasing personality,” “very pleasant chap” and “A nice man […] without a jealous bone in his body.” Both Karl Pearson and R.A. Fisher, the two most famous statistical thinkers of the early 20th Century, who were known to hate each other, found common ground in their fondness for Gosset.[The Guinness Brewer who revolutionized Statistics - Dan Kopf]] and like so
+emulate. He was smart, resourceful, self-taught in statistics, humble[^1] and like so
 many of us data scientists unfortunately, constrained by an NDA from his 
-employer^[The Guinness brewery realized they had a competitive advantage with their small sample tests over other breweries and thus they prevented all scientists in the company from publishing under their own name, mentioning the name Guinness or the word beer.] ...
+employer[^2] ...
 
 Gosset worked in the Guinness brewery in the early 19 hundreds, while the brewery
 was ramping up its production of beer. They wanted to maintain the same quality
@@ -35,8 +40,8 @@ testing, are controlled, improved, and confirmed by experimental science. A degr
 requirement for a Guinness brewer in the new era  -- Guinnessometrics - Stephen T. Ziliak
 
 This does sounds a lot like applied statistics, or operational statistics, or... 
-data science! (Although I don't think you need an advanced degree from a renowned
-institution to start a data science career)
+data science! _(Although I don't think you need an advanced degree from a renowned
+institution to start a data science career)_
 
 In his 37 year career William S. Gosset worked on improving the beer consistency
 and making the brewery more efficient. He made impressive improvements
@@ -69,3 +74,5 @@ under a pseudonym, and without any mention of a brewery, beer or it's components
 - [Beer statistics and quality](https://blog.minitab.com/blog/statistics-and-quality-data-analysis/beer-statistics-and-quality)
 - [Image in preview 'British statistician William Sealy Gosset, known as "Student", taken in 1908' Public domain](https://en.wikipedia.org/wiki/William_Sealy_Gosset#/media/File:William_Sealy_Gosset.jpg)
 
+[^1]: > Contemporary statisticians like W. Edward Deming, Udny Yule, and Florence Nightingale David, respectively called him a “very humble and pleasing personality,” “very pleasant chap” and “A nice man […] without a jealous bone in his body.” Both Karl Pearson and R.A. Fisher, the two most famous statistical thinkers of the early 20th Century, who were known to hate each other, found common ground in their fondness for Gosset.[The Guinness Brewer who revolutionized Statistics - Dan Kopf]
+[^2]: The Guinness brewery realized they had a competitive advantage with their small sample tests over other breweries and thus they prevented all scientists in the company from publishing under their own name, mentioning the name Guinness or the word beer.

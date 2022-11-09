@@ -1,7 +1,12 @@
 ---
 title: Running an R script on heroku
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+post-type:
+  - tutorial
 date: '2018-12-06'
+lastmod: '2022-11-08'
 slug: running-an-r-script-on-heroku
 categories:
   - blog
@@ -9,7 +14,6 @@ categories:
 tags:
   - heroku
   - rtweet
-  - tutorial
   - wikidata
   - WikidataQueryServiceR
 subtitle: 'Automate alllll the things!'
@@ -19,6 +23,7 @@ share_img: 'https://media.giphy.com/media/XmyFwYm8DzBU4/giphy.gif'
 
 
 <p>In this post I will show you how to run an R script on heroku every day. This is a continuation of my <a href="https://blog.rmhogervorst.nl/blog/2018/11/19/tweeting-wikidata-info/">previous post on tweeting a death from wikidata</a>.</p>
+<p><em>Update 2022: heroku is no longer offering free options.</em></p>
 <div id="why-would-i-want-to-run-a-script-on-heroku" class="section level1">
 <h1>Why would I want to run a script on heroku?</h1>
 <p>It is extremely simple, you don’t need to spin up a machine in the cloud on AWS, Google, Azure or Nerdalize. You can just run the script and it works. You can even make it run every day. Heroku does not support R out of the box. So you have to tell heroku to install R (they call that a buildpack).</p>
@@ -39,8 +44,8 @@ You download and install the heroku command line interface (CLI) and then you ca
 <p>I’m assuming you’re starting out in a fresh
 folder with only your script in it.</p>
 <ol style="list-style-type: decimal">
-<li>Create an heroku account.</li>
-<li>Download and install <a href="https://devcenter.heroku.com/articles/heroku-cli">the heroku CLI</a></li>
+<li><p>Create an heroku account.</p></li>
+<li><p>Download and install <a href="https://devcenter.heroku.com/articles/heroku-cli">the heroku CLI</a></p></li>
 <li><p>do ‘heroku login’ you make a round trip to the website to verify it is really you</p></li>
 <li><p>Take your script, look what packages it needs, write those packages down.</p></li>
 </ol>
@@ -99,7 +104,7 @@ This is what I used (my script is called runtask.R): <code>Rscript app/runtask.R
 <p>It took me a while to find out where the script was in the app, but apparently it is in the app directory.</p>
 <p>And this is what it does:</p>
 <div class="figure">
-<img src="/post/2018-12-06-running-an-r-script-on-heroku_files/Screenshot_2018-12-06%20wikidata_people_bot%20(%20WikidataB)%20Twitter.png" alt="screenshot of past few tweets" />
+<img src="/post/2018-12-06-running-an-r-script-on-heroku_files/Screenshot_2018-12-06%20wikidata_people_bot%20(%20WikidataB)%20Twitter.png" alt="" />
 <p class="caption">screenshot of past few tweets</p>
 </div>
 <p>And that’s it!</p>

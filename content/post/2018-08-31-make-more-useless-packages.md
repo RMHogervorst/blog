@@ -3,6 +3,11 @@ title: Make more useless packages!
 author: Roel M. Hogervorst
 date: '2018-08-31'
 slug: make-more-useless-packages
+difficulty:
+  - intermediate
+description: "You should make more useless packages. To be more specific: make packages that are useful to you, but might be useless to others. Because building silly stuff is fun and sets the bar low for you to play and learn."
+post-type:
+  - thoughts
 categories:
   - R
   - blog

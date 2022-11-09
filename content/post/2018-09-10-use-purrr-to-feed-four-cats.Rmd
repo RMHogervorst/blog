@@ -8,10 +8,14 @@ categories:
   - R
 tags:
   - purrr
-  - intermediate
   - for loop
   - functional
   - emo
+difficulty:
+  - beginner
+description: "How do you use purrr to replace a for loop? Reigo and Roel will explain it to you."
+post-type:
+  - walkthrough
 subtitle: 'Replacing a for loop with purrr::map_*'
 share_img: '/post/2018-09-10-use-purrr-to-feed-four-cats_files/cat-3469551_640modified.jpg'
 ---

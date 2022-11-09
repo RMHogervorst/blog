@@ -1,6 +1,11 @@
 ---
 title: Setting up CSP on your hugo (+netlify) site
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "a description"
+post-type:
+  - walkthrough
 date: '2019-03-13'
 publishdate: '2019-03-20'
 slug: setting-up-csp-on-your-hugo-site

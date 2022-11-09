@@ -4,6 +4,10 @@ author: Roel M. Hogervorst
 date: "2020-04-08"
 slug: scraping-gdpr-fines
 subtitle: "Into the DOM with a flavour of regex"
+difficulty:
+  - intermediate
+post-type:
+  - walkthrough
 categories:
   - blog
   - R

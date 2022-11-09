@@ -3,12 +3,17 @@ title: Where does the output of Rscript go?
 author: Roel M. Hogervorst
 date: '2020-04-14'
 slug: where-does-the-output-of-rscript-go
+difficulty:
+  - advanced
+post-type:
+  - analysis
 categories:
   - R
 tags:
   - rscript
   - standard streams
   - errors
+  - logging
 subtitle: 'stdin, stdout, stderr'
 share_img: '/post/2020-04-14-where-does-the-output-of-rscript-go_files/Rscript_example.png'
 ---

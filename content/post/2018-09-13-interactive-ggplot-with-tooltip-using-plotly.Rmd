@@ -3,14 +3,17 @@ title: interactive ggplot with tooltip using plotly
 author: Roel M. Hogervorst
 date: '2018-09-13'
 slug: interactive-ggplot-with-tooltip-using-plotly
+description: "Turn a ggplot2 image into an interactive plot for the web with plotly"
+difficulty:
+  - beginner
+post-type:
+  - walkthrough
 categories:
   - blog
   - R
 tags:
-  - beginner
   - plotly
   - ggplot2
-  - exploratory
   - data:mtcars
 subtitle: 'tldr: wrap ggplotly around ggplot and add info in aes()'
 share_img: 'https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139'

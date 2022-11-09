@@ -1,6 +1,11 @@
 ---
 title: "Graphing My Daily Phone Use"
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "Plotting my daily phone use with ggplot2"
+post-type:
+  - post
 date: '2019-01-28'
 slug: graphing-my-daily-phone-use
 categories:
@@ -8,14 +13,16 @@ categories:
   - R
 tags:   
   - tasker
-  - intermediate
   - phone
+  - ggplot2
+  - readr
+  - dplyr
 subtitle: ''
 share_img: '/post/2019-01-28-graphing-my-daily-phone-use_files/screenlogplot_week.png'
 ---
 
 
-How many times do I look at my phone? I set up a [small program on my phone](https://blog.rmhogervorst.nl/blog/2019/01/28/logging-my-phone-use-with-tasker/ "With tasker, A previous blog post about how I did that")
+How many times do I look at my phone? I set up a [small program on my phone](/blog/2019/01/28/logging-my-phone-use-with-tasker/ "With tasker, A previous blog post about how I did that")
 to count the screen activations and logged to a file. In this post I show 
 what went wrong and how to plot the results. 
 
