@@ -1,15 +1,18 @@
 ---
 title: Creating a package for your data set
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "How to create a dataset-package in R."
+post-type:
+  - tutorial
 date: '2016-03-07'
 categories:
   - blog
   - R
 tags:
-  - intermediate
   - package
   - data:coffeedata
-  - tutorial
 slug: create-package-for-dataset
 ---
 

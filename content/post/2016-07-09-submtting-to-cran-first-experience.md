@@ -1,16 +1,19 @@
 ---
 title: Submitting your first package to CRAN, my experience
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: 
+difficulty:
+  - intermediate
+post-type:
+  - reminder
 date: '2016-07-09'
 categories:
   - blog
   - R
 tags:
-  - intermediate
   - package
   - badgecreatr
-  - reminder
-slug: submtting-to-cran-first-experience
+slug: submitting-to-cran-first-experience
 ---
 
 I recently published my first R package to  The Comprehensive R Archive Network  (CRAN). It was very exciting and also quite easy. Let me walk you through my process. 

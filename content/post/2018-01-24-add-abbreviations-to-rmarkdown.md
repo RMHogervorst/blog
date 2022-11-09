@@ -1,6 +1,11 @@
 ---
 title: add abbreviations to your rmarkdown doc
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: "How to add abbreviations in all your documents."
+difficulty:
+  - beginner
+post-type:
+  - reminder
 date: '2018-01-24'
 categories:
   - blog
@@ -14,7 +19,7 @@ slug: add-abbreviations-to-rmarkdown
 
 Today a small tip for when you write rmarkdown documents. Add a chunk on top with abbreviations.
 
-in the first chunks you set the options and load the
+In the first chunks you set the options and load the
 packages. Next create abbreviations, you don't have to care about the ordering, just put them down as you realize you are creating them.
 
 

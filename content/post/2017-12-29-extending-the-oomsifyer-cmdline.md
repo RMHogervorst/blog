@@ -1,6 +1,11 @@
 ---
 title: Adding bananas from the commandline (extending the oomsifier)
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - advanced
+description: "Sometimes you just want to add bananas to pictures from the commandline."
+post-type:
+  - walkthrough
 date: '2017-12-29'
 categories:
   - blog
@@ -11,6 +16,7 @@ tags:
   - hack
   - banana
   - gif
+share_img: /img/r-pkg.gif
 slug: extending-the-oomsifyer-cmdline
 ---
 

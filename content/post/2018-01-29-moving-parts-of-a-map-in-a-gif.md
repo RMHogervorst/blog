@@ -1,6 +1,11 @@
 ---
 title: Moving parts of a country over a map
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: "In this short post I make an animated gif of parts of a map moving. I use {sf} and {magick} to do the hard work."
+difficulty:
+  - intermediate
+post-type:
+  - walkthrough
 date: '2018-01-29'
 categories:
   - blog
@@ -25,7 +30,7 @@ https://cdn.rawgit.com/RMHogervorst/floating_friesland/44f7adfd/friesland.gif)
 
 ## General principles
 
-* make small functions that do one thing well (not that small in this case)
+* make small functions that do one thing well _(not that small in this case)_
 * combine those
 * make imagemagick canvas
 * write to the canvas

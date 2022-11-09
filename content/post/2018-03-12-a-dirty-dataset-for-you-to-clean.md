@@ -1,6 +1,11 @@
 ---
 title: Cleaning up and combining data, a dataset for practice
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: "I've created two datasets that you can use for exercises in data munging"
+difficulty:
+  - beginner
+post-type:
+  - post
 date: '2018-03-12'
 categories:
   - blog

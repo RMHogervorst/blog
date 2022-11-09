@@ -1,17 +1,20 @@
 ---
 title: From spss to R, part 2
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - beginner
+description: "Reading in an SPSS file and the basics of dplyr"
+post-type:
+  - tutorial
 date: '2016-02-22'
 categories:
   - blog
   - R
 tags:
-  - beginner
   - haven
   - dplyr
   - spps-to-r
   - data:duo2015
-  - tutorial
 slug: from-spss-to-r-part2
 ---
 # Introduction
@@ -22,7 +25,7 @@ In this lesson we will open a .sav file in Rstudio and manipulate the data.frame
 
 ## Download a .sav (SPSS) file
 
-I downloaded the following dataset from DUO (Dienst uitvoering onderwijs): [**Aantal wo ingeschrevenen (binnen domein ho)**][3]. 
+I downloaded the following dataset from DUO (Dienst uitvoering onderwijs): **Aantal wo ingeschrevenen (binnen domein ho)**[^3]. 
 This dataset has a <span title="creative commons version 0"> cc0 </span> declaration, which means it is in the public domain and we can do anything we want with this <span title="thank you Dutch Goverment!" > file. </span> 
 More information about the file can be found in the [Toelichting.pdf](https://www.duo.nl/open_onderwijsdata/images/Toelichting%2001.%20Ingeschrevenen%20wo.pdf "all in Dutch I'm afraid").
 
@@ -321,12 +324,12 @@ see you then.
 
 
 ### Notes
-[3]: <https://www.duo.nl/open_onderwijsdata/databestanden/ho/Ingeschreven/wo_ingeschr/Ingeschrevenen_wo1.jsp > "Because this was the first dataset I found, but this dataset is actually useful for me in my work as well"
+[^3]: [ingeschrevenen in wo ](https://www.duo.nl/open_onderwijsdata/databestanden/ho/Ingeschreven/wo_ingeschr/Ingeschrevenen_wo1.jsp) "Because this was the first dataset I found, but this dataset is actually useful for me in my work as well"
 
 ### Further Reading
 The following introduction is better than I could have made:
 
-[1]: <https://stat545-ubc.github.io/block009_dplyr-intro.html](https://stat545-ubc.github.io/block009_dplyr-intro.html>
+[https://stat545-ubc.github.io/block009_dplyr-intro.html](https://stat545-ubc.github.io/block009_dplyr-intro.html)
 
 and here is some background information
 

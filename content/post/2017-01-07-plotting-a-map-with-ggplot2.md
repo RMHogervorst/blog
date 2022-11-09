@@ -1,14 +1,17 @@
 ---
 title: Plotting a map with ggplot2, color by tile
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: "Create a colored map of your country by combining geographical files with other information and plooting the entire thing in ggplot2" 
+difficulty:
+  - intermediate
+post-type:
+  - tutorial
 date: '2017-01-06'
 categories:
   - blog
   - R
 tags:
   - ggplot2
-  - intermediate
-  - tutorial
   - maps
   - sp
 slug: plotting-a-map-with-ggplot2

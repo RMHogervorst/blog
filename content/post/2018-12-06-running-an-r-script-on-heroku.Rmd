@@ -1,7 +1,12 @@
 ---
 title: Running an R script on heroku
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+post-type:
+  - tutorial
 date: '2018-12-06'
+lastmod: '2022-11-08'
 slug: running-an-r-script-on-heroku
 categories:
   - blog
@@ -9,7 +14,6 @@ categories:
 tags:
   - heroku
   - rtweet
-  - tutorial
   - wikidata
   - WikidataQueryServiceR
 subtitle: 'Automate alllll the things!'
@@ -17,6 +21,8 @@ share_img: 'https://media.giphy.com/media/XmyFwYm8DzBU4/giphy.gif'
 ---
 
 In this post I will show you how to run an R script on heroku every day. This is a continuation of my [previous post on tweeting a death from wikidata](https://blog.rmhogervorst.nl/blog/2018/11/19/tweeting-wikidata-info/). 
+
+_Update 2022: heroku is no longer offering free options._
 
 # Why would I want to run a script on heroku?
 

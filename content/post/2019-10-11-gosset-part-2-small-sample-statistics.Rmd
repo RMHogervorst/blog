@@ -3,6 +3,10 @@ title: 'Gosset part 2: small sample statistics'
 author: Roel M. Hogervorst
 date: '2019-10-11'
 slug: gosset-part-2-small-sample-statistics
+difficulty:
+  - beginner
+post-type:
+  - analysis
 categories:
   - blog
   - R

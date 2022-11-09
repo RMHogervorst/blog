@@ -3,25 +3,27 @@ title: interactive ggplot with tooltip using plotly
 author: Roel M. Hogervorst
 date: '2018-09-13'
 slug: interactive-ggplot-with-tooltip-using-plotly
+description: "Turn a ggplot2 image into an interactive plot for the web with plotly"
+difficulty:
+  - beginner
+post-type:
+  - walkthrough
 categories:
   - blog
   - R
 tags:
-  - beginner
   - plotly
   - ggplot2
-  - exploratory
   - data:mtcars
 subtitle: 'tldr: wrap ggplotly around ggplot and add info in aes()'
 share_img: 'https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139'
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
 <script src="/rmarkdown-libs/plotly-binding/plotly.js"></script>
 <script src="/rmarkdown-libs/typedarray/typedarray.min.js"></script>
 <script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
-<link href="/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<link href="/rmarkdown-libs/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
 <link href="/rmarkdown-libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/plotly-main/plotly-latest.min.js"></script>
@@ -56,7 +58,7 @@ Everything we added to the ggplot aesthetics are now available under
 the tooltip (you can change that).</p>
 <pre class="r"><code>ggplotly(p1)</code></pre>
 <div id="htmlwidget-1" style="width:672px;height:480px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"data":[{"x":[22.8,24.4,22.8,32.4,30.4,33.9,21.5,27.3,26,30.4,21.4],"y":[2.32,3.19,3.15,2.2,1.615,1.835,2.465,1.935,2.14,1.513,2.78],"text":["mpg: 22.8<br />wt: 2.320<br />car: Datsun 710<br />cyl: 4","mpg: 24.4<br />wt: 3.190<br />car: Merc 240D<br />cyl: 4","mpg: 22.8<br />wt: 3.150<br />car: Merc 230<br />cyl: 4","mpg: 32.4<br />wt: 2.200<br />car: Fiat 128<br />cyl: 4","mpg: 30.4<br />wt: 1.615<br />car: Honda Civic<br />cyl: 4","mpg: 33.9<br />wt: 1.835<br />car: Toyota Corolla<br />cyl: 4","mpg: 21.5<br />wt: 2.465<br />car: Toyota Corona<br />cyl: 4","mpg: 27.3<br />wt: 1.935<br />car: Fiat X1-9<br />cyl: 4","mpg: 26.0<br />wt: 2.140<br />car: Porsche 914-2<br />cyl: 4","mpg: 30.4<br />wt: 1.513<br />car: Lotus Europa<br />cyl: 4","mpg: 21.4<br />wt: 2.780<br />car: Volvo 142E<br />cyl: 4"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(248,118,109,1)"}},"hoveron":"points","name":"4","legendgroup":"4","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[21,21,21.4,18.1,19.2,17.8,19.7],"y":[2.62,2.875,3.215,3.46,3.44,3.44,2.77],"text":["mpg: 21.0<br />wt: 2.620<br />car: Mazda RX4<br />cyl: 6","mpg: 21.0<br />wt: 2.875<br />car: Mazda RX4 Wag<br />cyl: 6","mpg: 21.4<br />wt: 3.215<br />car: Hornet 4 Drive<br />cyl: 6","mpg: 18.1<br />wt: 3.460<br />car: Valiant<br />cyl: 6","mpg: 19.2<br />wt: 3.440<br />car: Merc 280<br />cyl: 6","mpg: 17.8<br />wt: 3.440<br />car: Merc 280C<br />cyl: 6","mpg: 19.7<br />wt: 2.770<br />car: Ferrari Dino<br />cyl: 6"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,186,56,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,186,56,1)"}},"hoveron":"points","name":"6","legendgroup":"6","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18.7,14.3,16.4,17.3,15.2,10.4,10.4,14.7,15.5,15.2,13.3,19.2,15.8,15],"y":[3.44,3.57,4.07,3.73,3.78,5.25,5.424,5.345,3.52,3.435,3.84,3.845,3.17,3.57],"text":["mpg: 18.7<br />wt: 3.440<br />car: Hornet Sportabout<br />cyl: 8","mpg: 14.3<br />wt: 3.570<br />car: Duster 360<br />cyl: 8","mpg: 16.4<br />wt: 4.070<br />car: Merc 450SE<br />cyl: 8","mpg: 17.3<br />wt: 3.730<br />car: Merc 450SL<br />cyl: 8","mpg: 15.2<br />wt: 3.780<br />car: Merc 450SLC<br />cyl: 8","mpg: 10.4<br />wt: 5.250<br />car: Cadillac Fleetwood<br />cyl: 8","mpg: 10.4<br />wt: 5.424<br />car: Lincoln Continental<br />cyl: 8","mpg: 14.7<br />wt: 5.345<br />car: Chrysler Imperial<br />cyl: 8","mpg: 15.5<br />wt: 3.520<br />car: Dodge Challenger<br />cyl: 8","mpg: 15.2<br />wt: 3.435<br />car: AMC Javelin<br />cyl: 8","mpg: 13.3<br />wt: 3.840<br />car: Camaro Z28<br />cyl: 8","mpg: 19.2<br />wt: 3.845<br />car: Pontiac Firebird<br />cyl: 8","mpg: 15.8<br />wt: 3.170<br />car: Ford Pantera L<br />cyl: 8","mpg: 15.0<br />wt: 3.570<br />car: Maserati Bora<br />cyl: 8"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(97,156,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(97,156,255,1)"}},"hoveron":"points","name":"8","legendgroup":"8","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":31.4155251141553},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[9.225,35.075],"tickmode":"array","ticktext":["10","15","20","25","30","35"],"tickvals":[10,15,20,25,30,35],"categoryorder":"array","categoryarray":["10","15","20","25","30","35"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"mpg","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.31745,5.61955],"tickmode":"array","ticktext":["2","3","4","5"],"tickvals":[2,3,4,5],"categoryorder":"array","categoryarray":["2","3","4","5"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"wt","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"y":0.913385826771654},"annotations":[{"text":"cyl","x":1.02,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"left","yanchor":"bottom","legendTitle":true}],"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"45d961d6c069":{"x":{},"y":{},"name":{},"colour":{},"type":"scatter"}},"cur_data":"45d961d6c069","visdat":{"45d961d6c069":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"data":[{"x":[22.8,24.4,22.8,32.4,30.4,33.9,21.5,27.3,26,30.4,21.4],"y":[2.32,3.19,3.15,2.2,1.615,1.835,2.465,1.935,2.14,1.513,2.78],"text":["mpg: 22.8<br />wt: 2.320<br />car: Datsun 710<br />cyl: 4","mpg: 24.4<br />wt: 3.190<br />car: Merc 240D<br />cyl: 4","mpg: 22.8<br />wt: 3.150<br />car: Merc 230<br />cyl: 4","mpg: 32.4<br />wt: 2.200<br />car: Fiat 128<br />cyl: 4","mpg: 30.4<br />wt: 1.615<br />car: Honda Civic<br />cyl: 4","mpg: 33.9<br />wt: 1.835<br />car: Toyota Corolla<br />cyl: 4","mpg: 21.5<br />wt: 2.465<br />car: Toyota Corona<br />cyl: 4","mpg: 27.3<br />wt: 1.935<br />car: Fiat X1-9<br />cyl: 4","mpg: 26.0<br />wt: 2.140<br />car: Porsche 914-2<br />cyl: 4","mpg: 30.4<br />wt: 1.513<br />car: Lotus Europa<br />cyl: 4","mpg: 21.4<br />wt: 2.780<br />car: Volvo 142E<br />cyl: 4"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(248,118,109,1)"}},"hoveron":"points","name":"4","legendgroup":"4","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[21,21,21.4,18.1,19.2,17.8,19.7],"y":[2.62,2.875,3.215,3.46,3.44,3.44,2.77],"text":["mpg: 21.0<br />wt: 2.620<br />car: Mazda RX4<br />cyl: 6","mpg: 21.0<br />wt: 2.875<br />car: Mazda RX4 Wag<br />cyl: 6","mpg: 21.4<br />wt: 3.215<br />car: Hornet 4 Drive<br />cyl: 6","mpg: 18.1<br />wt: 3.460<br />car: Valiant<br />cyl: 6","mpg: 19.2<br />wt: 3.440<br />car: Merc 280<br />cyl: 6","mpg: 17.8<br />wt: 3.440<br />car: Merc 280C<br />cyl: 6","mpg: 19.7<br />wt: 2.770<br />car: Ferrari Dino<br />cyl: 6"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,186,56,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,186,56,1)"}},"hoveron":"points","name":"6","legendgroup":"6","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18.7,14.3,16.4,17.3,15.2,10.4,10.4,14.7,15.5,15.2,13.3,19.2,15.8,15],"y":[3.44,3.57,4.07,3.73,3.78,5.25,5.424,5.345,3.52,3.435,3.84,3.845,3.17,3.57],"text":["mpg: 18.7<br />wt: 3.440<br />car: Hornet Sportabout<br />cyl: 8","mpg: 14.3<br />wt: 3.570<br />car: Duster 360<br />cyl: 8","mpg: 16.4<br />wt: 4.070<br />car: Merc 450SE<br />cyl: 8","mpg: 17.3<br />wt: 3.730<br />car: Merc 450SL<br />cyl: 8","mpg: 15.2<br />wt: 3.780<br />car: Merc 450SLC<br />cyl: 8","mpg: 10.4<br />wt: 5.250<br />car: Cadillac Fleetwood<br />cyl: 8","mpg: 10.4<br />wt: 5.424<br />car: Lincoln Continental<br />cyl: 8","mpg: 14.7<br />wt: 5.345<br />car: Chrysler Imperial<br />cyl: 8","mpg: 15.5<br />wt: 3.520<br />car: Dodge Challenger<br />cyl: 8","mpg: 15.2<br />wt: 3.435<br />car: AMC Javelin<br />cyl: 8","mpg: 13.3<br />wt: 3.840<br />car: Camaro Z28<br />cyl: 8","mpg: 19.2<br />wt: 3.845<br />car: Pontiac Firebird<br />cyl: 8","mpg: 15.8<br />wt: 3.170<br />car: Ford Pantera L<br />cyl: 8","mpg: 15.0<br />wt: 3.570<br />car: Maserati Bora<br />cyl: 8"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(97,156,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(97,156,255,1)"}},"hoveron":"points","name":"8","legendgroup":"8","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":31.4155251141553},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[9.225,35.075],"tickmode":"array","ticktext":["10","15","20","25","30","35"],"tickvals":[10,15,20,25,30,35],"categoryorder":"array","categoryarray":["10","15","20","25","30","35"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"mpg","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.31745,5.61955],"tickmode":"array","ticktext":["2","3","4","5"],"tickvals":[2,3,4,5],"categoryorder":"array","categoryarray":["2","3","4","5"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"wt","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"cyl","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"f79614136409":{"x":{},"y":{},"name":{},"colour":{},"type":"scatter"}},"cur_data":"f79614136409","visdat":{"f79614136409":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <p>And that’s it. It’s just a simple trick. Wrap your ggplot in ggplotly and it works.</p>
 <div id="state-of-the-machine" class="section level3">
 <h3>State of the machine</h3>
@@ -66,67 +68,77 @@ At the moment of creation (when I knitted this document ) this was the state of 
 </summary>
 <pre class="r"><code>sessioninfo::session_info()</code></pre>
 <pre><code>## ─ Session info ───────────────────────────────────────────────────────────────
-##  setting  value                       
-##  version  R version 4.0.2 (2020-06-22)
-##  os       macOS  10.16                
-##  system   x86_64, darwin17.0          
-##  ui       X11                         
-##  language (EN)                        
-##  collate  en_US.UTF-8                 
-##  ctype    en_US.UTF-8                 
-##  tz       Europe/Amsterdam            
-##  date     2020-12-30                  
+##  setting  value
+##  version  R version 4.2.0 (2022-04-22)
+##  os       macOS Big Sur/Monterey 10.16
+##  system   x86_64, darwin17.0
+##  ui       X11
+##  language (EN)
+##  collate  en_US.UTF-8
+##  ctype    en_US.UTF-8
+##  tz       Europe/Amsterdam
+##  date     2022-11-09
+##  pandoc   2.18 @ /Applications/RStudio.app/Contents/MacOS/quarto/bin/tools/ (via rmarkdown)
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
-##  package     * version date       lib source                           
-##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 4.0.2)                   
-##  blogdown      0.21.70 2020-12-30 [1] Github (rstudio/blogdown@4f6d023)
-##  bookdown      0.21    2020-10-13 [1] CRAN (R 4.0.2)                   
-##  cli           2.2.0   2020-11-20 [1] CRAN (R 4.0.2)                   
-##  colorspace    2.0-0   2020-11-11 [1] CRAN (R 4.0.2)                   
-##  crayon        1.3.4   2017-09-16 [1] CRAN (R 4.0.2)                   
-##  crosstalk     1.1.0.1 2020-03-13 [1] CRAN (R 4.0.2)                   
-##  data.table    1.13.4  2020-12-08 [1] CRAN (R 4.0.2)                   
-##  digest        0.6.27  2020-10-24 [1] CRAN (R 4.0.2)                   
-##  dplyr         1.0.2   2020-08-18 [1] CRAN (R 4.0.2)                   
-##  ellipsis      0.3.1   2020-05-15 [1] CRAN (R 4.0.2)                   
-##  evaluate      0.14    2019-05-28 [1] CRAN (R 4.0.1)                   
-##  fansi         0.4.1   2020-01-08 [1] CRAN (R 4.0.2)                   
-##  farver        2.0.3   2020-01-16 [1] CRAN (R 4.0.2)                   
-##  generics      0.1.0   2020-10-31 [1] CRAN (R 4.0.2)                   
-##  ggplot2     * 3.3.2   2020-06-19 [1] CRAN (R 4.0.2)                   
-##  glue          1.4.2   2020-08-27 [1] CRAN (R 4.0.2)                   
-##  gtable        0.3.0   2019-03-25 [1] CRAN (R 4.0.2)                   
-##  htmltools     0.5.0   2020-06-16 [1] CRAN (R 4.0.2)                   
-##  htmlwidgets   1.5.3   2020-12-10 [1] CRAN (R 4.0.2)                   
-##  httr          1.4.2   2020-07-20 [1] CRAN (R 4.0.2)                   
-##  jsonlite      1.7.2   2020-12-09 [1] CRAN (R 4.0.2)                   
-##  knitr         1.30    2020-09-22 [1] CRAN (R 4.0.2)                   
-##  labeling      0.4.2   2020-10-20 [1] CRAN (R 4.0.2)                   
-##  lazyeval      0.2.2   2019-03-15 [1] CRAN (R 4.0.2)                   
-##  lifecycle     0.2.0   2020-03-06 [1] CRAN (R 4.0.2)                   
-##  magrittr      2.0.1   2020-11-17 [1] CRAN (R 4.0.2)                   
-##  munsell       0.5.0   2018-06-12 [1] CRAN (R 4.0.2)                   
-##  pillar        1.4.7   2020-11-20 [1] CRAN (R 4.0.2)                   
-##  pkgconfig     2.0.3   2019-09-22 [1] CRAN (R 4.0.2)                   
-##  plotly      * 4.9.2.2 2020-12-19 [1] CRAN (R 4.0.2)                   
-##  purrr         0.3.4   2020-04-17 [1] CRAN (R 4.0.2)                   
-##  R6            2.5.0   2020-10-28 [1] CRAN (R 4.0.2)                   
-##  rlang         0.4.9   2020-11-26 [1] CRAN (R 4.0.2)                   
-##  rmarkdown     2.6     2020-12-14 [1] CRAN (R 4.0.2)                   
-##  scales        1.1.1   2020-05-11 [1] CRAN (R 4.0.2)                   
-##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 4.0.2)                   
-##  stringi       1.5.3   2020-09-09 [1] CRAN (R 4.0.2)                   
-##  stringr       1.4.0   2019-02-10 [1] CRAN (R 4.0.2)                   
-##  tibble        3.0.4   2020-10-12 [1] CRAN (R 4.0.2)                   
-##  tidyr         1.1.2   2020-08-27 [1] CRAN (R 4.0.2)                   
-##  tidyselect    1.1.0   2020-05-11 [1] CRAN (R 4.0.2)                   
-##  vctrs         0.3.6   2020-12-17 [1] CRAN (R 4.0.2)                   
-##  viridisLite   0.3.0   2018-02-01 [1] CRAN (R 4.0.1)                   
-##  withr         2.3.0   2020-09-22 [1] CRAN (R 4.0.2)                   
-##  xfun          0.19    2020-10-30 [1] CRAN (R 4.0.2)                   
-##  yaml          2.2.1   2020-02-01 [1] CRAN (R 4.0.2)                   
+##  package     * version date (UTC) lib source
+##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 4.2.0)
+##  blogdown      1.10    2022-05-10 [1] CRAN (R 4.2.0)
+##  bookdown      0.27    2022-06-14 [1] CRAN (R 4.2.0)
+##  bslib         0.4.0   2022-07-16 [1] CRAN (R 4.2.0)
+##  cachem        1.0.6   2021-08-19 [1] CRAN (R 4.2.0)
+##  cli           3.3.0   2022-04-25 [1] CRAN (R 4.2.0)
+##  colorspace    2.0-3   2022-02-21 [1] CRAN (R 4.2.0)
+##  crosstalk     1.2.0   2021-11-04 [1] CRAN (R 4.2.0)
+##  data.table    1.14.2  2021-09-27 [1] CRAN (R 4.2.0)
+##  DBI           1.1.3   2022-06-18 [1] CRAN (R 4.2.0)
+##  digest        0.6.29  2021-12-01 [1] CRAN (R 4.2.0)
+##  dplyr         1.0.9   2022-04-28 [1] CRAN (R 4.2.0)
+##  evaluate      0.15    2022-02-18 [1] CRAN (R 4.2.0)
+##  fansi         1.0.3   2022-03-24 [1] CRAN (R 4.2.0)
+##  farver        2.1.1   2022-07-06 [1] CRAN (R 4.2.0)
+##  fastmap       1.1.0   2021-01-25 [1] CRAN (R 4.2.0)
+##  generics      0.1.3   2022-07-05 [1] CRAN (R 4.2.0)
+##  ggplot2     * 3.3.6   2022-05-03 [1] CRAN (R 4.2.0)
+##  glue          1.6.2   2022-02-24 [1] CRAN (R 4.2.0)
+##  gtable        0.3.0   2019-03-25 [1] CRAN (R 4.2.0)
+##  highr         0.9     2021-04-16 [1] CRAN (R 4.2.0)
+##  htmltools     0.5.3   2022-07-18 [1] CRAN (R 4.2.0)
+##  htmlwidgets   1.5.4   2021-09-08 [1] CRAN (R 4.2.0)
+##  httr          1.4.3   2022-05-04 [1] CRAN (R 4.2.0)
+##  jquerylib     0.1.4   2021-04-26 [1] CRAN (R 4.2.0)
+##  jsonlite      1.8.0   2022-02-22 [1] CRAN (R 4.2.0)
+##  knitr         1.39    2022-04-26 [1] CRAN (R 4.2.0)
+##  labeling      0.4.2   2020-10-20 [1] CRAN (R 4.2.0)
+##  lazyeval      0.2.2   2019-03-15 [1] CRAN (R 4.2.0)
+##  lifecycle     1.0.1   2021-09-24 [1] CRAN (R 4.2.0)
+##  magrittr      2.0.3   2022-03-30 [1] CRAN (R 4.2.0)
+##  munsell       0.5.0   2018-06-12 [1] CRAN (R 4.2.0)
+##  pillar        1.8.0   2022-07-18 [1] CRAN (R 4.2.0)
+##  pkgconfig     2.0.3   2019-09-22 [1] CRAN (R 4.2.0)
+##  plotly      * 4.10.0  2021-10-09 [1] CRAN (R 4.2.0)
+##  purrr         0.3.5   2022-10-06 [1] CRAN (R 4.2.0)
+##  R6            2.5.1   2021-08-19 [1] CRAN (R 4.2.0)
+##  rlang         1.0.6   2022-09-24 [1] CRAN (R 4.2.0)
+##  rmarkdown     2.14    2022-04-25 [1] CRAN (R 4.2.0)
+##  rstudioapi    0.13    2020-11-12 [1] CRAN (R 4.2.0)
+##  sass          0.4.2   2022-07-16 [1] CRAN (R 4.2.0)
+##  scales        1.2.0   2022-04-13 [1] CRAN (R 4.2.0)
+##  sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.2.0)
+##  stringi       1.7.8   2022-07-11 [1] CRAN (R 4.2.0)
+##  stringr       1.4.1   2022-08-20 [1] CRAN (R 4.2.0)
+##  tibble        3.1.8   2022-07-22 [1] CRAN (R 4.2.0)
+##  tidyr         1.2.0   2022-02-01 [1] CRAN (R 4.2.0)
+##  tidyselect    1.1.2   2022-02-21 [1] CRAN (R 4.2.0)
+##  utf8          1.2.2   2021-07-24 [1] CRAN (R 4.2.0)
+##  vctrs         0.4.1   2022-04-13 [1] CRAN (R 4.2.0)
+##  viridisLite   0.4.0   2021-04-13 [1] CRAN (R 4.2.0)
+##  withr         2.5.0   2022-03-03 [1] CRAN (R 4.2.0)
+##  xfun          0.31    2022-05-10 [1] CRAN (R 4.2.0)
+##  yaml          2.3.5   2022-02-21 [1] CRAN (R 4.2.0)
 ## 
-## [1] /Library/Frameworks/R.framework/Versions/4.0/Resources/library</code></pre>
+##  [1] /Library/Frameworks/R.framework/Versions/4.2/Resources/library
+## 
+## ──────────────────────────────────────────────────────────────────────────────</code></pre>
 </details>
 </div>

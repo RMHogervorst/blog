@@ -32,6 +32,12 @@ unsafe= true
   wordCount = true
   showRelatedPosts = true
 
+[taxonomies]
+   category = 'categories'
+   tag = 'tags'
+   post-type = 'post-type'
+   difficulty = 'difficulty'
+
 [Author]
   name = "Roel M. Hogervorst"
   website = "rmhogervorst.nl"

@@ -1,18 +1,21 @@
 ---
 title: Tweeting daily famous deaths from wikidata to twitter with R and docker
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "'valar morghulis', A bot that tweets deaths from wikidata."
+post-type:
+  - tutorial
 date: '2018-11-19'
 slug: tweeting-wikidata-info
 categories:
   - blog
   - R
 tags:
-  - intermediate
   - rtweet
   - wikidata
   - sparql
   - docker
-  - tutorial
   - glue
   - WikidataQueryServiceR
   - wikipedia

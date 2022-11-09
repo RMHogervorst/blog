@@ -1,13 +1,16 @@
 ---
 title: If blogging was like academia, we would all be saved, thank you for your edits.
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - beginner
+post-type:
+  - thoughts
 date: '2017-12-19'
 categories:
   - blog
   - R
 tags:
-  - beginner
-  - version-control
+  - inspiration
 slug: if-blogging-was-like-academia
 ---
 

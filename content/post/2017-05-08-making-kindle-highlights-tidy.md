@@ -1,13 +1,15 @@
 ---
 title: Turning kindle notes into a tidy data
-author: roel_hogervorst
+author: Roel M. Hogervorst
+difficulty:
+  - beginner
+post-type:
+  - tutorial
 date: '2017-05-08'
 categories:
   - blog
   - R
 tags:
-  - tutorial
-  - beginner
   - kindle
   - tidyverse
   - stringr

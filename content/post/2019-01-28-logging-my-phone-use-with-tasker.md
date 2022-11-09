@@ -1,15 +1,18 @@
 ---
 title: Logging my phone use with tasker
-author: Roel M. Hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "How do you set up tasker on your phone to log phone use."
+post-type:
+  - tutorial
 date: '2019-01-28'
 slug: logging-my-phone-use-with-tasker
 categories:
   - blog
 tags:
   - tasker
-  - intermediate
   - phone
-subtitle: ''
 share_img: https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139
 ---
 

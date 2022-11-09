@@ -4,13 +4,23 @@ author: Roel M. Hogervorst
 date: '2021-11-08'
 lastmod: '2021-11-22'
 slug: should-i-move-to-a-database
+description: "Using R or python, when should you consider using a database instead of a dataframe?"
+difficulty:
+  - intermediate
+  - advanced
+post-type:
+  - post
 categories:
   - blog
   - R
 tags:
-  - intermediate
-  - advanced
-subtitle: ''
+  - dataframe
+  - database
+  - python
+  - duckdb
+  - sqlite
+  - pandas
+  - polars
 share_img: '/img/big_data.gif'
 ---
 

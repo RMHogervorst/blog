@@ -1,6 +1,11 @@
 ---
 title: Where to live in the Netherlands based on temperature XKCD style
-author: roel_hogervorst
+author: Roel M. Hogervorst 
+difficulty:
+  - intermediate
+description: "Showint you how to build this dataset and how to make a nice plot"
+post-type:
+  - walkthrough
 date: '2017-11-20'
 categories:
   - blog
@@ -14,6 +19,7 @@ tags:
   - readr
   - Netherlands
 slug: xkcd-the-netherlands-weather
+share_img: /img/xkcd_NL_US_ESP.png
 ---
 
 After seeing a plot of best places to live in Spain and the USA based on the weather, I had to 
@@ -22,18 +28,23 @@ chime in and do the same thing for the Netherlands. The idea is simple, determin
 First the end result:
 ![Netherlands, weatherplot XKCD style](/img/xkcd_NL_US_ESP.png)
  
+ This post explains how to make the plot, to see  where I got the data and what procedures I took look at <https://github.com/RMHogervorst/xkcd_weather_cities_nl>.
+
+
 How to read this plot?
 
+### Inspiration
+![](https://imgs.xkcd.com/comics/temperature_preferences.png)
 In [this](https://xkcd.com/1916/) xkcd comic we see that the topleft of the the graph represents "if you hate cold and hate heat", if you go down from the topleft to the bottom left the winters get colder and ending in "if you love cold and hate heat". Going to the right the heat (and humidity) go up ending in "if you love cold and love heat". Going up to the top right: "if you hate cold and love heat". 
 
-This post explains how to make the plot, to see  where I got the data and what procedures I took look at <https://github.com/RMHogervorst/xkcd_weather_cities_nl>.
 
-### Inspiration
 
 According to this [post by Maële Salmon](http://www.masalmon.eu/2017/11/16/wheretoliveus/) inspired by xkcd, we can determine our ideal city by looking at wintertemperature and humidex (combination of humidity and summer heat).
 
 I've seen major cities in the USA (post by Maelle) and where to live in Spain [by Claudia Guirao](https://twitter.com/claudiaguirao/status/931615734521909248). There is even one on France [in French, of course](https://twitter.com/matamix/status/932283897018273792).
 
+
+### Making the plot
 So I had to make one for the Netherlands too. There is just a small detail, 
 The Netherlands is tiny, the United States is approximately 237 times larger then The Netherlands. From The Hague to the German border directly east is 164 km (101 miles) and from Leeuwarden to Maastricht in the south is 262 km (162 miles). Essentially my home country has a moderate sea climate with warm summers and relatively mild winters. 
 
@@ -172,6 +183,7 @@ result %>%
     scale_color_continuous(low = "white", high = "red")
 ```
 ![Netherlands, humidex, gps](/img/humidex_NL.png)
+
 ![Netherlands, wintertemp, gps](/img/wintertemp_NL.png)
 
 

@@ -1,14 +1,16 @@
 ---
 title: Writing manuscripts in Rstudio, easy citations
-author: roel_hogervorst
+author: Roel M. Hogervorst
+difficulty:
+  - intermediate
+post-type:
+  - tutorial
 date: '2017-03-14'
 categories:
   - blog
   - R
 tags:
   - citations
-  - intermediate
-  - tutorial
   - writing
   - reproducible
   - bibtex

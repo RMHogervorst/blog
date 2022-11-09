@@ -1,14 +1,19 @@
 ---
 title: Introduction to R projects
-author: roel_hogervorst
+author: Roel M. Hogervorst
+description: 
+difficulty:
+  - beginner
+post-type:
+  - tutorial
 date: '2016-04-10'
 categories:
   - blog
   - R
 tags:
-  - beginner
   - rproject
   - git
+  - rstudio
 slug: rproject-start
 ---
 

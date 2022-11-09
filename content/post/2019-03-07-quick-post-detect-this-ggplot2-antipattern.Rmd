@@ -3,6 +3,11 @@ title: Quick post - detect and fix this ggplot2 antipattern
 author: Roel M. Hogervorst
 date: '2019-03-07'
 slug: quick-post-detect-this-ggplot2-antipattern
+description: "Stop adding geom_* layers and maybe reorder your data?"
+difficulty:
+  - beginner
+post-type:
+  - post
 categories:
   - R
 tags:
@@ -14,7 +19,6 @@ tags:
   - data:mtcars
   - antipattern
   - quickthoughts
-subtitle: ''
 share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
 ---
 
