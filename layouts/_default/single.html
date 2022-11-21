@@ -29,15 +29,15 @@
           <div>
             More posts of level: 
             {{ range .Params.difficulty }}
-              <a href="{{ $.Site.LanguagePrefix | absURL }}difficulty/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+              <a href="{{ $.Site.LanguagePrefix | absURL }}/difficulty/{{ . | urlize }}/">{{ . }}</a>&nbsp;
             {{ end }}
           </div>
         {{ end }}
-        {{ if .Params.post_type }}
+        {{ if .Params.post-type }}
           <div>
             More : 
             {{ range .Params.post_type }}
-              <a href="{{ $.Site.LanguagePrefix | absURL }}post-type/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+              <a href="{{ $.Site.LanguagePrefix | absURL }}/post-type/{{ . | urlize }}/">{{ . }}</a>&nbsp;
             {{ end }}
             posts.
           </div>
