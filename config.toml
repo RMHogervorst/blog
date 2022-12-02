@@ -55,7 +55,7 @@ unsafe= true
 
 [[menu.main]]
     name = "Blog"
-    url = ""
+    url = "/"
     weight = 1
 
 [[menu.main]]
@@ -72,7 +72,6 @@ unsafe= true
     name = "search and more "
     url = "search_and_more/"
     weight = 4
-
 
 [outputs]
    home = [ "HTML", "JSON" ]

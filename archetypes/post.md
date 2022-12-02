@@ -5,6 +5,7 @@ date: {{ .Date }}
 categories:
   - blog
 subtitle: ""
+image: ""
 share_img: 'https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif'
 # 'output' is necessary to obtain index.md
 # Do not commit index.html
