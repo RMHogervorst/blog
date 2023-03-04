@@ -30,7 +30,7 @@ Some work needs superb results, results you don't know if you can reach it but y
 
 ![engineers on a construction site, shot from an angle](scott-blake-x-ghf9LjrVg-unsplash.jpg)
 
-What does this mean for data science work? 
+## What does this mean for data science work? 
 
 Some parts of data science projects need to be high variance, you want to run as many different experiments as you can, in the hope you find a great solution:
 experiment with different models, different hyperparameter values, hell even try to figure out if the problem description can be interpreted differently. This is high-variance work.
