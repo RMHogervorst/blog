@@ -10,6 +10,7 @@ pygmentsUseClassic = true
 enableEmoji = true
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "index\\.html",  "\\.knit\\.md$", "\\.utf8\\.md$"]
 publishDir = "public"
+ignoreErrors = ["error-remote-getjson"]
 
 [markup.goldmark.renderer]
 unsafe= true
