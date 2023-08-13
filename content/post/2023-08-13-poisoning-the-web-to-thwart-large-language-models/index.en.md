@@ -62,7 +62,7 @@ Even before the rise of LLMs. The web was already filled with low quality conten
 
 - SEO optimized shit. There are a gazillion websites that have text to lure search machines and rank as high as possible.
 - SEO optimized adfraud websites: There are websites that are only visited by bots (including the google and open AI bot) that are never seen by humans. The only reason they exist is because they contain ads that are clicked on by other bots. 
-- With the rise of LLMs it is easier than ever to create word salads to spam people with. These are new variants of the two versions  I mentioned above. There is some talk that 'AI'-companies are so worried that they will train their models on model outputs and therefor make their models worse. PUT SOMETHING HERE ABOUT MECHANICAL TURK UNDERPAYING AND OF COURSE THEY USE TOOLS TO MAKE THEIR WORK FASTER AND EASIER. 
+- With the rise of LLMs it is easier than ever to create word salads to spam people with. These are new variants of the two versions  I mentioned above. There is some talk that 'AI'-companies are so worried that they will train their models on model outputs and therefor make their models worse. If you underpay people on mechanical turk, of course they will use tools to optimize their work. That tool will often be some sort of AI tool.
 - There are many, many loony websites. well meaning dimwits who think you can cure cancer with supplements and herbs. and charlatans selling to those people. It is cheap to build a website. 
 
 So large swamps of the internet are already shit quality. 
