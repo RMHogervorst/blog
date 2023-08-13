@@ -12,8 +12,8 @@ difficulty:
 post-type:
   - thoughts
 subtitle: 'Consistency or peaks, pick one'
-image: blog/2023/06/06/high-and-low-variance-in-data-science-work/pritesh-sudra-hG26UoUfU9s-unsplash.jpg
-share_img: 'blog/2023/06/06/high-and-low-variance-in-data-science-work/pritesh-sudra-hG26UoUfU9s-unsplash.jpg'
+share_img: '/blog/2023/06/06/high-and-low-variance-in-data-science-work/pritesh-sudra-hG26UoUfU9s-unsplash.jpg'
+image: /blog/2023/06/06/high-and-low-variance-in-data-science-work/pritesh-sudra-hG26UoUfU9s-unsplash.jpg
 ---
 
 I recently read ["High Variance Management" by Sebas Bensu](https://blog.sbensu.com/posts/2023-01-18-high-variance-management/) and this
