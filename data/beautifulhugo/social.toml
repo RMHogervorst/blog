@@ -171,3 +171,9 @@ id = "orchid"
 url= "https://orcid.org/%s"
 title="(Academic) publications linked to ORCHID"
 icon= "fab fa-orcid"
+
+[[social_icons]]
+id = "r-universe"
+url= "https:%s.r-universe.dev/"
+title="Personal R universe"
+icon= "fa fa-rocket"
