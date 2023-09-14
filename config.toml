@@ -47,12 +47,12 @@ unsafe= true
   github = "RMHogervorst"
   gitlab = "rmhogervorst"
   bitbucket = "RMHogervorst"
-  twitter = "RoelMHogervorst"
   linkedin = "rmhogervorst"
   stackoverflow = "users/5573955/roel-hogervorst"
   devto = "rmhogervorst"
   mastodon = "mastodon.world/@rmhogervorst"
   orchid = "0000-0001-7509-0328"
+  r-universe = "rmhogervorst"
 
 [[menu.main]]
     name = "Blog"
