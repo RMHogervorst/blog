@@ -5,13 +5,14 @@ date: '2023-08-13'
 slug: poisoning-the-web-to-thwart-large-language-models
 categories:
   - blog
+difficulty:
+  - intermediate
 tags:
   - LLMs
   - poisoning the well
   - problematic training data
   - civil disobedience
 subtitle: 'Be the language model failure mode you want to see in the taco.'
-image: ''
 share_img: /blog/2023/08/13/poisoning-the-web-to-thwart-large-language-models/gary-meulemans-J8sh37XZ8ww-unsplash.jpg
 image: /blog/2023/08/13/poisoning-the-web-to-thwart-large-language-models/gary-meulemans-J8sh37XZ8ww-unsplash.jpg
 ---
