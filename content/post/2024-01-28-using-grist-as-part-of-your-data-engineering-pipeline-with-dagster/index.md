@@ -1,35 +1,31 @@
 ---
 title: Using Grist as Part of your Data Engineering Pipeline with Dagster
 author: Roel M. Hogervorst
-date: '2024-01-26'
+date: '2024-01-28'
 categories:
   - blog
 tags:
-  - dagster
-  - grist
-  - data_engineering
   - advanced
+  - Dagster
+  - data_engineering
   - data_science
-  - spreadsheets
+  - grist
   - quickthoughts
-subtitle: 'Human-in-the-loop workflows'
-image: ''
-share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+  - spreadsheets
+subtitle: Human-in-the-loop workflows
+image: /blog/2024/01/26/using-grist-as-part-of-your-data-engineering-pipeline-with-dagster/grist-dagster-user-in-the-middle.png
+share_img: /blog/2024/01/26/using-grist-as-part-of-your-data-engineering-pipeline-with-dagster/grist-dagster.png
 ---
-
-
-<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
-
 
 <!-- content  -->
 
-I haven't tested this yet, but I see a very powerful combination with dagster assets and grist. First something about spreadsheets
+I haven't tested this yet, but I see a very powerful combination with Dagster assets and grist. First something about spreadsheets
 
-## dagster en grist?
+## Dagster en grist?
 Grist is something like google sheets, but more powerful, opensource and self-hostable.
-Dagster is an orchestrator for data, if you are familiar with airflow it is like that, but in my opinion way better for most of my work. If you don't know airflow, or dagster, this post is not very relevant for you. 
+Dagster is an orchestrator for data, if you are familiar with airflow it is like that, but in my opinion way better for most of my work. If you don't know airflow, or Dagster, this post is not very relevant for you. 
 
-Anyways, before I move into dagster + grist first a diversion into spreadsheets.
+Anyways, before I move into Dagster + grist first a diversion into spreadsheets.
 
 ## Spreadsheets, love and hate
 Spreadsheets have many uses, Excel is used everywhere, because so many people have it on their work computer. Many companies run entirely on excel. Scientific studies are done with the tool, It clearly is useful! But how is it used?
@@ -37,7 +33,7 @@ Spreadsheets have many uses, Excel is used everywhere, because so many people ha
 Excel is used as a presentation tool, calculator and for its graphing capabilities. There are way too many dashboards build on excel. But what it really boils down to is this:
 The tool is used to (1) hold data, and (2) to perform calculations on data.  
 
-What bothers me, and other data scientist and engineers, is the combination of data holding, too free form possibilities and no version control. 
+What bothers me, and other data scientist and engineers, is the combination of data holding, and calculations in the same document, too free form possibilities and no version control. 
 
 **So the good:**
 
@@ -85,12 +81,28 @@ For many teams, a spreadsheet is the perfect fit, they know how it works, it wor
 
 But this does not scale at all and is very error prone. Excel loves to change data formats in columns, excel can only be used by one person at the time (365 does it slightly better). 
 
-I have used Google spreadsheets -> dagster route before, it works but you have
+I have used Google spreadsheets -> Dagster route before, it works but you have
 to be very defensive in your programming too, you can lock down some parts of sheets. This is a good option, but you need a cloud provider (Google).
 
-But recently I came across [grist](). It has many powerful spreadsheet properties but crucially, we can lock columns to only admit certain kinds of data, it has usermanagement and we can even lock rows. It also has an API that you can talk to.
+But recently I came across [grist](https://www.getgrist.com/product/). It has many powerful spreadsheet properties but crucially, we can lock columns to only admit certain kinds of data, it has usermanagement and we can even lock rows. It also has an API that you can talk to.
 
+## Grist as spreadsheet in the pipeline
+Here is how I see it being killer!
 
+- **spreadsheet as dynamic input data**: part of the data is owned and maintained by people outside the engineering team.  Create a locked down 'sheet' with only the columns you need. Give access to people^[integrate it into their systems too, so that it becomes the only source of truth]. Read that sheet from the API as an asset in Dagster. 
+
+- **verification of a step in the pipeline**: Write your data to a grist spreadsheet and add some columns that will be used by that team (lock everything else down). If the team is done with the checks, webhooks will update the Dagster asset, so you know it is done.  (you might want to make this a different asset and build the rest of pipeline).
+
+![](grist-dagster.png)
+
+More advanced tricks
+- There are webhooks in Grist, so you can let Dagster know that the data is updated, by [calling the Dagster-REST-api to report an asset materialization](https://docs.dagster.io/concepts/assets/external-assets#using-the-rest-api)
+
+- Create an abstraction to pull data from a sheet, and to write data to a sheet (from and to a dataframe). (an IO manager for instance) 
+
+- if you self-host grist, create some logic to hack the database to add more admin users, and add users to groups without using the frontend. 
+
+![](grist-dagster-user-in-the-middle.png)
 
 
 # Further reading
