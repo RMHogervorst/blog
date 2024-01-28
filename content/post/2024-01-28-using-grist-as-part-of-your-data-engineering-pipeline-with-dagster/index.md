@@ -13,8 +13,8 @@ tags:
   - quickthoughts
   - spreadsheets
 subtitle: Human-in-the-loop workflows
-image: /blog/2024/01/26/using-grist-as-part-of-your-data-engineering-pipeline-with-dagster/grist-dagster-user-in-the-middle.png
-share_img: /blog/2024/01/26/using-grist-as-part-of-your-data-engineering-pipeline-with-dagster/grist-dagster.png
+image: /blog/2024/01/28/using-grist-as-part-of-your-data-engineering-pipeline-with-dagster/grist-dagster-user-in-the-middle.png
+share_img: /blog/2024/01/28/using-grist-as-part-of-your-data-engineering-pipeline-with-dagster/grist-dagster.png
 ---
 
 <!-- content  -->
