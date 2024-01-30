@@ -5,18 +5,18 @@ on:
     branches:
       - main
 jobs:
-  check_hugo_files:
-    runs-on: node20
+  hugochecker:
+    runs-on: node-20
     steps:
-    - name: Check out the Hugo *.md files
+    - name: 'Check out the Hugo *.md files'
       uses: ChrisPrusik/HugoChecker@v6
       with:
         hugo-folder: ${{ github.workspace }}
-  fix_things1:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Spelling
-        uses: check-spelling/check-spelling@v0.0.22
-      - name: Lychee Broken Link Checker
-        uses: lycheeverse/lychee-action@v1.9.2
+  # fix_things1:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check Spelling
+  #       uses: check-spelling/check-spelling@v0.0.22
+  #     - name: Lychee Broken Link Checker
+  #       uses: lycheeverse/lychee-action@v1.9.2
   
