@@ -6,7 +6,7 @@ on:
       - main
 jobs:
   check_hugo_files:
-    runs-on: node-20
+    runs-on: node20
     steps:
     - name: Check out the Hugo *.md files
       uses: ChrisPrusik/HugoChecker@v6
@@ -19,7 +19,4 @@ jobs:
         uses: check-spelling/check-spelling@v0.0.22
       - name: Lychee Broken Link Checker
         uses: lycheeverse/lychee-action@v1.9.2
-        
-runs:
-  steps:
-    -
+  
