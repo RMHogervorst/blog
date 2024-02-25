@@ -11,8 +11,8 @@ tags:
 difficulty:
   - intermediate
 subtitle: 'File structures should make your work easier'
-image: '/post/2024/02/24/evolution-of-our-dagster-file-organization/american-public-power-association-fHLdXfURDhA-unsplash.jpg'
-share_img: '/post/2024/02/24/evolution-of-our-dagster-file-organization/american-public-power-association-fHLdXfURDhA-unsplash.jpg'
+image: '/blog/2024/02/24/evolution-of-our-dagster-file-organization/american-public-power-association-fHLdXfURDhA-unsplash.jpg'
+share_img: '/blog/2024/02/24/evolution-of-our-dagster-file-organization/american-public-power-association-fHLdXfURDhA-unsplash.jpg'
 ---
 
 
