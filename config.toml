@@ -42,15 +42,13 @@ unsafe= true
 [Author]
   name = "Roel M. Hogervorst"
   website = "rmhogervorst.nl"
-  email = "hogervorst.rm@gmail.com"
-  keybase = "rmhogervorst"
+  email = "hogervorst.rm+blog@gmail.com"
   github = "RMHogervorst"
   gitlab = "rmhogervorst"
   bitbucket = "RMHogervorst"
   linkedin = "rmhogervorst"
-  stackoverflow = "users/5573955/roel-hogervorst"
   devto = "rmhogervorst"
-  mastodon = "mastodon.world/@rmhogervorst"
+  mastodon = "fosstodon.org/@rmhogervorst"
   orchid = "0000-0001-7509-0328"
   r-universe = "rmhogervorst"
 
