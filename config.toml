@@ -19,7 +19,7 @@ unsafe= true
     post = "/blog/:year/:month/:day/:slug/"
 
 [Params]
-  subtitle = "Tips about clean R-code and reproducible work, but also fun!"
+  subtitle = "Machine learning operations, data science and fun!"
   logo = "img/avatar-icon.png"
   favicon = "img/favicon.ico"
   dateFormat = "January 2, 2006"
