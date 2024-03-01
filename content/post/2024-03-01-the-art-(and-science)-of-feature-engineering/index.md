@@ -84,7 +84,7 @@ Throwing away missing values without investigation is a sin. There are good reas
 - 	Find out why data is missing, and model your features based on that.
 
 ## Best practices for sanity
-Finally some recommondations to keep you sane.
+Finally some recommendations to keep you sane.
 - setup your experiments so you can **iterate fast**: that might mean using a bigger machine in the cloud. Or several processes in parallel. *(Your salary is probably a bigger cost than the cloud costs you incur)*
 - use **templating** for new projects: like cookiecutter for python, to make sure you always create the same layout of new projects. 
 
