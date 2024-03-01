@@ -2,7 +2,7 @@
 title: The art (and science) of feature engineering
 description: best practices from science, and engineering
 subtitle: combining best practices from science, and engineering
-date: 2024-03-01T15:11:00.303Z
+date: 2024-03-01
 preview: ""
 draft: false
 tags:
@@ -17,7 +17,6 @@ post-type:
     - post
 share_img: /blog/2024/03/01/the-art-and-science-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesandmilk.png
 image: /blog/2024/03/01/the-art-and-science-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesandmilk.png
-#/blog/2024/01/28/using-grist-as-part-of-your-data-engineering-pipeline-with-dagster/grist-dagster-user-in-the-middle.png
 ---
 
 Data scientists, in general, do not just throw data into a model. They use feature engineering; transforming input data to make it easy for the chosen machine learning algorithm to pick up the subtleties in the data. Data scientists do this so the model can predict outcomes better. 
