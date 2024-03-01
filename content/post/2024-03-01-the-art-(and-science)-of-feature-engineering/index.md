@@ -15,8 +15,8 @@ difficulty:
     - beginner
 post-type:
     - post
-share_img: /post/2024-03-01-the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
-image: /post/2024-03-01-the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
+share_img: /post/2024/03/01/the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
+image: /post/2024/03/01/the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
 ---
 
 Data scientists, in general, do not just throw data into a model. They use feature engineering; transforming input data to make it easy for the chosen machine learning algorithm to pick up the subtleties in the data. Data scientists do this so the model can predict outcomes better. 
