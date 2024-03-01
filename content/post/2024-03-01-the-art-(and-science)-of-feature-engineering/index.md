@@ -2,7 +2,7 @@
 title: The art (and science) of feature engineering
 description: best practices from science, and engineering
 subtitle: ""
-date: 2024-03-01T13:49:48.000Z
+date: 2024-03-01T15:11:00.303Z
 preview: ""
 draft: false
 tags:
@@ -15,24 +15,26 @@ difficulty:
     - beginner
 post-type:
     - post
-share_img: post/2024-03-01-the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
-image: post/2024-03-01-the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
+share_img: /post/2024-03-01-the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
+image: /post/2024-03-01-the-art-(and-science)-of-feature-engineering/CatherineBreslin-RensDimmendaalStrawberriesand milk-1280x320.png
 ---
 
 Data scientists, in general, do not just throw data into a model. They use feature engineering; transforming input data to make it easy for the chosen machine learning algorithm to pick up the subtleties in the data. Data scientists do this so the model can predict outcomes better. 
 
-#TODO add image here
+![A diagram of raw data into numeric data](FEpicture.png)
 
 In this article I'll discuss why we still need feature engineering (FE) in the age of Large language models, and what some best practices are.
 
 # We still need feature engineering
-With all the talk about Large Language Models (LLMs) you would think that we don't need feature engineering anymore. And it is true that deep learning models (like LLMs) need less feature engineering, but not zero. We still need to transform the input data. 
-Furthermore while deep learning models are amazing at freeform text, images and sound inputs, many machine learning problems have a mix of numeric and categorical variables as input; data that fits into a (large) spreadsheet, and in those cases deep learning is not the first choice. In fact the majority of actual Machine Learning applications in production are not deep learning models at all. Other techniques are way more efficient and powerful and will continue to be used in the future. For those models we still need extensive feature engineering.
+With all the talk about Large Language Models (LLMs) you would think that we don't need feature engineering anymore. LLMs are deep neural networks, and neural networks need less feature engineering. But like every machine learning model you still need to transform your data into numeric values. 
+Deep learning models are amazing at freeform text, images and sound inputs. However, many machine learning problems have a mix of numeric and categorical variables as input; data that fits into a (large) spreadsheet. In those cases deep learning is not the first choice. In fact the majority of actual Machine Learning applications in production are not deep learning models at all! Other techniques are way more efficient and powerful and will continue to be used in the future. For those models we still need extensive feature engineering.
 
 <img src="CatherineBreslin-RensDimmendaalStrawberriesand%20milk-1280x320.png" alt="This picture is made up of 3 images in a row, on a grey background. The first picture is an original photograph of a bowl of fresh strawberries, contrasted against the white bowl they are in a small white bottle of milk. In the middle, the photograph is now broken down into blocks of colour in the shape of the original strawberries. The final picture has been broken down even more, to the extent that the large blocks of colour are now no longer recognisable as strawberries and milk." longdesc="https://betterimagesofai.org/images?artist=CatherineBreslin&title=Strawberriesandmilk">
 
 # Best practices for feature engineering
-Feature engineering is an art form as well as a science. There are some best practices, which I will describe below, but there is also lived experience; knowing when to tweak what. Data scientists with a lot of experience are, in my experience, much better at this art form. Especially at new projects, experienced data scientists can achieve way more than junior data scientists. Feature engineering is the most important thing in improving the performance of machine learning models. With feature engineering we can increase the signal in the data and this makes the performance better because the model has to do less work.  #TODO make this a footnote (In 2014, the paper 'Practical Lessons from predicting clicks on Ads at Facebook' claimed that having the right features is the most important thing in developing their ML models.)
+Feature engineering is an art form as well as a science. There are some best practices, which I will describe below, but there is also lived experience; knowing when to tweak what. Data scientists with a lot of experience are, in my experience, much better at this art form. Especially at new projects, experienced data scientists can achieve way more than junior data scientists. 
+
+Feature engineering is the most important way to improve the performance of machine learning models. With feature engineering we can increase the signal in the data and this makes the performance better because the model has to do less work. _In 2014, Facebook, in their paper 'Practical Lessons from predicting clicks on Ads at Facebook' claimed that having the right features is the most important thing in developing their ML models._
 
 The practice of feature engineering borrows from experimental work and from software engineering. Because to be an effective data scientist, you need to iterate fast and keep track of what you did and how effective it was. The reason we called it data science is because, like scientists, we need to work precisely, iterate quickly,  measure accurately and report clearly. But we also build software tools so our product needs to be designed, easily modified, maintained and tested. Data scientist need a bit of both scientist and software engineer to make the most out of a data science project.   So let's go through our best practices:
 
