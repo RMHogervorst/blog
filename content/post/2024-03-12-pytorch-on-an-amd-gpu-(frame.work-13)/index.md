@@ -10,8 +10,10 @@ tags:
     - pytorch
 categories:
     - blog
-difficulty: advanced
-post-type: walkthrough
+difficulty: 
+    - advanced
+post-type: 
+    - walkthrough
 share_img: ""
 image: ""
 type: default
