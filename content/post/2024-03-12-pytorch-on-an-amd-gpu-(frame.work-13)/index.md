@@ -16,7 +16,6 @@ post-type:
     - walkthrough
 share_img: ""
 image: ""
-type: default
 ---
 
 I have a frame.work laptop. it is really nice! it looks awesome and is easily repairable. 
