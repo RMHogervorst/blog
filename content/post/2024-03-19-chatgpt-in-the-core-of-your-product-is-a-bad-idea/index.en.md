@@ -20,7 +20,7 @@ They have easy APIs and many plugins. The price is lower than seems possible.
 And yet, integrating these things into your product is really risky.
 Here is why:
 
-![](Clarote-AI4MediaPower_Profit-1280x720.png)
+![A brightly coloured illustration which can be viewed in any direction. It has many elements to it working together: men in suits around a table, someone in a data centre, big hands controlling the scenes and holding a phone, people in a production line. Motifs such as network diagrams and melting emojis are placed throughout the busy vignettes.](Clarote-AI4MediaPower_Profit-1280x720.png)
 
 ### Problems with foundational models
 These "AI's"[^3] are build on foundational models. They are trained on massive amounts of text data, and finally finetuned for specific tasks. We don't know what data was used for training. The companies will not tell us. 
