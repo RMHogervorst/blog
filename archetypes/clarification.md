@@ -9,11 +9,12 @@ tags:
 subtitle: ''
 image: "{{time.Format "2006/01/13", " .Date }}/{{ replace .TranslationBaseName "-" " " | title }}/image.jpg"
 share_img: 'https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif'
-# 'output' is necessary to obtain index.md
-# Do not commit index.html
-output: 
-  html_document:
-    keep_md: true
+difficulty:
+  - advanced
+  - beginner
+  - intermediate
+post-type:
+  - clarification
 ---
 
 <!-- tags  at least intermediate, clarification, explainer and all packages used.  -->

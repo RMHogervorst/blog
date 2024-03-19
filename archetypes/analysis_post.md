@@ -6,11 +6,14 @@ categories:
   - blog
 subtitle: ""
 tags: []
-image:
+image: "{{time.Format "2006/01/13", " .Date }}/{{ replace .TranslationBaseName "-" " " | title }}/image.jpg"
 share_img:'https://media1.tenor.com/images/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139'
-output: 
-  html_document:
-    keep_md: true
+difficulty:
+  - advanced
+  - beginner
+  - intermediate
+post-type:
+  - tutorial
 ---
 
 <!-- useful settings for rmarkdown-->

@@ -5,13 +5,14 @@ date: {{ .Date }}
 categories:
   - blog
 subtitle: ""
-image: ""
+image: "{{time.Format "2006/01/13", " .Date }}/{{ replace .TranslationBaseName "-" " " | title }}/image.jpg"
 share_img: 'https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif'
-# 'output' is necessary to obtain index.md
-# Do not commit index.html
-output: 
-  html_document:
-    keep_md: true
+difficulty:
+  - advanced
+  - beginner
+  - intermediate
+post-type:
+  - post|lessons-learned|link|thoughts|tutorial|walkthrough|analysis
 ---
 
 <!-- tags choose:
@@ -29,50 +30,6 @@ beginner, intermediate or advanced
 
 <!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
 
-<!-- useful settings for rmarkdown-->
-
-```{r setup, include=FALSE}
-# Options to have images saved in the post folder
-# And to disable symbols before output
-knitr::opts_chunk$set(fig.path = "", comment = "")
-
-# knitr hook to make images output use Hugo options
-knitr::knit_hooks$set(
-  plot = function(x, options) {
-    hugoopts <- options$hugoopts
-    paste0(
-      "{{<figure src=",
-      '"', x, '" ',
-      if (!is.null(hugoopts)) {
-        glue::glue_collapse(
-          glue::glue('{names(hugoopts)}="{hugoopts}"'),
-          sep = " "
-        )
-      },
-      ">}}\n"
-    )
-  }
-)
-
-# knitr hook to use Hugo highlighting options
-knitr::knit_hooks$set(
-  source = function(x, options) {
-  hlopts <- options$hlopts
-    paste0(
-      "```r ",
-      if (!is.null(hlopts)) {
-      paste0("{",
-        glue::glue_collapse(
-          glue::glue('{names(hlopts)}={hlopts}'),
-          sep = ","
-        ), "}"
-        )
-      },
-      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
-    )
-  }
-)
-```
 
 <!-- content  -->
 <!-- 
