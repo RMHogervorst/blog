@@ -8,6 +8,12 @@ categories:
   - blog
 tags:
   - ai-risks
+  - antipattern
+  - pseudoprofoundBS
+difficulty:
+    - beginner
+post-type:
+    - post
 image: '/blog/2024/03/19/chatgpt-in-the-core-of-your-product-is-a-bad-idea/Clarote-AI4MediaPower_Profit-1280x720.png'
 share_img: '/blog/2024/03/19/chatgpt-in-the-core-of-your-product-is-a-bad-idea/Clarote-AI4MediaPower_Profit-1280x720.png'
 ---
@@ -30,7 +36,7 @@ These "AI's"[^3] are build on foundational models. They are trained on massive a
 - There are technical problems: these models are non-deterministic, asking the exact same thing twice will result in different answers.
 - The quality of the results can vary enormously. For certain questions the results are quite good, for slightly different questions the results are dog shit. The results are never as good as the hype promised:
 
-> if AI was actually capable of replacing the outputs of human beings — even if it was anywhere *near* doing so — any number of massive, scurrilous firms would be doing so at scale, and planning to do so more as models improved.  -- Ed Zitron 2024[^5]
+> if AI was actually capable of replacing the outputs of human beings — even if it was anywhere *near* doing so — any number of massive, scurrilous firms would be doing so at scale, and planning to do so more as models improved.  -- Ed Zitron 2024
 
 The point is we don't know what data the model is trained on, what the models will answer and what information will leak out. This is all uncertainty, and uncertainty is risk. 
 
