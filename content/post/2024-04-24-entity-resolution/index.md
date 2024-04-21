@@ -10,8 +10,10 @@ tags:
     - data_science
 categories:
     - blog
-difficulty: advanced
-post-type: post
+difficulty:
+    - advanced
+post-type: 
+    - post
 share_img: "/blog/2024/04/34/screenshot_entity_resolution.png"
 image: "/blog/2024/04/34/screenshot_entity_resolution.png"
 type: default
