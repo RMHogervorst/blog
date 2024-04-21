@@ -2,7 +2,8 @@
 title: Entity resolution for data scientists
 description: In this post I highlight the practical applications of entity resolution. I take you step by step through the generic process and highlight the data science.
 subtitle: or data matching, or data deduplication or record linkage
-date: 2024-04-24
+date: "2024-04-24"
+slug: entity-resolution-for-data-scientists
 preview: ""
 draft: false
 tags:
@@ -14,9 +15,8 @@ difficulty:
     - advanced
 post-type: 
     - post
-share_img: "/blog/2024/04/34/screenshot_entity_resolution.png"
-image: "/blog/2024/04/34/screenshot_entity_resolution.png"
-type: default
+share_img: "/blog/2024/04/34/entity-resolution-for-data-scientists/screenshot_entity_resolution.png"
+image: "/blog/2024/04/34/entity-resolution-for-data-scientists/screenshot_entity_resolution.png"
 ---
 
 I have a problem. Others have it too, it is a problem of duplication. I'm trying to track the books I read in Bookwyrm so  I can talk about it online. But there are so many duplicates! How do we know if Soren Kierkegaard,Søren Kierkegaard, and Sören Kierkegaard are the same person?
@@ -38,7 +38,7 @@ Some examples from government, finance and marketing:
 - historical data needs matching too, is Tywin Lannister the same as 'The Lion' or 'The protector of the Realm' or 'Lord of Casterly Rock' ^[^2]
 
 ## The entity resolution process, high over
-![Several small cartoon representations of people are linked by brown handdrawn lines representing a network.](JamillahKnowles-Reset.TechAustraliaDetailfrom Connected People-640x360.jpg)
+![Several small cartoon representations of people are linked by brown handdrawn lines representing a network.](JamillahKnowles-Reset_TechAustraliaDetailfrom_Connected_People.jpg)
 
 When we do entity resolution we usually run a batch process, where we compare two large datasets with each other _(or with itself, to detect duplicates)_. 
 
@@ -74,12 +74,12 @@ So we first make *groups*, *compare* attributes in every group, *classify* and f
 
 ## Enter data science
 
-![A laptopogram displaying a dataset as cloud-like clusters of black blobs on a neutral background. There are three larger collections, almost resembling a map, with some data points leaking out into the negative space.](PhilippSchmitt-Dataflock (digits)-1280x914.jpg)
+![A laptopogram displaying a dataset as cloud-like clusters of black blobs on a neutral background. There are three larger collections, almost resembling a map, with some data points leaking out into the negative space.](PhilippSchmitt-Dataflock.jpg)
 
 In almost every step we can add a data science component to increase the effectiveness of the data matching process. 
 Let's go into more detail to show how the business question is translated into data science language. 
 
-### Indexing
+### 1. Indexing
 The goal of indexing is to reduce the number of record pairs to compare. We are effectively removing as much unlikely matches (probable non-matches) from comparison. Put in another way, we want to bring likely matches closer together.
 
 **This is a form of clustering**; bring similar items closer together. 
@@ -116,7 +116,7 @@ We can go even further:
 - we can turn the indexing problem into a graph problem: all entities are nodes, we create edges between nodes that have matching attribute. We only compare the entities in the same graph component.
 
 
-### comparison
+### 2. Comparison
 Business question is: Given this pair of entities with these attributes, how much are these attributes the same? So this is a **similarity** or **(inverse) distance** question. 
 
 We compare attributes of two entities. That comparison results in a value between 1 (exactly the same) and 0 (completely different) for every attribute that we compare.  
@@ -151,7 +151,7 @@ For some more advanced properties:
 
 So now we end up with scores on every attribute, a vector of scores for attributes *(nicely constraint between 1 and 0, ideal features for a machine learning classification!)*.
 
-### classification
+### 4. Classification
 We use the values from the comparison phase (a vector of scores; features) to make a decision: is the entity on the left indeed the same as the one on the right?
 
 This is a decision problem. 
@@ -172,7 +172,7 @@ There is also a completely different approach:
 
 In classification we have a potential problem, called transative closure. What if you classify record pairs and A=B and B=C but A and C are not a match? There is no definative answer here, you have to look at the cases and make a decision or create rules for these cases. 
 
-### merging
+### 5. Merging
 Once you have matches, what you do next depends on your goal; do you want 1 golden record for your warehouse/data lake/lake house? Do you want to remove duplicates? Do you want to push 'correct' versions back to all source systems? Your usecase informs your next decisions. 
 
 ## Summary
@@ -185,12 +185,12 @@ Entity resolution is used in many places, though we don't always recognize the t
 - Opensanctions uses an advanced data model https://www.opensanctions.org/reference/
 
 ## Read even more (modern papers about entity resolution)
-- Pre-trained embeddings for entity resolution; experimental analysis [@zeakisPreTrainedEmbeddingsEntity2023]
-- Unsupervised graph-based entity resolution [@kirielleUnsupervisedGraphBasedEntity2023]
-- An overview of end-to-end Entity resolution for big data  oftewel [@christophidesOverviewEndtoEndEntity2021]
-- Entity resolution on demand [@simoniniEntityResolutionOndemand2022]
-- Benchmarking filtering techiques for entity resolution [@papadakisBenchmarkingFilteringTechniques2023]
-- Entity matching using large language models [@peetersEntityMatchingUsing2023]
+- Pre-trained embeddings for entity resolution; experimental analysis Zekis 2023  https://doi.org/10.14778/3598581.3598594
+- Unsupervised graph-based entity resolution: "Unsupervised Graph-Based Entity Resolution for Complex Entities" Kirielle ert al. 2023 https://dl.acm.org/doi/10.1145/3533016
+- An overview of end-to-end Entity resolution for big data; "Entity resolution on-demand" Christophides et al. 2021
+- Entity resolution on demand: "Entity resolution on demand" Simonini et al. 2022 https://dl.acm.org/doi/10.14778/3523210.3523226
+- Benchmarking filtering techiques for entity resolution: "Benchmarking Filtering Techniques for Entity Resolution" https://ieeexplore.ieee.org/document/10184692/ Papadakis et al. 2023
+- Entity matching using large language models: "Entity Matching using Large Language Models", Peeters&Bizer 2023 http://arxiv.org/abs/2310.11244
 
 [^1]: This is what you get when stuff keeps being reinvented, statisticians tried to describe the process, and computer scientists apperently never read anything outside of their field and invented it all over again. So now it is called entity resolution, data matchine and sometimes deduplication. 
 [^2]: Yes, I know, game of thrones is not real. But I have spend years reading the longwinded books (We still wait for the last two books, George!) and watching a series that started out awesome and became gradually worse and worse. Let's channel those long long years of suffering into a joke.
@@ -199,4 +199,5 @@ Entity resolution is used in many places, though we don't always recognize the t
 
 ## Images
 <span>Image by <a href="https://www.jemimahknightstudio.com/work/ai">Jamillah Knowles</a> & <a href="">Reset.Tech Australia</a> / © https://au.reset.tech/ / <a href="https://www.betterimagesofai.org">Better Images of AI</a> / Detail from Connected People / <a href="https://creativecommons.org/licenses/by/4.0/">Licenced by CC-BY 4.0</a></span>
-<span><a href="https://philippschmitt.com/">Philipp Schmitt</a> / <a href="https://www.betterimagesofai.org">Better Images of AI</a> / Data flock (digits) / <a href="https://creativecommons.org/licenses/by/4.0/">Licenced by CC-BY 4.0</a></span>
+
+<span>Image by <a href="https://philippschmitt.com/">Philipp Schmitt</a> / <a href="https://www.betterimagesofai.org">Better Images of AI</a> / Data flock (digits) / <a href="https://creativecommons.org/licenses/by/4.0/">Licenced by CC-BY 4.0</a></span>
