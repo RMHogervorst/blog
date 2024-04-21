@@ -15,8 +15,8 @@ difficulty:
     - advanced
 post-type: 
     - post
-share_img: "/blog/2024/04/34/entity-resolution-for-data-scientists/screenshot_entity_resolution.png"
-image: "/blog/2024/04/34/entity-resolution-for-data-scientists/screenshot_entity_resolution.png"
+share_img: "/blog/2024/04/24/entity-resolution-for-data-scientists/data_matching.png"
+image: "/blog/2024/04/24/entity-resolution-for-data-scientists/data_matching.png"
 ---
 
 I have a problem. Others have it too, it is a problem of duplication. I'm trying to track the books I read in Bookwyrm so  I can talk about it online. But there are so many duplicates! How do we know if Soren Kierkegaard,Søren Kierkegaard, and Sören Kierkegaard are the same person?
