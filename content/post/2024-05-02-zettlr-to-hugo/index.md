@@ -55,8 +55,8 @@ links to other zettels go by id like [[202201011201]]
 
 I found this <https://labs.loupbrun.ca/hugo-cite/> project that enables citations in hugo. It only supports one style, but that is fine, because I use that style. 
 
-I have to change citations in the file from `[@asdfasldfkjasldf]` to shortcode cite: ```{{< cite "asdfasldfkjasldf" >}}```. 
-And add another shortcode ```{{< bibliography cited >}}``` to add a list of work. 
+I have to change citations in the file from `[@asdfasldfkjasldf]` to shortcode cite: `{{</* cite "asdfasldfkjasldf" */>}}`. 
+And add another shortcode `{{</* bibliography cited */>}}` to add a list of work. 
 
 
 I have worked with hugo a lot, this blog is hugo, the satRdays website is hugo, and my notes website is hugo too. 
@@ -112,10 +112,10 @@ bibFile: "static/citations/slipbox_citations.json"
 
 EOL
 
-cat "${1}" | sed -E 's/\[\[([0-9]{14})\]\]/[\1]({{< ref "\1" >}})/g' | \
-    sed -E 's/@([a-zA-Z0-9]{2,}) /{{< cite "\1" >}} /g' | \
-    sed -E 's/\[@([a-zA-Z0-9]{2,})\]/[{{< cite "\1" >}}]/g' | \
-    sed -E 's/#([A-Za-z]+)/[#\1]({{< ref "tags\/\1" >}})/g'| \
+cat "${1}" | sed -E 's/\[\[([0-9]{14})\]\]/[\1]({{</* ref "\1" */>}})/g' | \
+    sed -E 's/@([a-zA-Z0-9]{2,}) /{{</* cite "\1" */>}} /g' | \
+    sed -E 's/\[@([a-zA-Z0-9]{2,})\]/[{{</* cite "\1" */>}}]/g' | \
+    sed -E 's/#([A-Za-z]+)/[#\1]({{</* ref "tags\/\1" */>}})/g'| \
     sed 's/```{yaml}/```yaml/g' >> $FILENAME
 
 
@@ -125,7 +125,7 @@ if [ -n "$CITATIONS" ]; then
 "
 
 # References
-{{< bibliography cited >}}"
+{{</* bibliography cited */>}}"
 EOL
 
 fi
@@ -141,3 +141,5 @@ So far I have not been able to add search, although it does work on my notes.rmh
 
 I have some ideas about the graph visualisation, but it doesn't yet work. 
 
+
+PS: hugo tries to parse shortcodes, even in codeblocks. You can escape them like this `{{</* things */>}}` [thanks Chris Liatas!](https://liatas.com/posts/escaping-hugo-shortcodes/)
