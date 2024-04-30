@@ -55,8 +55,8 @@ links to other zettels go by id like [[202201011201]]
 
 I found this <https://labs.loupbrun.ca/hugo-cite/> project that enables citations in hugo. It only supports one style, but that is fine, because I use that style. 
 
-I have to change citations in the file from `[@asdfasldfkjasldf]` to shortcode cite: `{{< cite "asdfasldfkjasldf" >}}`. 
-And add another shortcode `{{< bibliography cited >}}` to add a list of work. 
+I have to change citations in the file from `[@asdfasldfkjasldf]` to shortcode cite: ```{{< cite "asdfasldfkjasldf" >}}```. 
+And add another shortcode ```{{< bibliography cited >}}``` to add a list of work. 
 
 
 I have worked with hugo a lot, this blog is hugo, the satRdays website is hugo, and my notes website is hugo too. 
