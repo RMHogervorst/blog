@@ -1,7 +1,7 @@
 ---
 title: zettlr to hugo
 description: ""
-subtitle: ""
+subtitle: "I already know hugo!"
 date: 2024-05-02
 preview: ""
 draft: false
