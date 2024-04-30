@@ -11,6 +11,7 @@ tags:
     - bibtex
     - PKM
     - citations
+    - zettelkasten
 categories:
     - blog
 difficulty:
@@ -59,3 +60,20 @@ So I want to create a **webservice** that is only available **over tailscale** t
 
 nice to have:
 - display a graph of my zettels
+
+Zettlr markdown looks like this
+
+zettlr notes in my zettelkasten are vanilla markdown and look like this:
+
+```bash
+# heading with title
+
+Some content description here.
+
+possible #tags
+
+content with [@references] or sometimes @references.
+
+links to other zettels go by id like [[202201011201]]
+
+```
