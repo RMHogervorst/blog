@@ -12,6 +12,7 @@ difficulty:
   - advanced
 post-type:
   - post
+image: "/blog/2024/05/22/opensanctions-is-an-amazing-example-of-entity-resolution-at-scale/PhilippSchmitt-AT&TLaboratoriesCambridgeDataflock-1280x914.jpg"
 ---
 
 In one of my previous post I talked about [entity resolution and how data science plays a role](/blog/2024/04/24/entity-resolution-for-data-scientists/). I am a big fan of OpenSanctions, and their process (entirely open) is a beautiful example of Entity resolution. 
