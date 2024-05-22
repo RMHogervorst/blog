@@ -9,6 +9,7 @@ draft: false
 tags:
     - data_engineering
     - data_science
+    - entity_resolution
 categories:
     - blog
 difficulty:
