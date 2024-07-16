@@ -16,7 +16,7 @@ difficulty:
 post-type:
     - rant
 share_img: ""
-image: "jadon-kelly-Qo_2hhoqC3k-unsplash.jpg"
+image: "/blog/2024/07/17/a-rant-about-tp-link-wifi-boxes/jadon-kelly-Qo_2hhoqC3k-unsplash.jpg"
 ---
 
 My internet was down for several days, (see previous post) and the only thing that really broke, except for obviously internet connected services on home-assistant, was the wifi.
