@@ -1,7 +1,7 @@
 ---
 title: "Search tools"
 description: "If you want to search, you often get elastic, but there are many options and it all depends on what kind of search you want. Here are some ways of looking at it."
-subtitle: local, website, logs or something else?
+subtitle: "local, website, logs or something else?"
 date: 2024-07-18
 preview: ""
 tags:
@@ -15,7 +15,6 @@ post-type:
     - clarification
 share_img: ""
 image: "/2024/07/18/search-tools/wilhelm-gunkel-Sn5oPeictgw-unsplash.jpg"
-type: default
 ---
 
 
@@ -74,3 +73,9 @@ ripgrep and www.recoll.org do things on your disk, but recoll indexes your files
 There are specialized heavy duty solutions for logs and metrics, from elastic search to clickhouse to mellisearch. 
 
 Clickhouse is an interesting candidate, because it is an analytical database. So if you have analytical workloads you might not need another search tool because the text search in clickhouse is really fast.
+
+
+## Notes
+_I created this post on the 18th, but published it on the 30th_
+
+image [from unsplash](https://unsplash.com/photos/a-woman-sitting-at-a-table-with-a-camera-in-front-of-her-Sn5oPeictgw) by [Wilhelm Gunkel](https://unsplash.com/@wilhelmgunkel)
