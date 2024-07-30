@@ -17,7 +17,7 @@ difficulty:
 post-type:
     - thoughts
 share_img: ""
-image: ""
+image: "/img/k8smemes/swiftsec_explain.jpg"
 type: default
 ---
 
