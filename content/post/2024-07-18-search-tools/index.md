@@ -1,6 +1,6 @@
 ---
 title: "Search tools"
-summary: If you want to search, you often get elastic, but there are many options and depending on what kind of search you want. Here are some ways of looking at it.
+description: If you want to search, you often get elastic, but there are many options and depending on what kind of search you want. Here are some ways of looking at it.
 subtitle: "local, website, logs or something else?"
 date: 2024-07-18
 lastmod: 2024-07-30
@@ -18,12 +18,18 @@ share_img: ""
 image: "/blog/2024/07/18/search-tools/wilhelm-gunkel-Sn5oPeictgw-unsplash.jpg"
 ---
 
+> If you want to search, you often get elastic, but there are many options and depending on what kind of search you want. Here are some ways of looking at it.
+
+
+![a person looks through binoculars, it's really silly, but I thought it would represent 'search'](wilhelm-gunkel-Sn5oPeictgw-unsplash.jpg)
+
+
+
 I came across this post on mastodon:
 
 https://mastodon.social/@mhoye/112422822807191436
 > I'm on here looking for text indexers and everything is 'lightning fast exoscale terafloops that scales to enterprise quantawarbles with polytopplic performanations' and it would be great if this industry could breathe into a bag until it remembers that one person with one computer is a constituency that matters.
 
-![a person looks through binoculars, it's really silly, but I thought it would represent 'search'](wilhelm-gunkel-Sn5oPeictgw-unsplash.jpg)
 
 The post, the replies and follow up thread are actually super useful. They narrow down what @mhoye wants; a fully local search thing that goes through docs on @mhoye's harddisk and a simple interface (webpage) to query.
 
