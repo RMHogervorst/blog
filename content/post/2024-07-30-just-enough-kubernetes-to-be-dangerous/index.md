@@ -1,5 +1,5 @@
 ---
-title: Just enough kubernetes to be dangerous
+title: "Just enough kubernetes to be dangerous"
 description: "Know just enough kubernetes so you can participate and debug your own stuff."
 subtitle: ""
 date: 2024-07-30
@@ -17,7 +17,6 @@ post-type:
     - thoughts
 share_img: ""
 image: "/img/k8smemes/swiftsec_explain.jpg"
-type: default
 ---
 
 As a data scientist that wants to achieve production results, one of the best options is to make your work available in kubernetes. Because kubernetes runs on all clouds and because many organizations use kubernetes. Make your prediction API available in kubernetes and your organization can 'just' plug it into their systems. Many data scientists don't know anything about docker, not to mention kubernetes and its main tool helm.
