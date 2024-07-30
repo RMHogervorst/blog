@@ -1,6 +1,6 @@
 ---
 title: "Search tools"
-description: "If you want to search, you often get elastic, but there are many options and it all depends on what kind of search you want. Here are some ways of looking at it."
+description: "If you want to search, you often get elastic, but there are many options and depending on what kind of search you want. Here are some ways of looking at it."
 subtitle: "local, website, logs or something else?"
 date: 2024-07-18
 preview: ""
@@ -16,7 +16,6 @@ post-type:
 share_img: ""
 image: "/2024/07/18/search-tools/wilhelm-gunkel-Sn5oPeictgw-unsplash.jpg"
 ---
-
 
 I came across this post on mastodon:
 
