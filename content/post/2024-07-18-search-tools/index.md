@@ -14,7 +14,7 @@ difficulty:
 post-type:
     - clarification
 share_img: ""
-image: ""
+image: "/2024/07/18/search-tools/wilhelm-gunkel-Sn5oPeictgw-unsplash.jpg"
 type: default
 ---
 
@@ -23,6 +23,8 @@ I came across this post on mastodon:
 
 https://mastodon.social/@mhoye/112422822807191436
 > I'm on here looking for text indexers and everything is 'lightning fast exoscale terafloops that scales to enterprise quantawarbles with polytopplic performanations' and it would be great if this industry could breathe into a bag until it remembers that one person with one computer is a constituency that matters.
+
+![a person looks through binoculars, it's really silly, but I thought it would represent 'search'](wilhelm-gunkel-Sn5oPeictgw-unsplash.jpg)
 
 The post, the replies and follow up thread are actually super useful. They narrow down what @mhoye wants; a fully local search thing that goes through docs on @mhoye's harddisk and a simple interface (webpage) to query.
 
