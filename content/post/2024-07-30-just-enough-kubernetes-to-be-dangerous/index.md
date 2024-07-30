@@ -2,9 +2,8 @@
 title: Just enough kubernetes to be dangerous
 description: "Know just enough kubernetes so you can participate and debug your own stuff."
 subtitle: ""
-date: "2024-07-30"
+date: "2024-07-29"
 preview: ""
-draft: false
 tags:
     - data_science
     - kubernetes
