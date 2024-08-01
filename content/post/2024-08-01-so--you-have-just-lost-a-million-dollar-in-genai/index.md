@@ -4,7 +4,6 @@ description: ""
 subtitle: what lessons can you learn?
 date: 2024-08-01
 preview: ""
-draft: false
 tags:
     - LLMs
     - genAI
@@ -17,7 +16,6 @@ post-type:
     - thoughts
 share_img: ""
 image: ""
-type: default
 ---
 
 Hi C-level person! Are you feeling down because AI is not working for you? Let me know if this is you:
