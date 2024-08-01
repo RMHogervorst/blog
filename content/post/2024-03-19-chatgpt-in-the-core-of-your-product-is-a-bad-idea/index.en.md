@@ -10,6 +10,7 @@ tags:
   - ai-risks
   - antipattern
   - pseudoprofoundBS
+  - genAI
 difficulty:
     - beginner
 post-type:
