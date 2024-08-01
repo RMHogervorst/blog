@@ -1,14 +1,20 @@
 ---
 title: So you've just lost a million dollars in the genAI hype
 description: ""
-subtitle: "what lessons can you learn?"
+subtitle: what lessons can you learn?
 date: 2024-08-01
 preview: ""
 draft: false
-tags: []
-categories: []
-difficulty: ""
-post-type: ""
+tags:
+    - LLMs
+    - genAI
+    - pseudoprofoundBS
+categories:
+    - blog
+difficulty: 
+    - beginner
+post-type: 
+    - thoughts
 share_img: ""
 image: ""
 type: default
