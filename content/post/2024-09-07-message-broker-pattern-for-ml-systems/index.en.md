@@ -9,8 +9,7 @@ tags:
   - advanced
   - deployment
 subtitle: ''
-image: 2024/09/98/Index/image.jpg
-share_img: https://media.giphy.com/media/7Jpnmq5OGeOnb7nP3b/giphy.gif
+image: "/blog/2024/09/07/message-broker-pattern-for-ml-systems/message_broker_pattern.png"
 difficulty:
   - advanced
 post-type:
