@@ -3,12 +3,12 @@
 <div class="container" role="main">
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      <article role="main" class="blog-post h-entry">
+      <article role="main" class="blog-post h-entry"  data-pagefind-body>
         <div class="e-content">
         {{ .Content }}
         </div>
         <hr>
-        <a class="u-url" href="{{ .Permalink }}"><div class="p-name">{{ .Title }}  </div></a>
+        <a class="u-url" href="{{ .Permalink }}"><div class="p-name" data-pagefind-meta="title">{{ .Title }}  </div></a>
         <time datetime="{{ .Date |time.Format "2006-01-02T15:04:05-07:00"  }}" class="dt-published">{{ $datestr | i18n "postedOnDate"}} </time>
         by {{ if not .Site.Params.hideAuthor }}
           {{ if .Params.author }}
@@ -21,7 +21,7 @@
         {{ if .Params.tags }}
           <div class="blog-tags p-category">
             {{ range .Params.tags }}
-              <a href="{{ $.Site.LanguagePrefix | absURL }}tags/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+              <a href="{{ $.Site.LanguagePrefix | absURL }}tags/{{ . | urlize }}/" data-pagefind-filter="tag">{{ . }}</a>&nbsp;
             {{ end }}
           </div>
         {{ end }}
@@ -29,7 +29,7 @@
           <div>
             More posts of level: 
             {{ range .Params.difficulty }}
-              <a href="{{ $.Site.LanguagePrefix | absURL }}/difficulty/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+              <a href="{{ $.Site.LanguagePrefix | absURL }}/difficulty/{{ . | urlize }}/" data-pagefind-filter="difficulty">{{ . }}</a>&nbsp;
             {{ end }}
           </div>
         {{ end }}
@@ -37,7 +37,7 @@
           <div>
             More : 
             {{ range .Params.post_type }}
-              <a href="{{ $.Site.LanguagePrefix | absURL }}/post-type/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+              <a href="{{ $.Site.LanguagePrefix | absURL }}/post-type/{{ . | urlize }}/" data-pagefind-filter="post type">{{ . }}</a>&nbsp;
             {{ end }}
             posts.
           </div>
