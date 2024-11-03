@@ -40,6 +40,7 @@
 {{- with .Site.Params.favicon }}
   <link href='{{ . | absURL }}' rel='icon' type='image/x-icon'/>
 {{- end -}}
+<meta name="fediverse:creator" content="@rmhogervorst@fosstodon.org">
 <!-- Hugo Version number -->
   {{ .Hugo.Generator -}}
 <!-- Links and stylesheets -->
