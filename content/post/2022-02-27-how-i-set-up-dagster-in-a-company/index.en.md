@@ -6,7 +6,7 @@ slug: how-i-set-up-dagster-in-a-company
 categories:
   - blog
 tags:
-  - dagster
+  - Dagster
   - scheduling
   - advanced
   - python

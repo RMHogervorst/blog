@@ -8,7 +8,7 @@ categories:
 tags:
   - dbt
   - gcalendar
-  - dagster
+  - Dagster
   - tools
   - orchestration
   - smoll-data-stack
