@@ -6,7 +6,7 @@ date: 2024-02-27T15:03:59.862Z
 preview: ""
 draft: false
 tags:
-    - dagster
+    - Dagster
     - testing
     - data_engineering
 categories:

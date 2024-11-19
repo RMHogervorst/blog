@@ -6,7 +6,7 @@ slug: introducing-the-smoll-data-stack
 categories:
   - blog
 tags:
-  - dagster
+  - Dagster
   - dbt
   - intermediate
   - tools
