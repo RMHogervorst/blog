@@ -90,10 +90,7 @@ def asset_spec_tester_product(spec):
         assert (
             spec.metadata.get("dashboard_url") is not None
         ), f"{spec.key.to_string()} has kind dashboard, and therefore needs a dashboard_url."
-    # spec.kinds
-    # spec.metadata
-    # spec.owners
-    # spec.tags
+
 ```
 
 - if you have a kind `dashboard` label, you need to have a `dashboard_url` metadata value
