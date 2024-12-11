@@ -12,11 +12,12 @@ jobs:
       uses: ChrisPrusik/HugoChecker@v6
       with:
         hugo-folder: ${{ github.workspace }}
-  # fix_things1:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check Spelling
-  #       uses: check-spelling/check-spelling@v0.0.22
-  #     - name: Lychee Broken Link Checker
-  #       uses: lycheeverse/lychee-action@v1.9.2
+   fix_things1:
+     runs-on: ubuntu-latest
+     uses: actions/checkout@v4
+     steps:
+       - name: Check Spelling
+         uses: check-spelling/check-spelling@v0.0.24
+       - name: Lychee Broken Link Checker
+         uses: lycheeverse/lychee-action@v1.9.2
   
