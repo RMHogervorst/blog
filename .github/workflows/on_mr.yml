@@ -14,8 +14,9 @@ jobs:
         hugo-folder: ${{ github.workspace }}
    fix_things1:
      runs-on: ubuntu-latest
-     uses: actions/checkout@v4
      steps:
+       - name: checkout
+         uses: actions/checkout@v4
        - name: Check Spelling
          uses: check-spelling/check-spelling@v0.0.24
        - name: Lychee Broken Link Checker
