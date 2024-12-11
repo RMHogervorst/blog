@@ -19,6 +19,13 @@ jobs:
          uses: actions/checkout@v4
        - name: Check Spelling
          uses: check-spelling/check-spelling@v0.0.24
+         with:
+          extra_dictionaries: |
+              cspell:software-terms/dict/softwareTerms.txt
+              cspell:r/src/r.txt
+              cspell:python/src/common/extra.txt
+              cspell:php/dict/php.txt
+              cspell:python/src/python/python-lib.txt         
 #       - name: Lychee Broken Link Checker
 #         uses: lycheeverse/lychee-action@v1.9.2
   
