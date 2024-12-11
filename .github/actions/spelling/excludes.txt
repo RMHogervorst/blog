@@ -1,0 +1,9 @@
+^.github/
+^static/
+^renv/
+^archetypes/
+^layouts/
+^public/
+^resources/
+^static/
+^themes
