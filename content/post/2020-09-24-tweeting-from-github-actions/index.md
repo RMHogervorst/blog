@@ -105,7 +105,7 @@ How do you add them to your local environment?
 - Create a .Renviron file in your local project
 - add a new line to your .gitignore file: .Renviron
 - Now this file with secrets will be ignored by git and you 
-can never accidentely add it to a repo.
+can never accidentally add it to a repo.
 - the .Renviron file is a simple text file where you can add 'secrets' like: `apikey="aVerY5eCretKEy"` on a new line.
 
 How do you add them to github?

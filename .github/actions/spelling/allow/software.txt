@@ -1,0 +1,6 @@
+beautifulhugo
+zotero
+bibtex
+bigquery
+Bookwyrm
+ggplot

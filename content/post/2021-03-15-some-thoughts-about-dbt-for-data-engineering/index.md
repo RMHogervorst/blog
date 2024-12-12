@@ -73,7 +73,7 @@ dbt also creates a **dependency graph** in visual form.
 
 This is not very different from
 airflow DAGs (but these graphs also contains links to the data documentation 
-which you don't have in airlflow).
+which you don't have in airflow).
 
 I love that you have **tests** for your data that you can run yourself, 
 but you can also run the tests in a 

@@ -76,7 +76,7 @@ The majority of training data is already in the hands of the tech giants.
 
 So in closing  although I love the idea of poising the web for Large language models, it is already filled with junk, the corpus used for training is larger than random websites. 
 
-If we want creatives to get paid for the commercial use of their work, if we want acountability and openness, this is not the way to achieve it. The only thing that has seemed to work is breaking up huge companies, creating independent regulators,  creating clear laws to protect people, and actually enforcing those laws.
+If we want creatives to get paid for the commercial use of their work, if we want accountability and openness, this is not the way to achieve it. The only thing that has seemed to work is breaking up huge companies, creating independent regulators,  creating clear laws to protect people, and actually enforcing those laws.
 
 
 # Notes

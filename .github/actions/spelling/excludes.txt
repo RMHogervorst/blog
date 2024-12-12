@@ -13,3 +13,6 @@
 ^\Q.nojekyll\E$
 ^\Qcontent/post/2018-07-24-arthur-blinked-ford-shrugs-displaying-words-as-graph/index.html\E$
 ^\Qrenv.lock\E$
+^.gitignore
+^.gitmodules
+^.Rprofile
