@@ -1,0 +1,12 @@
+netflix
+netlify
+openai
+openlibrary
+opensanctions
+openmetrics
+paypal
+pinboard
+pinterest
+pixabay
+reddit
+redis
