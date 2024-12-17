@@ -29,8 +29,6 @@ jobs:
               cspell:python/src/python/python-lib.txt
               cspell:filetypes/filetypes.txt
               cspell:k8s/dict/k8s.txt
-              cspell:data-science/data-science-tools.txt
-              cspell:data-science/data-science-models.txt
 #       - name: Lychee Broken Link Checker
 #         uses: lycheeverse/lychee-action@v1.9.2
 
