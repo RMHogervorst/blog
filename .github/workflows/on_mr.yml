@@ -1,0 +1,34 @@
+name: MergeRequestChecker
+run-name: ${{ github.actor }} is running 🚀
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+#  hugochecker:
+#    runs-on: node-20
+#    steps:
+#    - name: 'Check out the Hugo *.md files'
+#      uses: ChrisPrusik/HugoChecker@v6
+#      with:
+ #       hugo-folder: ${{ github.workspace }}
+   fix_things1:
+     runs-on: ubuntu-latest
+     steps:
+       - name: checkout
+         uses: actions/checkout@v4
+       - name: Check Spelling
+         uses: check-spelling/check-spelling@v0.0.24
+         with:
+          extra_dictionaries: |
+              cspell:software-terms/dict/softwareTerms.txt
+              cspell:html/dict/html.txt
+              cspell:r/src/r.txt
+              cspell:python/src/python/python.txt
+              cspell:python/src/common/extra.txt
+              cspell:python/src/python/python-lib.txt
+              cspell:filetypes/filetypes.txt
+              cspell:k8s/dict/k8s.txt
+#       - name: Lychee Broken Link Checker
+#         uses: lycheeverse/lychee-action@v1.9.2
+

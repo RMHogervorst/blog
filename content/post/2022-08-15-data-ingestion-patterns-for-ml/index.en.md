@@ -36,7 +36,7 @@ Here are some ways of getting data into the modelmaking machine I have seen in t
 
 ### CSV from disk
 For a single exploration, csv works fine. You don't care that much data loading about issues. But when you want to automate your trainingdata ingestion things become troublesome. 
-CSV seems simple, but it is awful on several levels. What kind of format do you use? European (;-separated) values or American (,-separated) values? Are you actually using tabs as separators? Did you accidentily touch the file with excel?[^1]
+CSV seems simple, but it is awful on several levels. What kind of format do you use? European (;-separated) values or American (,-separated) values? Are you actually using tabs as separators? Did you accidentally touch the file with excel?[^1]
 
 [^1]: The real question you should ask yourself is:"Where did this data come from? Who created this CSV?" Because nine out of ten times it came out of a data warehouse, why didn't you read it directly from the data warehouse into your system?
 
