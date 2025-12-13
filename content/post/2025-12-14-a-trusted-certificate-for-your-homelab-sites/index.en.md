@@ -8,30 +8,16 @@ categories:
 tags:
   - kubernetes
   - homelab
+  - certificates
+  - DNS
 subtitle: ''
 summary: 'In this post I will describe how you can set up services in kubernetes that will listen for new ingress, create a certificate, get it signed by letsencrypt and presented on the correct website. It will also automatically update DNS records.'
-image: '/blog/2025/12/13/a-trusted-certificate-for-your-homelab-sites/pdia-8f5fcfb2-5786-462d-8405-a04a650ebbd3.jpg'
+image: '/blog/2025/12/14/a-trusted-certificate-for-your-homelab-sites/pdia-8f5fcfb2-5786-462d-8405-a04a650ebbd3.jpg'
 difficulty:
   - advanced
 post-type:
   - post
 ---
-
-<!-- tags choose:
-beginner, intermediate or advanced
-*beginner:*
-*for, loops, brackets, vectors, data structures, subsetting, functions, qplot, ggplot2, dplyr, spps-to-r, haven, tidyr, tidyverse*
-
-*intermediate:* 
-*tools, building packages, testing, slides in markdown, apply, package, advanced ggplot2, environments, animation, test, workflow, reproducability, version control, git, tidyeval*
-
-*advanced:*
-*S4 classes, extensions , shiny, Object Oriented Programming, Non standard Evaluation, code performance, profiling, Rcpp, optimize-your-code*
--->
-<!-- categories: R and blog. Blog is general, R means rweekly and r-bloggers -->
-
-<!-- share img is either a complete url or build on top of the base url (https://blog.rmhogervorst.nl) so do not use the same relative image link. But make it more complete post/slug/image.png -->
-
 
 <!-- content  -->
 In this post I will describe how you can set up services in kubernetes that will
@@ -101,7 +87,6 @@ that I deploy my new apps on. With some small configuration changes everything i
 certmanager manages the certificates (rotates them too), external DNS knows what domains to look for.
 
 Oh and None of this leaves my home network. The only thing that is visible outside my home are TXT records on my DNS provider that let Letsencrypt verify that I have control over my domain.
-
 
 
 Image sourced from the <a href="https://pdimagearchive.org/images/8f5fcfb2-5786-462d-8405-a04a650ebbd3">Public Domain Image Archive / Zentralbibliothek Zürich</a>
