@@ -1,0 +1,4 @@
+deamon
+humidex
+isbn
+pkm
