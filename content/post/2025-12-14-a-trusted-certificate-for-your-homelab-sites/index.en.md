@@ -11,7 +11,7 @@ tags:
   - certificates
   - DNS
 subtitle: ''
-summary: 'In this post I will describe how you can set up services in kubernetes that will listen for new ingress, create a certificate, get it signed by letsencrypt and presented on the correct website. It will also automatically update DNS records.'
+# summary: 'In this post I will describe how you can set up services in kubernetes that will listen for new ingress, create a certificate, get it signed by letsencrypt and presented on the correct website. It will also automatically update DNS records.'
 image: '/blog/2025/12/14/a-trusted-certificate-for-your-homelab-sites/pdia-8f5fcfb2-5786-462d-8405-a04a650ebbd3.jpg'
 difficulty:
   - advanced
